@@ -4,6 +4,32 @@
 
 // example
 
+import 'dart:ffi';
+
+import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:telegrammy/cores/errors/Failture.dart';
+import 'package:telegrammy/cores/models/user_model.dart';
+import 'package:telegrammy/cores/services/api_service.dart';
+import 'package:telegrammy/features/auth/data/repos/auth_repo.dart';
+
+class AuthRepoImplemention extends AuthRepo {
+  final ApiService apiService;
+
+  AuthRepoImplemention({required this.apiService});
+
+  Future<Either<Failure, void>> signInWithGoogle() async {
+    try {
+      await apiService.signInWithGoogle(); // No return value needed for success
+      return const Right(null); // Right with void (no value)
+    } catch (error) {
+      return Left(
+          ServerError(errorMessage: 'Sign-in error: $error')); // Error message
+    }
+  }
+}
+
+
 // class HomeRepoImplementation extends HomeRepo {
 //   final ApiService apiService;
 //   HomeRepoImplementation({required this.apiService});

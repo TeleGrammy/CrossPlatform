@@ -11,3 +11,11 @@
 //   Future<Either<Failure, List<Bookmodel>>> fetchFeaturedBooks();
 //   Future<Either<Failure, List<Bookmodel>>> fetchBestSellerBooks();
 // }
+
+import 'package:dartz/dartz.dart';
+import 'package:telegrammy/cores/errors/Failture.dart';
+import 'package:telegrammy/cores/models/user_model.dart';
+
+abstract class AuthRepo {
+  Future<Either<Failure,void>> signInWithGoogle();
+}

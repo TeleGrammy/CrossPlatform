@@ -1,9 +1,41 @@
-// This file handles all authentication-related tasks.
-//
-// Functions:
-// - registerWithEmail(String email, String password): Registers a new user using email and password.
-// - loginWithEmail(String email, String password): Logs a user in using email and password.
-// - logout(): Logs the user out of the app.
-// - socialLogin(String provider): Logs the user in using a social account (e.g., Google, Facebook, GitHub).
-// - resendVerificationCode(): Resends the verification code to the user's email.
-// - resetPassword(String email): Sends a password reset link to the provided email.
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:dio/dio.dart';
+
+class ApiService {
+  ApiService({required this.dio});
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'profile', // Access basic profile info
+    ],
+  );
+  final Dio dio;
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception('Sign-in aborted by user'); // User canceled the sign-in
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final String idToken = googleAuth.idToken!;
+
+      // Send the ID token to the backend using Dio or another HTTP client.
+      // Example:
+      // final response = await dio.post(...);
+      // if (response.statusCode != 200) {
+      //   throw Exception('Sign-in failed: ${response.data['error']}');
+      // }
+
+      // If successful, do nothing and return void
+    } catch (error) {
+      throw Exception('Sign-in error: $error'); // Propagate error
+    }
+  }
+
+  Future<void> signOutGoogle() async {
+    await _googleSignIn.signOut();
+  }
+}
