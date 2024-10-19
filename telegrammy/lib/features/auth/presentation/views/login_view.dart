@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
+import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
+import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/widgets/customSigninButton.dart';
 
 class LoginView extends StatelessWidget {
@@ -133,9 +136,18 @@ class LoginView extends StatelessWidget {
               children: [
                 Customsigninbutton(
                   icon: FontAwesomeIcons.facebook,
+                  signinWithSocialAccount:
+                      context.read<LoginCubit>().signinWithFacebookCubit,
                 ),
-                Customsigninbutton(icon: FontAwesomeIcons.google),
-                Customsigninbutton(icon: FontAwesomeIcons.github),
+                Customsigninbutton(
+                  icon: FontAwesomeIcons.google,
+                  signinWithSocialAccount:
+                      context.read<LoginCubit>().signinWithGoogleCubit,
+                ),
+                Customsigninbutton(
+                    icon: FontAwesomeIcons.github,
+                    signinWithSocialAccount:
+                        context.read<LoginCubit>().signinWithGithubCubit),
               ],
             ),
             const Spacer(),

@@ -27,6 +27,24 @@ class AuthRepoImplemention extends AuthRepo {
           ServerError(errorMessage: 'Sign-in error: $error')); // Error message
     }
   }
+  Future<Either<Failure, void>> signInWithFacebook() async {
+    try {
+      await apiService.signInWithFacebook(); // No return value needed for success
+      return const Right(null); // Right with void (no value)
+    } catch (error) {
+      return Left(
+          ServerError(errorMessage: 'Sign-in error: $error')); // Error message
+    }
+  }
+  Future<Either<Failure, void>> signInWithGitHub() async {
+    try {
+      await apiService.signInWithGitHub(); // No return value needed for success
+      return const Right(null); // Right with void (no value)
+    } catch (error) {
+      return Left(
+          ServerError(errorMessage: 'Sign-in error: $error')); // Error message
+    }
+  }
 }
 
 

@@ -6,7 +6,8 @@ import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/lo
 
 class Customsigninbutton extends StatelessWidget {
   final IconData icon;
-  const Customsigninbutton({super.key, required this.icon});
+  final Future<void> Function() signinWithSocialAccount;
+  const Customsigninbutton({super.key, required this.icon,required this.signinWithSocialAccount});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,8 @@ class Customsigninbutton extends StatelessWidget {
         ),
         child: IconButton(
           onPressed: () {
-            context.read<LoginCubit>().signinWithGoogleCubit(); // Trigger Google sign-in
+            // context.read<LoginCubit>().signinWithGoogleCubit(); // Trigger Google sign-in
+            signinWithSocialAccount();
           },
           icon: Icon(
             icon,
