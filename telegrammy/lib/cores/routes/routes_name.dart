@@ -1,5 +1,7 @@
 class RouteNames {
   static String signUp = 'SignUp';
   static String emailVerification = 'EmailVerification';
-  static String home = 'Home';
+  static String login = 'login';
+  static String home = 'home';
+  static String splash = 'splash';
 }

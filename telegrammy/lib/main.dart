@@ -6,11 +6,11 @@ import 'package:telegrammy/features/auth/presentation/views/login_view.dart';
 import 'package:telegrammy/firebase_options.dart';
 
 void main() async {
-  setupServiceLocator();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  setupServiceLocator();
   runApp(
     const MyApp(),
   );

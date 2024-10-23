@@ -44,7 +44,7 @@ class _SignUpViewState extends State<SignUpView> {
             const SizedBox(
               height: 10,
             ),
-            const Logo(),
+            const logo(),
             const SizedBox(
               height: 10,
             ),
