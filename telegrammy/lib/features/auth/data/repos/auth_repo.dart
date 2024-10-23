@@ -11,3 +11,13 @@
 //   Future<Either<Failure, List<Bookmodel>>> fetchFeaturedBooks();
 //   Future<Either<Failure, List<Bookmodel>>> fetchBestSellerBooks();
 // }
+
+import 'package:dartz/dartz.dart';
+import 'package:telegrammy/cores/errors/Failture.dart';
+
+abstract class AuthRepo {
+  Future<Either<Failure, void>> signUpUser(Map<String, dynamic> userData);
+  Future<Either<Failure, void>> emailVerification(
+      String email, String verificationCode);
+  Future<Either<Failure, void>> resendEmailVerification(String email);
+}
