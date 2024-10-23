@@ -6,31 +6,39 @@ class CustomTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final String hintText;
   final bool obsecureText;
+  final String? Function(String?)? validator;
 
   const CustomTextField(
       {super.key,
       required this.controller,
       this.prefixIcon,
       required this.hintText,
-      required this.obsecureText});
+      required this.obsecureText,
+      required this.validator});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-      child: TextField(
+      child: TextFormField(
+        validator: validator,
         controller: controller,
         obscureText: obsecureText,
         decoration: InputDecoration(
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.0),
-              borderSide: const BorderSide(
-                color: primaryColor,
-                width: 2.0,
-              ),
+              borderSide: const BorderSide(color: primaryColor, width: 2.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.black, width: 2.0),
+              borderSide: const BorderSide(color: secondaryColor, width: 2.0),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: errorColor, width: 2.0),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: errorColor, width: 2.0),
               borderRadius: BorderRadius.circular(20.0),
             ),
             contentPadding:
