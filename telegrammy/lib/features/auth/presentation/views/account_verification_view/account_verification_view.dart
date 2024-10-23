@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:telegrammy/cores/widgets/rounded_button.dart';
-import 'package:telegrammy/common/widgets/tapGesture_text_span.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
+import 'package:telegrammy/cores/widgets/tapgesture_text_span.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/cubit/signup_cubit.dart';
 
 class AccountVerificationView extends StatefulWidget {
