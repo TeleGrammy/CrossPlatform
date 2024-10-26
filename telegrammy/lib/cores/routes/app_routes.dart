@@ -13,23 +13,23 @@ import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_v
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
     redirect: (context, state) async {
-      final bool isLoggedin = await isLoggedIn();
-      final bool isVerified = await isCaptchaVerified();
+      // final bool isLoggedin = await isLoggedIn();
+      // final bool isVerified = await isCaptchaVerified();
 
-      // If the user has logged in and tries to access sign-up or login, send them to the home page
-      if (isLoggedin && state.uri.toString() == '/signup') {
-        return '/'; // Redirect to home
-      }
+      // // If the user has logged in and tries to access sign-up or login, send them to the home page
+      // if (isLoggedin && state.uri.toString() == '/signup') {
+      //   return '/'; // Redirect to home
+      // }
 
-      // If the user has signedup but not verified and tries to access sign-up, send them to the verification page
-      if (!isLoggedin && state.uri.toString() == '/signup' && isVerified) {
-        return '/email-verification'; // Redirect to home
-      }
+      // // If the user has signedup but not verified and tries to access sign-up, send them to the verification page
+      // if (!isLoggedin && state.uri.toString() == '/signup' && isVerified) {
+      //   return '/email-verification'; // Redirect to home
+      // }
 
-      // If the user is not authenticated and tries to access home, send them to the login/signup page
-      if (!isLoggedin && !isVerified && state.uri.toString() == '/') {
-        return '/signup'; // Redirect to sign-up or login
-      }
+      // // If the user is not authenticated and tries to access home, send them to the login/signup page
+      // if (!isLoggedin && !isVerified && state.uri.toString() == '/') {
+      //   return '/signup'; // Redirect to sign-up or login
+      // }
 
       // Return null to indicate no redirection needed
       return null;

@@ -6,6 +6,8 @@ import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
+import 'package:telegrammy/cores/widgets/custom_text_field.dart';
+import 'package:telegrammy/cores/widgets/rounded_button.dart';
 
 class FormLogin extends StatefulWidget {
   const FormLogin({
@@ -20,7 +22,8 @@ class _FormLoginState extends State<FormLogin> {
   final _formKey = GlobalKey<FormState>();
   String? email;
   String? password;
-
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   void login() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -28,7 +31,6 @@ class _FormLoginState extends State<FormLogin> {
     _formKey.currentState!.save();
 
     context.goNamed(RouteNames.home);
-
 
     // final response = await getit
     //     .get<Dio>()
@@ -41,24 +43,10 @@ class _FormLoginState extends State<FormLogin> {
       key: _formKey,
       child: Column(
         children: [
-          TextFormField(
-            decoration: InputDecoration(
-              label: Text(
-                'Email address',
-                style: TextStyle(color: Colors.black),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.grey),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey, // Color when focused
-                  width: 1, // Width when focused
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+          CustomTextField(
+            controller: emailController,
+            hintText: 'Email address',
+            obsecureText: false,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter your email';
@@ -69,31 +57,12 @@ class _FormLoginState extends State<FormLogin> {
               }
               return null;
             },
-            onSaved: (newValue) {
-              email = newValue;
-            },
+            prefixIcon: Icons.email,
           ),
-          SizedBox(
-            height: 22,
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-              label: Text(
-                'Password',
-                style: TextStyle(color: Colors.black),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.grey),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey, // Color when focused
-                  width: 1, // Width when focused
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
+          CustomTextField(
+            controller: passwordController,
+            hintText: 'Password',
+            obsecureText: true,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter your password';
@@ -103,36 +72,17 @@ class _FormLoginState extends State<FormLogin> {
               }
               return null;
             },
-            onSaved: (newValue) {
-              password = newValue;
-            },
+            prefixIcon: Icons.lock,
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          Align(
-            child: Text('Forgot password?'),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              'Forgot password?',
+              style: textStyle13,
+            ),
             alignment: Alignment.bottomRight,
           ),
-          SizedBox(
-            height: 30,
-          ),
-          TextButton(
-            onPressed: login,
-            style: TextButton.styleFrom(
-              backgroundColor: backGroundColor, // Background color
-            ),
-            child: Container(
-              width: double.infinity,
-              height: 40,
-              child: Center(
-                child: Text(
-                  'Log in',
-                  style: textStyle16,
-                ),
-              ),
-            ),
-          )
+          RoundedButton(onPressed: login, buttonTitle: 'Log in')
         ],
       ),
     );

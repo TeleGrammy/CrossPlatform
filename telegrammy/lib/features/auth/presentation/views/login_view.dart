@@ -17,10 +17,6 @@ class LoginView extends StatelessWidget {
         child: Column(
           children: [
             logo(),
-            Align(
-              child: Text("Log in", style: textStyle30),
-              alignment: Alignment.topLeft,
-            ),
             SizedBox(
               height: 30,
             ),
@@ -41,8 +37,3 @@ class LoginView extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
