@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/services/api_service.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/widgets/custom_text_field.dart';
@@ -19,28 +21,25 @@ class FormLogin extends StatefulWidget {
 }
 
 class _FormLoginState extends State<FormLogin> {
-  final _formKey = GlobalKey<FormState>();
-  String? email;
-  String? password;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   void login() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-    _formKey.currentState!.save();
-
-    context.goNamed(RouteNames.home);
-
-    // final response = await getit
-    //     .get<Dio>()
-    //     .post('path to backend', data: {'email': email, 'password': password});
+    getit
+        .get<ApiService>()
+        .login(emailController.text, passwordController.text, context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: Column(
         children: [
           CustomTextField(
@@ -76,9 +75,14 @@ class _FormLoginState extends State<FormLogin> {
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              'Forgot password?',
-              style: textStyle13,
+            child: GestureDetector(
+              onTap: () {
+                context.goNamed(RouteNames.resetPassword);
+              },
+              child: Text(
+                'Forgot password?',
+                style: textStyle13,
+              ),
             ),
             alignment: Alignment.bottomRight,
           ),

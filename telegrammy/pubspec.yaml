@@ -51,6 +51,8 @@ dependencies:
   bloc: ^8.1.4
   webview_flutter_plus: ^0.3.0+2
   meta: ^1.15.0
+  flutter_dotenv: ^5.2.1
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:

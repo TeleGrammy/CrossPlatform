@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:dio/dio.dart';
@@ -7,6 +8,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 
@@ -22,72 +24,82 @@ class ApiService {
   final Dio dio;
 
   Future<void> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        throw Exception('Sign-in aborted by user'); // User canceled the sign-in
-      }
-      print(googleUser);
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      // final String idToken = googleAuth.idToken!;
+    print('object');
+    final response = await dio.post('http://10.0.2.2:8080/api/v1/auth/google');
+    print(response);
+    // try {
+    //   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    //   if (googleUser == null) {
+    //     throw Exception('Sign-in aborted by user'); // User canceled the sign-in
+    //   }
+    //   print(googleUser);
+    //   final GoogleSignInAuthentication googleAuth =
+    //       await googleUser.authentication;
+    //   // final String idToken = googleAuth.idToken!;
 
-      // Send the ID token to the backend using Dio or another HTTP client.
-      // Example:
-      // final response = await dio.post(...);
-      // if (response.statusCode != 200) {
-      //   throw Exception('Sign-in failed: ${response.data['error']}');
-      // }
+    //   // Send the ID token to the backend using Dio or another HTTP client.
+    //   // Example:
+    //   // final response = await dio.post(...);
+    //   // if (response.statusCode != 200) {
+    //   //   throw Exception('Sign-in failed: ${response.data['error']}');
+    //   // }
 
-      // If successful, do nothing and return void
-    } catch (error) {
-      throw Exception('Sign-in error: $error'); // Propagate error
-    }
+    //   // If successful, do nothing and return void
+    // } catch (error) {
+    //   throw Exception('Sign-in error: $error'); // Propagate error
+    // }
   }
 
-  Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
+  Future<void> signInWithFacebook() async {
+    try {
+      final response =
+          await getit.get<Dio>().post('http://localhost:8080/api/v1/facebook');
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+    // // Trigger the sign-in flow
+    // final LoginResult loginResult = await FacebookAuth.instance.login();
 
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+    // // Create a credential from the access token
+    // final OAuthCredential facebookAuthCredential =
+    //     FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
 
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    // // Once signed in, return the UserCredential
+    // return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
   Future<void> signInWithGitHub() async {
-    final clientId = 'Ov23lickxMhmwQkCMM4W';
-    final redirectUri =
-        'http://localhost:8000/auth/callback'; // Same as in GitHub settings
+    // final clientId = 'Ov23lickxMhmwQkCMM4W';
+    // final redirectUri =
+    //     'http://localhost:8000/auth/callback'; // Same as in GitHub settings
 
-    final url = Uri.https('github.com', '/login/oauth/authorize', {
-      'client_id': clientId,
-      'redirect_uri': redirectUri,
-      'scope': 'read:user user:email',
-    });
+    // final url = Uri.https('github.com', '/login/oauth/authorize', {
+    //   'client_id': clientId,
+    //   'redirect_uri': redirectUri,
+    //   'scope': 'read:user user:email',
+    // });
 
-    // Open the GitHub login page
-    final result = await FlutterWebAuth.authenticate(
-        url: url.toString(), callbackUrlScheme: "yourapp");
+    // // Open the GitHub login page
+    // final result = await FlutterWebAuth.authenticate(
+    //     url: url.toString(), callbackUrlScheme: "yourapp");
 
-    // Extract the code from the result
-    final code = Uri.parse(result).queryParameters['code'];
-    if (code != null) {
-      // Exchange code for an access token
-      final accessToken = await getAccessToken(code);
-      if (accessToken != null) {
-        // Use accessToken to fetch user details
-        final userData = await getGitHubUser(accessToken);
-        print("User Info: $userData");
-      }
-    }
+    // // Extract the code from the result
+    // final code = Uri.parse(result).queryParameters['code'];
+    // if (code != null) {
+    //   // Exchange code for an access token
+    //   final accessToken = await getAccessToken(code);
+    //   if (accessToken != null) {
+    //     // Use accessToken to fetch user details
+    //     final userData = await getGitHubUser(accessToken);
+    //     print("User Info: $userData");
+    //   }
+    // }
   }
 
 // Function to exchange the authorization code for an access token using Dio
   Future<String?> getAccessToken(String code) async {
-        final clientId = 'Ov23lickxMhmwQkCMM4W';
+    final clientId = 'Ov23lickxMhmwQkCMM4W';
     final clientSecret = 'c2316813977f0abdbb00650f299a3925ced6272b';
 
     try {
@@ -139,7 +151,7 @@ class ApiService {
     await _googleSignIn.signOut();
   }
 
-   Future<void> signUpUser(Map<String, dynamic> userData) async {
+  Future<void> signUpUser(Map<String, dynamic> userData) async {
     try {
       // Register user with email and password using Firebase Auth
       UserCredential userCredential =
@@ -230,6 +242,19 @@ class ApiService {
     }
   }
 
+  void login(email, password, context) async {
+    try {
+      final userLoginData = {'UUID': email, 'password': password};
+      final response = await getit
+          .get<Dio>()
+          .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
+
+      await getit.get<FlutterSecureStorage>().write(
+          key: 'accessToken', value: response.data['data']['accessToken']);
+
+      context.goNamed(RouteNames.home);
+    } catch (e) {
+      print(e);
+    }
+  }
 }
-
-
