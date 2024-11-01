@@ -7,14 +7,15 @@ import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/lo
 class Customsigninbutton extends StatelessWidget {
   final IconData icon;
   final Future<void> Function() signinWithSocialAccount;
-  const Customsigninbutton({super.key, required this.icon,required this.signinWithSocialAccount});
+  const Customsigninbutton(
+      {super.key, required this.icon, required this.signinWithSocialAccount});
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSucess) {
-          context.goNamed(RouteNames.home); // Navigate to home on success
+          // context.goNamed(RouteNames.home); // Navigate to home on success
         } else if (state is LoginError) {
           // ScaffoldMessenger.of(context).showSnackBar(
           //   SnackBar(

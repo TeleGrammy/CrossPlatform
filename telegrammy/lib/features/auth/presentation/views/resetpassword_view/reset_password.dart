@@ -7,10 +7,6 @@ import 'package:telegrammy/cores/routes/routes_name.dart';
 class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
 
-  void resetPassword(){
-    
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +61,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             // Continue Button
             ElevatedButton(
               onPressed: () {
-                // Handle continue action here
+                context.goNamed(RouteNames.verifyOTP);
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -83,16 +79,6 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            // Alternative Option
-            TextButton(
-              onPressed: () {
-                // Handle 'Try another way' action here
-              },
-              child: Text(
-                'Try another way',
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
           ],
         ),
       ),

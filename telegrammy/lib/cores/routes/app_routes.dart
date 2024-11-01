@@ -8,7 +8,8 @@ import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/cubit/signup_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/views/account_verification_view/account_verification_view.dart';
-import 'package:telegrammy/features/auth/presentation/views/reset_password.dart';
+import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
+import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
 
 class AppRoutes {
@@ -72,6 +73,11 @@ class AppRoutes {
         name: RouteNames.resetPassword,
         path: '/reset-password',
         builder: (context, state) => ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        name: RouteNames.verifyOTP,
+        path: '/verify-otp',
+        builder: (context, state) => OTPVerificationPage(),
       ),
     ],
   );

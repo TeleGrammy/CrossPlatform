@@ -4,12 +4,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/cores/services/api_service.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/widgets/custom_text_field.dart';
 import 'package:telegrammy/cores/widgets/rounded_button.dart';
+import 'package:telegrammy/features/auth/data/repos/auth_repo_implemention.dart';
+import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 
 class FormLogin extends StatefulWidget {
   const FormLogin({
@@ -32,9 +35,13 @@ class _FormLoginState extends State<FormLogin> {
   }
 
   void login() async {
-    getit
-        .get<ApiService>()
-        .login(emailController.text, passwordController.text, context);
+    final userData = {
+      'UUID': emailController.text,
+      'password': passwordController.text,
+    };
+
+    // Call the login method in the Cubit
+    context.read<LoginCubit>().signInUser(userData);
   }
 
   @override
