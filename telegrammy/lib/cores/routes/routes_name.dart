@@ -4,4 +4,6 @@ class RouteNames {
   static String login = 'login';
   static String home = 'home';
   static String splash = 'splash';
+  static String resetPassword = 'resetPassword';
+  static String verifyOTP = 'verifyOTP';
 }

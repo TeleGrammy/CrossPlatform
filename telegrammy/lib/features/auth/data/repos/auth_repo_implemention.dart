@@ -29,6 +29,17 @@ class AuthRepoImplemention extends AuthRepo {
     }
   }
 
+  @override
+  Future<Either<Failure, void>> signInUser(
+      Map<String, dynamic> userData) async {
+    try {
+      await apiService.login(userData);
+      return const Right(null); // Successful registration
+    } catch (error) {
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
+
   Future<Either<Failure, void>> signInWithGoogle() async {
     try {
       await apiService.signInWithGoogle(); // No return value needed for success
@@ -80,4 +91,25 @@ class AuthRepoImplemention extends AuthRepo {
       return Left(ServerError(errorMessage: error.toString()));
     }
   }
+
+  // @override
+  // Future<Either<Failure, void>> forgetPassword(String email) async {
+  //   try {
+  //     await apiService.resendEmailVerification(email);
+  //     return const Right(null); // Successful verification
+  //   } catch (error) {
+  //     return Left(ServerError(errorMessage: error.toString()));
+  //   }
+  // }
+
+  // @override
+  // Future<Either<Failure, void>> resetPassword(
+  //     String password, String newPassword) async {
+  //   try {
+  //     await apiService.resendEmailVerification(email);
+  //     return const Right(null); // Successful verification
+  //   } catch (error) {
+  //     return Left(ServerError(errorMessage: error.toString()));
+  //   }
+  // }
 }

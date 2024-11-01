@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/widgets/logo.dart';
+import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/widgets/form_login.dart';
 import 'package:telegrammy/features/auth/presentation/widgets/row_divider.dart';
 import 'package:telegrammy/features/auth/presentation/widgets/signin_using_social_media_accounts.dart';
@@ -10,39 +15,37 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding:
-            const EdgeInsets.only(left: 25, right: 25, top: 30, bottom: 50),
-        child: Column(
-          children: [
-            logo(),
-            Align(
-              child: Text("Log in", style: textStyle30),
-              alignment: Alignment.topLeft,
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            FormLogin(),
-            const SizedBox(
-              height: 47,
-            ),
-            CustomRowDivider(),
-            const SizedBox(
-              height: 22,
-            ),
-            SignInUsingSocialMediaAccounts(),
-            const Spacer(),
-            Text('Don’t have an account? Sign up')
-          ],
+    return BlocListener<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if (state is LoginSucess) {
+          // context.goNamed(RouteNames.home);
+        }
+      },
+      child: Scaffold(
+        body: Padding(
+          padding:
+              const EdgeInsets.only(left: 25, right: 25, top: 30, bottom: 50),
+          child: Column(
+            children: [
+              logo(),
+              SizedBox(
+                height: 30,
+              ),
+              FormLogin(),
+              const SizedBox(
+                height: 47,
+              ),
+              CustomRowDivider(),
+              const SizedBox(
+                height: 22,
+              ),
+              SignInUsingSocialMediaAccounts(),
+              const Spacer(),
+              Text('Don’t have an account? Sign up')
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
-
-
-
