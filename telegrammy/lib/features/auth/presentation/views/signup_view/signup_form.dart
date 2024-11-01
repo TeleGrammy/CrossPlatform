@@ -58,8 +58,8 @@ class SignUpForm extends StatelessWidget {
             hintText: 'Password',
             obsecureText: true,
             prefixIcon: Icons.lock,
-            validator: (value) => value!.length < 6
-                ? 'Password must be at least 6 characters'
+            validator: (value) => value!.length < 8
+                ? 'Password must be at least 8 characters'
                 : null,
           ),
           CustomTextField(

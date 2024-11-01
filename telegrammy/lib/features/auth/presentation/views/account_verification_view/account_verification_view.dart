@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:telegrammy/cores/widgets/rounded_button.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/widgets/tapgesture_text_span.dart';
-import 'package:telegrammy/features/auth/presentation/view_models/cubit/signup_cubit.dart';
+import 'package:telegrammy/features/auth/presentation/view_models/signup_cubit/signup_cubit.dart';
 
 class AccountVerificationView extends StatefulWidget {
-  const AccountVerificationView({super.key, required this.email});
+  const AccountVerificationView({super.key});
 
-  final String email;
   @override
   _AccountVerificationViewState createState() =>
       _AccountVerificationViewState();
@@ -18,6 +19,22 @@ class AccountVerificationView extends StatefulWidget {
 class _AccountVerificationViewState extends State<AccountVerificationView> {
   late String verificationCode;
   final verificationCodeLength = 6;
+  String email = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEmail();
+  }
+
+  Future<void> _loadEmail() async {
+    final emailValue = await getit.get<TokenStorageService>().getEmail();
+    setState(() {
+      email = emailValue!;
+      print(email);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SignUpCubit>();
@@ -36,7 +53,7 @@ class _AccountVerificationViewState extends State<AccountVerificationView> {
 
               //
               Text(
-                'We have sent Verification Code to ${widget.email}',
+                'We have sent Verification Code to ${email}',
                 style: const TextStyle(
                   fontSize: 22.0,
                 ),
@@ -68,15 +85,22 @@ class _AccountVerificationViewState extends State<AccountVerificationView> {
               ),
 
               //
-              TapGestureTextSpan(
-                  baseText: "Didn't receive code? ",
-                  actionText: 'Send again',
-                  onTap: () {}),
+              BlocListener<SignUpCubit, SignUpState>(
+                listener: (context, state) {},
+                child: TapGestureTextSpan(
+                    baseText: "Didn't receive code? ",
+                    actionText: 'Send again',
+                    onTap: () {
+                      context
+                          .read<SignUpCubit>()
+                          .resendEmailVerification(email);
+                    }),
+              ),
 
               //errors message box
               BlocBuilder<SignUpCubit, SignUpState>(
                 builder: (context, state) {
-                  if (state is SignUpFailure) {
+                  if (state is VerificationFailure) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
@@ -102,7 +126,7 @@ class _AccountVerificationViewState extends State<AccountVerificationView> {
                 },
                 child: RoundedButton(
                     onPressed: () {
-                      cubit.emailVerification(widget.email, verificationCode);
+                      cubit.emailVerification(email, verificationCode);
                     },
                     buttonTitle: 'Verify'),
               ),

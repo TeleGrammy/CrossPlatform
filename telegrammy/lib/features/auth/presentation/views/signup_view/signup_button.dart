@@ -3,26 +3,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/widgets/rounded_button.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
-import 'package:telegrammy/features/auth/presentation/view_models/cubit/signup_cubit.dart';
+import 'package:telegrammy/features/auth/presentation/view_models/signup_cubit/signup_cubit.dart';
 
 class SignUpButton extends StatelessWidget {
   const SignUpButton({
     super.key,
-    required this.username,
-    required this.email,
-    required this.phoneNumber,
-    required this.password,
-    required this.confirmPassword,
+    required this.usernameController,
+    required this.emailController,
+    required this.phoneNumController,
+    required this.passwordController,
+    required this.confirmPasswordController,
     required this.captchaToken,
-    required this.formkey,
+    required this.formKey,
   });
 
-  final GlobalKey<FormState> formkey;
-  final String username;
-  final String email;
-  final String phoneNumber;
-  final String password;
-  final String confirmPassword;
+  final GlobalKey<FormState> formKey;
+  final TextEditingController usernameController;
+  final TextEditingController emailController;
+  final TextEditingController phoneNumController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
   final String? captchaToken;
 
   @override
@@ -32,22 +32,21 @@ class SignUpButton extends StatelessWidget {
         if (state is SignUpSuccess) {
           context.goNamed(
             RouteNames.emailVerification,
-            queryParameters: {'email': email},
           );
+        }
+        if (state is SignUpLoading) {
+          print('loading');
         }
       },
       child: RoundedButton(
         onPressed: () {
-          if (formkey.currentState!.validate() &&
-              captchaToken != null &&
-              captchaToken!.isNotEmpty) {
-            // Call the signup function and pass only the required text
+          if (formKey.currentState!.validate()) {
             context.read<SignUpCubit>().signUpUser({
-              'name': username,
-              'email': email,
-              'phone': phoneNumber,
-              'password': password,
-              'confirmPassword': confirmPassword,
+              'username': usernameController.text,
+              'email': emailController.text,
+              'phone': phoneNumController.text,
+              'password': passwordController.text,
+              'passwordConfirm': confirmPasswordController.text,
               'captcha': captchaToken,
             });
           }
