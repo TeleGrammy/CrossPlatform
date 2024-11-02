@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>reCAPTCHA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+      }
+    </style>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  </head>
+  <body>
+    <form action="?" method="POST">
+      <div
+        class="g-recaptcha"
+        data-sitekey="6LcQJGEqAAAAADBuvZhUXn5f8FqnU0Vsto5Um5NF"
+        data-callback="captchaCallback"
+      ></div>
+    </form>
+    <script>
+      function captchaCallback(response) {
+        if (typeof Captcha !== "undefined") {
+          Captcha.postMessage(response);
+        }
+        window.parent.postMessage(response); // Sending message to Flutter
+      }
+    </script>
+  </body>
+</html>

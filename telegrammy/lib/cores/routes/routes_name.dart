@@ -11,3 +11,4 @@ class RouteNames {
   static String storiesSettingPage = 'storySetting';
   static String privacyAllowablePage = 'privacyAllowable'; // New route name
 }
+
