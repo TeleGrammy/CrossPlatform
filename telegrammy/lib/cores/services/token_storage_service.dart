@@ -5,7 +5,7 @@ class TokenStorageService {
 
   // Keys used for secure storage
   static const String _tokenKey = 'token';
-  static const String _captchaTokenKey = 'token';
+  static const String _emailKey = 'emil';
 
   // Save token to secure storage
   Future<void> saveToken(String token) async {
@@ -13,8 +13,8 @@ class TokenStorageService {
   }
 
   // Save captcha token to secure storage
-  Future<void> saveCaptchaToken(String captchaToken) async {
-    await _secureStorage.write(key: _captchaTokenKey, value: captchaToken);
+  Future<void> saveEmail(String email) async {
+    await _secureStorage.write(key: _emailKey, value: email);
   }
 
   // Retrieve token from secure storage
@@ -23,8 +23,8 @@ class TokenStorageService {
   }
 
   // Retrieve captcha token from secure storage
-  Future<String?> getCaptchaToken() async {
-    return await _secureStorage.read(key: _captchaTokenKey);
+  Future<String?> getEmail() async {
+    return await _secureStorage.read(key: _emailKey);
   }
 
   // Delete token from secure storage
@@ -33,7 +33,7 @@ class TokenStorageService {
   }
 
   // Delete captcha token from secure storage
-  Future<void> deleteCaptchaToken() async {
-    await _secureStorage.delete(key: _captchaTokenKey);
+  Future<void> deleteEmail() async {
+    await _secureStorage.delete(key: _emailKey);
   }
 }

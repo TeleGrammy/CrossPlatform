@@ -9,6 +9,7 @@
         justify-content: center;
         align-items: start;
         margin: 0;
+        padding: 0;
         background-color: transparent;
       }
     </style>
@@ -18,7 +19,7 @@
     <form action="?" method="POST">
       <div
         class="g-recaptcha"
-        data-sitekey="6LeaPmkqAAAAAHFgDinfsU1N2mZG46PhRARvTSCs"
+        data-sitekey="6LcQJGEqAAAAADBuvZhUXn5f8FqnU0Vsto5Um5NF"
         data-callback="captchaCallback"
       ></div>
     </form>
@@ -27,6 +28,7 @@
         if (typeof Captcha !== "undefined") {
           Captcha.postMessage(response);
         }
+        window.parent.postMessage(response); // Sending message to Flutter
       }
     </script>
   </body>

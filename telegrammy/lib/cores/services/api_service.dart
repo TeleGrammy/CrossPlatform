@@ -1,18 +1,10 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 
@@ -195,86 +187,77 @@ class ApiService {
 
   Future<void> signUpUser(Map<String, dynamic> userData) async {
     try {
-      // Register user with email and password using Firebase Auth
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: userData['email'],
-        password: userData['password'],
+      print(userData);
+      final signUpResponse = await dio.post(
+        '$baseUrl$registerPath',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+        data: {
+          "email": userData['email'],
+          "username": userData['username'],
+          "password": userData['password'],
+          "passwordConfirm": userData['passwordConfirm'],
+          "phone": userData['phone'],
+          "token": userData['captcha']
+        },
       );
 
-      await userCredential.user?.sendEmailVerification();
+      print('signUpResponse.statusCode ${signUpResponse.statusCode}');
 
-      String? token = await userCredential.user?.getIdToken();
-      if (token != null) {
-        await getit.get<TokenStorageService>().saveToken(token);
-        await getit
-            .get<TokenStorageService>()
-            .saveCaptchaToken(userData['captcha']);
-      }
-      //API approach
-      // final response = await dio.post(
-      //   '/register',
-      //   data: userData,
-      // );
-
-      // if (response.statusCode == 200) {
-      //   print('user signed up successfully');
-      //   // Handle token saving
-      //   final token =
-      //       response.data['token']; // Assuming the token is in the response
-      //   await getit.get<TokenStorageService>().saveToken(token);
-      // } else {
-      //   throw Exception('Failed to register user');
-      // }  } on DioException catch (dioError) {
-      //   throw Exception(
-      //       'Error: ${dioError.response?.data['message'] ?? 'An error occurred'}');
-      // }
-      print('User signed up successfully and data stored in Firestore');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        throw Exception('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        throw Exception('The account already exists for that email.');
+      if (signUpResponse.statusCode == 201) {
+        print('User signed up successfully');
+        await getit.get<TokenStorageService>().saveEmail(userData['email']);
       } else {
-        throw Exception('Failed to sign up user: ${e.message}');
+        throw Exception('error occured while signing you up');
       }
-    } catch (e) {
-      throw Exception('Error occurred during sign-up: ${e.toString()}');
+    } on DioException catch (dioError) {
+      print('Dio error occurred: ${dioError.message}'); // Log the error message
+      print(
+          'Response: ${dioError.response?.data}'); // Log the response data if available
+      throw Exception(
+          'Error: ${dioError.response?.data['error'] ?? 'An error occurred'}');
     }
   }
 
   Future<void> emailVerification(String email, String verificationCode) async {
     try {
       final response = await dio.post(
-        '/verify',
+        '$baseUrl$verificationPath',
         data: {
-          'email': email,
-          'verificationCode': verificationCode,
+          "email": email,
+          "verificationCode": verificationCode,
         },
       );
 
       if (response.statusCode == 200) {
-        print('Account verified successfully');
+        dynamic token = response.data['data']['accessToken'];
+        print('Account verified successfully:${response.data}');
+        await getit.get<TokenStorageService>().deleteEmail();
+        await getit.get<TokenStorageService>().saveToken(token);
       } else {
         throw Exception('Failed to verify Account');
       }
     } on DioException catch (dioError) {
       throw Exception(
-          'Error: ${dioError.response?.data['message'] ?? 'An error occurred'}');
+          'Error: ${dioError.response?.data['error'] ?? 'An error occurred'}');
     }
   }
 
   Future<void> resendEmailVerification(String email) async {
     try {
       final response = await dio.post(
-        '/resend-verification',
+        '$baseUrl$resendVerificationPath',
         data: {
           'email': email,
         },
       );
 
       if (response.statusCode == 200) {
-        print('verivication code sent successfully');
+        print('verivication code sent successfully $response');
       } else {
         throw Exception('Failed to resend verification code');
       }
