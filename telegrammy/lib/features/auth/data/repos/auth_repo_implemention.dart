@@ -5,14 +5,6 @@ import 'package:dartz/dartz.dart';
 import 'package:telegrammy/cores/errors/Failture.dart';
 import 'package:telegrammy/cores/services/api_service.dart';
 import 'package:telegrammy/features/auth/data/repos/auth_repo.dart';
-import 'dart:ffi';
-
-import 'package:dartz/dartz.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:telegrammy/cores/errors/Failture.dart';
-import 'package:telegrammy/cores/models/user_model.dart';
-import 'package:telegrammy/cores/services/api_service.dart';
-import 'package:telegrammy/features/auth/data/repos/auth_repo.dart';
 
 class AuthRepoImplemention extends AuthRepo {
   final ApiService apiService;
