@@ -1,1 +1,78 @@
 // look at /features/auth/data/repos/auth_repo_implementaion.dart
+// Purpose:
+// - To provide the actual logic for fetching book data and converting API responses into model objects.
+// - Handles errors gracefully, returning either data or failure based on API response.
+import 'package:dartz/dartz.dart';
+import 'package:telegrammy/cores/errors/Failture.dart';
+import 'package:telegrammy/cores/services/profile_api_service.dart';
+import 'package:telegrammy/features/profile/data/repos/profile_repo.dart';
+import 'dart:ffi';
+
+
+class profileRepoImplemention extends ProfileRepo {
+  final ProfileApiService profileApiService;
+  profileRepoImplemention({required this.profileApiService});
+
+  // @override
+  // Future<Either<Failure, void>> signUpUser(
+  //     Map<String, dynamic> userData) async {
+  //   try {
+  //     await apiService.signUpUser(userData);
+  //     return const Right(null); // Successful registration
+  //   } catch (error) {
+  //     return Left(ServerError(errorMessage: error.toString()));
+  //   }
+  // }
+
+  // Future<Either<Failure, void>> signInWithGoogle() async {
+  //   try {
+  //     await apiService.signInWithGoogle(); // No return value needed for success
+  //     return const Right(null); // Right with void (no value)
+  //   } catch (error) {
+  //     return Left(
+  //         ServerError(errorMessage: 'Sign-in error: $error')); // Error message
+  //   }
+  // }
+
+  // Future<Either<Failure, void>> signInWithFacebook() async {
+  //   try {
+  //     await apiService
+  //         .signInWithFacebook(); // No return value needed for success
+  //     return const Right(null); // Right with void (no value)
+  //   } catch (error) {
+  //     return Left(
+  //         ServerError(errorMessage: 'Sign-in error: $error')); // Error message
+  //   }
+  // }
+
+  // Future<Either<Failure, void>> signInWithGitHub() async {
+  //   try {
+  //     await apiService.signInWithGitHub(); // No return value needed for success
+  //     return const Right(null); // Right with void (no value)
+  //   } catch (error) {
+  //     return Left(
+  //         ServerError(errorMessage: 'Sign-in error: $error')); // Error message
+  //   }
+  // }
+
+  // @override
+  // Future<Either<Failure, void>> emailVerification(
+  //     String email, String verificationCode) async {
+  //   try {
+  //     await apiService.emailVerification(email, verificationCode);
+  //     return const Right(null); // Successful verification
+  //   } catch (error) {
+  //     return Left(ServerError(errorMessage: error.toString()));
+  //   }
+  // }
+
+  // @override
+  // Future<Either<Failure, void>> resendEmailVerification(String email) async {
+  //   try {
+  //     await apiService.resendEmailVerification(email);
+  //     return const Right(null); // Successful verification
+  //   } catch (error) {
+  //     return Left(ServerError(errorMessage: error.toString()));
+  //   }
+  // }
+}
