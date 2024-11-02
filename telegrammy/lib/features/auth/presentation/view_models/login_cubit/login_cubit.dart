@@ -34,10 +34,9 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> signInUser(userData) async {
-    print('sdafjlkjasdfkljalksdjflkasjdflkjaslkdfjklasdjflkjdaslkfj');
     final result = await getit.get<AuthRepoImplemention>().signInUser(userData);
-    result.fold((failure) {
-      emit(LoginError(message: failure.errorMessage));
+    result.fold((errorMessage) {
+      emit(LoginError(message: errorMessage));
     }, (data) {
       emit(LoginSucess());
     });
@@ -61,17 +60,9 @@ class LoginCubit extends Cubit<LoginState> {
     });
   }
 
-  Future<void> forgetPassword() async {
-    final result = await getit.get<AuthRepoImplemention>().signInWithGitHub();
-    result.fold((failure) {
-      emit(LoginError(message: failure.errorMessage));
-    }, (data) {
-      emit(LoginSucess());
-    });
-  }
-
-  Future<void> resetPassword() async {
-    final result = await getit.get<AuthRepoImplemention>().signInWithGitHub();
+  Future<void> forgetPassword(email) async {
+    final result =
+        await getit.get<AuthRepoImplemention>().forgetPassword(email);
     result.fold((failure) {
       emit(LoginError(message: failure.errorMessage));
     }, (data) {

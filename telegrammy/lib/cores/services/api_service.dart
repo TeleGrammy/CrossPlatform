@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 
 class ApiService {
   ApiService({required this.dio});
@@ -27,19 +29,45 @@ class ApiService {
   // }
 
 // Function to launch Google Sign-In
+
   Future<void> signInWithGoogle() async {
-    // initUniLinks();
-    const url = 'http://192.168.0.102:8080/api/v1/auth/google';
+    final url = "http://192.168.0.102:8080/api/v1/auth/google";
 
     try {
-      final Uri uri = Uri.parse(url); // Create a Uri object from the string
-      await launchUrl(uri,
-          mode: LaunchMode
-              .externalApplication); // Use launchUrl with the Uri object
+      // Launch the URL and listen for the callback URL
+      final result = await FlutterWebAuth.authenticate(
+          url: url,
+          callbackUrlScheme:
+              "myapp" // match the scheme in the URL returned by backend
+          );
+
+      // Extract the token from the result
+      final token = Uri.parse(result).queryParameters['token'];
+
+      if (token != null) {
+        // Store the token and navigate in the app as needed
+        print(token);
+        // await saveToken(token);
+        // navigateToHomeScreen();
+      }
     } catch (e) {
-      print(e);
+      print("Error: $e");
     }
   }
+
+  // Future<void> signInWithGoogle() async {
+  //   // initUniLinks();
+  //   const url = 'http://192.168.0.102:8080/api/v1/auth/google';
+
+  //   try {
+  //     final Uri uri = Uri.parse(url); // Create a Uri object from the string
+  //     await launchUrl(uri,
+  //         mode: LaunchMode
+  //             .externalApplication); // Use launchUrl with the Uri object
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   // Future<void> signInWithGoogle() async {
   //   final response = await dio.get('http://10.0.2.2:8080/api/v1/auth/google');
@@ -267,9 +295,8 @@ class ApiService {
     }
   }
 
-  Future<void> login(userLoginData) async {
+  Future<Either<String, void>> login(userLoginData) async {
     try {
-      // final userLoginData = {'UUID': email, 'password': password};
       final response = await getit
           .get<Dio>()
           .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
@@ -277,9 +304,46 @@ class ApiService {
       await getit.get<FlutterSecureStorage>().write(
           key: 'accessToken', value: response.data['data']['accessToken']);
 
-      // context.goNamed(RouteNames.home);
+      return const Right(null);
+    } on DioException catch (DioException) {
+      print(DioException);
+      if (DioException.response != null) {
+        if (DioException.response?.statusCode == 404) {
+          return const Left<String, void>('Invalid email or password.');
+        }
+      }
+      return const Left<String, void>('Something went wrong.');
     } catch (e) {
-      print(e);
+      return const Left<String, void>('Something went wrong.');
+    }
+  }
+
+  Future<void> forgetPassword(String email) async {
+    try {
+      final response = await dio.post(
+        'http://10.0.2.2:8080/api/v1/auth/forget-password', // Use 10.0.2.2 for emulator
+        data: {
+          'email': email,
+        },
+      );
+
+      print('Response status code: ${response.statusCode}');
+      print('Response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        print('Verification code sent successfully: ${response.data}');
+      } else {
+        throw Exception('Failed to resend verification code');
+      }
+    } on DioException catch (dioError) {
+      String errorMessage =
+          dioError.response?.data['message'] ?? 'An error occurred';
+      print('Dio error: $errorMessage'); // Log the error message
+      throw Exception('Error: $errorMessage'); // Re-throw the exception
+    } catch (e) {
+      print('General error: $e'); // Log the general error
+      throw Exception(
+          'An unexpected error occurred'); // Provide a general error message
     }
   }
 

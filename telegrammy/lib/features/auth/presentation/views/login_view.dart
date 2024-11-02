@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
-import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/widgets/logo.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/widgets/form_login.dart';
@@ -18,7 +16,12 @@ class LoginView extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSucess) {
-          // context.goNamed(RouteNames.home);
+          context.goNamed(RouteNames.home); // Navigate to home on success
+        } else if (state is LoginError) {
+          // Show error message on failure
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
       child: Scaffold(

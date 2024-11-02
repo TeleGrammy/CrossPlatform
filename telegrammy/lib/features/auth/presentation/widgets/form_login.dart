@@ -24,6 +24,7 @@ class FormLogin extends StatefulWidget {
 }
 
 class _FormLoginState extends State<FormLogin> {
+  final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -35,18 +36,20 @@ class _FormLoginState extends State<FormLogin> {
   }
 
   void login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
     final userData = {
       'UUID': emailController.text,
       'password': passwordController.text,
     };
-
-    // Call the login method in the Cubit
     context.read<LoginCubit>().signInUser(userData);
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           CustomTextField(
