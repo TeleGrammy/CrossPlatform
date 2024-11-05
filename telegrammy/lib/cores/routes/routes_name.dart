@@ -5,5 +5,5 @@ class RouteNames {
   static String home = 'home';
   static String splash = 'splash';
   static String resetPassword = 'resetPassword';
-  static String verifyOTP = 'verifyOTP';
+  static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
 }
