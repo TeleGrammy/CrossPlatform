@@ -30,30 +30,54 @@ class ApiService {
 
 // Function to launch Google Sign-In
 
-  Future<void> signInWithGoogle() async {
-    final url = "http://192.168.0.102:8080/api/v1/auth/google";
+  // Future<void> signInWithGoogle() async {
+  //   final url = "http://192.168.0.102:8080/api/v1/auth/google";
 
-    try {
-      // Launch the URL and listen for the callback URL
-      final result = await FlutterWebAuth.authenticate(
-          url: url,
-          callbackUrlScheme:
-              "myapp" // match the scheme in the URL returned by backend
-          );
+  //   try {
+  //     // Launch the URL and listen for the callback URL
+  //     final result = await FlutterWebAuth.authenticate(
+  //         url: url,
+  //         callbackUrlScheme:
+  //             "myapp" // match the scheme in the URL returned by backend
+  //         );
 
-      // Extract the token from the result
-      final token = Uri.parse(result).queryParameters['token'];
+  //     // Extract the token from the result
+  //     final token = Uri.parse(result).queryParameters['token'];
 
-      if (token != null) {
-        // Store the token and navigate in the app as needed
-        print(token);
-        // await saveToken(token);
-        // navigateToHomeScreen();
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
+  //     if (token != null) {
+  //       // Store the token and navigate in the app as needed
+  //       print(token);
+  //       // await saveToken(token);
+  //       // navigateToHomeScreen();
+  //     }
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
+
+  // Future<void> signInWithGoogle() async {
+  //   final url = "http://backtest.telegrammy.tech:8080/api/v1/auth/google";
+
+  //   try {
+  //     // Launch the URL and listen for the callback URL
+  //     final result = await FlutterWebAuth.authenticate(
+  //         url: url,
+  //         callbackUrlScheme:
+  //             "myapp" // match the scheme in the URL returned by backend
+  //         );
+
+  //     // Extract the token from the result
+  //     final token = Uri.parse(result).queryParameters['token'];
+  //     print(token);
+  //     if (token != null) {
+  //       // Store the token and navigate in the app as needed
+  //       // await saveToken(token);
+  //       // navigateToHomeScreen();
+  //     }
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
 
   // Future<void> signInWithGoogle() async {
   //   // initUniLinks();
@@ -69,31 +93,30 @@ class ApiService {
   //   }
   // }
 
-  // Future<void> signInWithGoogle() async {
-  //   final response = await dio.get('http://10.0.2.2:8080/api/v1/auth/google');
-  //   print(response);
-  //   // try {
-  //   //   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-  //   //   if (googleUser == null) {
-  //   //     throw Exception('Sign-in aborted by user'); // User canceled the sign-in
-  //   //   }
-  //   //   print(googleUser);
-  //   //   final GoogleSignInAuthentication googleAuth =
-  //   //       await googleUser.authentication;
-  //   //   // final String idToken = googleAuth.idToken!;
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception('Sign-in aborted by user'); // User canceled the sign-in
+      }
+      print(googleUser);
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      print(googleAuth.idToken);
+      final String idToken = googleAuth.idToken!;
+      print(idToken);
+      // Send the ID token to the backend using Dio or another HTTP client.
+      // Example:
+      // final response = await dio.post(...);
+      // if (response.statusCode != 200) {
+      //   throw Exception('Sign-in failed: ${response.data['error']}');
+      // }
 
-  //   //   // Send the ID token to the backend using Dio or another HTTP client.
-  //   //   // Example:
-  //   //   // final response = await dio.post(...);
-  //   //   // if (response.statusCode != 200) {
-  //   //   //   throw Exception('Sign-in failed: ${response.data['error']}');
-  //   //   // }
-
-  //   //   // If successful, do nothing and return void
-  //   // } catch (error) {
-  //   //   throw Exception('Sign-in error: $error'); // Propagate error
-  //   // }
-  // }
+      // If successful, do nothing and return void
+    } catch (error) {
+      throw Exception('Sign-in error: $error'); // Propagate error
+    }
+  }
 
   Future<void> signInWithFacebook() async {
     const url = 'http://10.0.2.2:8080/api/v1/auth/github';
@@ -121,42 +144,31 @@ class ApiService {
   }
 
   Future<void> signInWithGitHub() async {
-    const url = 'http://192.168.0.102:8080/api/v1/auth/github';
+    final clientId = 'Ov23lickxMhmwQkCMM4W';
+    final redirectUri =
+        'http://localhost:8000/auth/callback'; // Same as in GitHub settings
 
-    try {
-      final Uri uri = Uri.parse(url); // Create a Uri object from the string
-      print(uri);
-      await launchUrl(uri,
-          mode: LaunchMode
-              .externalApplication); // Use launchUrl with the Uri object
-    } catch (e) {
-      print(e);
+    final url = Uri.https('github.com', '/login/oauth/authorize', {
+      'client_id': clientId,
+      'redirect_uri': redirectUri,
+      'scope': 'read:user user:email',
+    });
+
+    // Open the GitHub login page
+    final result = await FlutterWebAuth.authenticate(
+        url: url.toString(), callbackUrlScheme: "yourapp");
+
+    // Extract the code from the result
+    final code = Uri.parse(result).queryParameters['code'];
+    if (code != null) {
+      // Exchange code for an access token
+      final accessToken = await getAccessToken(code);
+      if (accessToken != null) {
+        // Use accessToken to fetch user details
+        final userData = await getGitHubUser(accessToken);
+        print("User Info: $userData");
+      }
     }
-    // final clientId = 'Ov23lickxMhmwQkCMM4W';
-    // final redirectUri =
-    //     'http://localhost:8000/auth/callback'; // Same as in GitHub settings
-
-    // final url = Uri.https('github.com', '/login/oauth/authorize', {
-    //   'client_id': clientId,
-    //   'redirect_uri': redirectUri,
-    //   'scope': 'read:user user:email',
-    // });
-
-    // // Open the GitHub login page
-    // final result = await FlutterWebAuth.authenticate(
-    //     url: url.toString(), callbackUrlScheme: "yourapp");
-
-    // // Extract the code from the result
-    // final code = Uri.parse(result).queryParameters['code'];
-    // if (code != null) {
-    //   // Exchange code for an access token
-    //   final accessToken = await getAccessToken(code);
-    //   if (accessToken != null) {
-    //     // Use accessToken to fetch user details
-    //     final userData = await getGitHubUser(accessToken);
-    //     print("User Info: $userData");
-    //   }
-    // }
   }
 
 // Function to exchange the authorization code for an access token using Dio
@@ -295,14 +307,19 @@ class ApiService {
     }
   }
 
+  void setTokenInLocalStorage(response) async {
+    await getit
+        .get<FlutterSecureStorage>()
+        .write(key: 'accessToken', value: response.data['data']['accessToken']);
+  }
+
   Future<Either<String, void>> login(userLoginData) async {
     try {
       final response = await getit
           .get<Dio>()
           .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
 
-      await getit.get<FlutterSecureStorage>().write(
-          key: 'accessToken', value: response.data['data']['accessToken']);
+      setTokenInLocalStorage(response);
 
       return const Right(null);
     } on DioException catch (DioException) {
