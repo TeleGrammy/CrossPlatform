@@ -32,7 +32,7 @@ class AppRoutes {
       if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
         return '/'; // Redirect to sign-up or login
       }
-      
+
       // Return null to indicate no redirection needed
       return null;
     },
@@ -71,12 +71,25 @@ class AppRoutes {
       GoRoute(
         name: RouteNames.resetPassword,
         path: '/reset-password',
-        builder: (context, state) => ForgotPasswordScreen(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => LoginCubit(),
+          child: ForgotPasswordScreen(),
+        ),
       ),
       GoRoute(
-        name: RouteNames.verifyOTP,
-        path: '/verify-otp',
-        builder: (context, state) => OTPVerificationPage(),
+        name: RouteNames.sentResetPasswordSuccessfully,
+        path: '/sentResetPasswordSuccessfully',
+        builder: (context, state) => CheckEmailScreen(),
+      ),
+      GoRoute(
+        name: 'socialAuthLoading',
+        path: '/social-auth-loading',
+        builder: (context, state) {
+          // Extract the accessToken from the query parameters
+          final accessToken = state.uri.queryParameters['accessToken'];
+          print(accessToken);
+          return LoginView();
+        },
       ),
     ],
   );
