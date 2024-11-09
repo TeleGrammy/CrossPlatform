@@ -23,16 +23,21 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   Future<void> emailVerification(String email, String verificationCode) async {
     emit(VerificationLoading());
-    final result = await getit
-        .get<AuthRepoImplemention>()
-        .emailVerification(email, verificationCode);
-    result.fold((failre) {
-      print('Cubit:error verifying this email');
-      emit(VerificationFailure(errorMessage: failre.errorMessage));
-    }, (data) {
-      print('Cubit:verified successfully');
-      emit(VerificationSuccess());
-    });
+    if (verificationCode.length != 6) {
+      emit(VerificationFailure(
+          errorMessage: 'verification code should be 6 numbers'));
+    } else {
+      final result = await getit
+          .get<AuthRepoImplemention>()
+          .emailVerification(email, verificationCode);
+      result.fold((failre) {
+        print('Cubit:error verifying this email');
+        emit(VerificationFailure(errorMessage: failre.errorMessage));
+      }, (data) {
+        print('Cubit:verified successfully');
+        emit(VerificationSuccess());
+      });
+    }
   }
 
   Future<void> resendEmailVerification(String email) async {
