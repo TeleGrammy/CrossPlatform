@@ -1,8 +1,16 @@
 plugins {
     id "com.android.application"
-    id 'com.google.gms.google-services'
+    id "com.google.gms.google-services"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+}
+
+dependencies {
+    // Import the Firebase BoM
+    implementation platform("com.google.firebase:firebase-bom:33.5.1")
+
+    // Firebase Authentication library
+    implementation "com.google.firebase:firebase-auth"
 }
 
 android {
@@ -15,7 +23,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
@@ -40,5 +48,3 @@ android {
 flutter {
     source = "../.."
 }
-
-apply plugin: 'com.google.gms.google-services'

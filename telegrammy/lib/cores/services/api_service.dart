@@ -2,10 +2,13 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:github/github.dart';
+import 'package:github_oauth/github_oauth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
+// import 'package:flutter_web_auth_plus/flutter_web_auth_plus.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
@@ -92,7 +95,6 @@ class ApiService {
   //     print(e);
   //   }
   // }
-
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -100,10 +102,10 @@ class ApiService {
         throw Exception('Sign-in aborted by user'); // User canceled the sign-in
       }
       print(googleUser);
-      final GoogleSignInAuthentication googleAuth =
+      final GoogleSignInAuthentication? googleAuth =
           await googleUser.authentication;
-      print(googleAuth.idToken);
-      final String idToken = googleAuth.idToken!;
+      print(googleAuth?.idToken);
+      final String idToken = googleAuth!.idToken!;
       print(idToken);
       // Send the ID token to the backend using Dio or another HTTP client.
       // Example:
@@ -144,31 +146,128 @@ class ApiService {
   }
 
   Future<void> signInWithGitHub() async {
-    final clientId = 'Ov23lickxMhmwQkCMM4W';
-    final redirectUri =
-        'http://localhost:8000/auth/callback'; // Same as in GitHub settings
+    final Uri url =
+        Uri.parse('http://backtest.telegrammy.tech:8080/api/v1/auth/github');
+    // if (await canLaunchUrl(url)) {
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication, // Open in external browser
+    );
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
 
-    final url = Uri.https('github.com', '/login/oauth/authorize', {
-      'client_id': clientId,
-      'redirect_uri': redirectUri,
-      'scope': 'read:user user:email',
-    });
+    print('success');
+    // final clientId = 'Ov23lickxMhmwQkCMM4W';
+    // final clientSecret = 'c2316813977f0abdbb00650f299a3925ced6272b';
+    //    const String url = "https://github.com/login/oauth/authorize" +
+    //       "?client_id=" + 'Ov23lickxMhmwQkCMM4W' +
+    //       "&scope=public_repo%20read:user%20user:email";
+    // if (await canLaunch(url)) {
+    //     await launch(
+    //       url,
+    //       forceSafariVC: false,
+    //       forceWebView: false,
+    //     );
+    //   } else {
+    //     print("CANNOT LAUNCH THIS URL!");
+    //   }
 
-    // Open the GitHub login page
-    final result = await FlutterWebAuth.authenticate(
-        url: url.toString(), callbackUrlScheme: "yourapp");
+    // GithubAuthProvider githubAuthProvider = GithubAuthProvider();
+    // UserCredential userCredential =
+    //     await FirebaseAuth.instance.signInWithProvider(githubAuthProvider);
+    // print(userCredential);
+    // return userCredential;
+    // final firebaseAuth = FirebaseAuth.instance;
+    // final dio = Dio();
 
-    // Extract the code from the result
-    final code = Uri.parse(result).queryParameters['code'];
-    if (code != null) {
-      // Exchange code for an access token
-      final accessToken = await getAccessToken(code);
-      if (accessToken != null) {
-        // Use accessToken to fetch user details
-        final userData = await getGitHubUser(accessToken);
-        print("User Info: $userData");
-      }
-    }
+    // // GitHub OAuth URL
+    // final clientId = 'Ov23lickxMhmwQkCMM4W';
+    // final clientSecret = 'c2316813977f0abdbb00650f299a3925ced6272b';
+    // final redirectUrl =
+    //     'https://telegrammy-d0854.firebaseapp.com/__/auth/handler';
+
+    // // Step 1: Trigger the GitHub authentication process
+    // final result = await FlutterWebAuth.authenticate(
+    //   url:
+    //       'https://github.com/login/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUrl',
+    //   callbackUrlScheme: 'https',
+    // );
+
+    // // Step 2: Extract the code from the callback URL
+    // final code = Uri.parse(result).queryParameters['code'];
+
+    // // Step 3: Exchange the code for an access token using Dio
+    // try {
+    //   final response = await dio.post(
+    //     'https://github.com/login/oauth/access_token',
+    //     data: {
+    //       'client_id': clientId,
+    //       'client_secret': clientSecret,
+    //       'code': code,
+    //     },
+    //     options: Options(
+    //       headers: {
+    //         'Accept': 'application/json',
+    //       },
+    //     ),
+    //   );
+
+    //   final accessToken = response.data['access_token'];
+
+    //   // Step 4: Use the GitHub access token to sign in with Firebase
+    //   final githubAuthCredential = GithubAuthProvider.credential(accessToken);
+
+    //   return await firebaseAuth.signInWithCredential(githubAuthCredential);
+    // } on DioException catch (e) {
+    //   print("Error during GitHub sign-in: ${e.response?.data}");
+    //   throw e;
+    // }
+
+//  final github = GitHub(
+//     clientId: 'YOUR_CLIENT_ID',
+//     clientSecret: 'YOUR_CLIENT_SECRET',
+//     redirectUrl: 'yourapp://auth',
+//   );
+
+//   try {
+//     final authUrl = github.getAuthorizationUrl();
+//     // Use a webview or browser to navigate to authUrl.
+//     // After user authenticates, GitHub will redirect to the callback with a code.
+
+//     // Retrieve the code from the redirect and exchange it for an access token.
+//     final token = await github.exchangeOAuthCodeForToken(code);
+//     // Use the token to make authenticated requests.
+//   } catch (error) {
+//     print('GitHub sign-in failed: $error');
+//   }
+
+    // final clientId = 'Ov23lickxMhmwQkCMM4W';
+    // // final redirectUri =
+    // //     'http://localhost:8000/auth/callback'; // Same as in GitHub settings
+    // final redirectUri = 'telegrammy://auth';
+
+    // final url = Uri.https('github.com', '/login/oauth/authorize', {
+    //   'client_id': clientId,
+    //   'redirect_uri': redirectUri,
+    //   'scope': 'read:user user:email',
+    // });
+    // print(url.toString());
+    // // Open the GitHub login page
+    // final result = await FlutterWebAuth.authenticate(
+    //     url: url.toString(), callbackUrlScheme: "telegrammy");
+
+    // // Extract the code from the result
+    // final code = Uri.parse(result).queryParameters['code'];
+    // if (code != null) {
+    //   // Exchange code for an access token
+    //   final accessToken = await getAccessToken(code);
+    //   if (accessToken != null) {
+    //     // Use accessToken to fetch user details
+    //     final userData = await getGitHubUser(accessToken);
+    //     print("User Info: $userData");
+    //   }
+    // }
   }
 
 // Function to exchange the authorization code for an access token using Dio
