@@ -10,11 +10,14 @@ import 'package:telegrammy/features/auth/presentation/views/account_verification
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
-
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_privacy_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/stories_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/story_cubit/story_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/views/user_story_view.dart';
+
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
@@ -23,23 +26,19 @@ class AppRoutes {
       final bool isLoggedin = await helper.isLoggedIn();
       final bool issignedUp = await helper.isSignedUp();
 
-      // If the user has logged in and tries to access sign-up or login, send them to the home page
       if (isLoggedin && state.uri.toString() == '/') {
-        return '/home'; //redirect to the app main screen
+        return '/home'; // Redirect to the app main screen
       }
 
-      // If the user has signedup but not verified send them to the verification page
       if (!isLoggedin && issignedUp) {
         return '/email-verification';
       }
 
-      // If the user is not authenticated and tries to access home, send them to the login/signup page
       if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
         return '/'; // Redirect to sign-up or login
       }
       
-      // Return null to indicate no redirection needed
-      return null;
+      return null; // No redirection needed
     },
     routes: [
       GoRoute(
@@ -83,46 +82,72 @@ class AppRoutes {
         path: '/verify-otp',
         builder: (context, state) => OTPVerificationPage(),
       ),
-        GoRoute(
+      GoRoute(
         name: RouteNames.profilePrivacyPage,
-        path: '/',
+        path: '/profile_privacy',
         builder: (context, state) => MultiBlocProvider(
           providers: [
-            BlocProvider(create: (_) => PrivacySettingsCubit()),
-            BlocProvider(create: (_) => SecurityCubit()),
+            BlocProvider(
+              create: (context) => PrivacySettingsCubit(
+               
+              ),
+            ),
           ],
           child: PrivacyView(),
         ),
       ),
-      GoRoute(
-        name: RouteNames.storiesPage,
-        path: '/stories',
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (_) => PrivacySettingsCubit()),
-            BlocProvider(create: (_) => SecurityCubit()),
-          ],
-          child: StoriesView(),
-        ),
-      ),
      GoRoute(
-        name: RouteNames.privacyAllowablePage,
-        path: '/privacy-allowable',
-        builder: (context, state) {
-          // Retrieve parameters from the state
-          final title = state.extra?.toString().split(',').first ?? 'Default Title'; // Safely extract title
-          final optionKey = state.extra?.toString().split(',').last ?? 'Default Option'; // Safely extract optionKey
+  name: RouteNames.privacyAllowablePage,
+  path: '/privacy-allowable',
+  builder: (context, state) {
+    final params = state.extra as Map<String, dynamic>?; // Safe extraction of parameters
+    final title = params?['title'] as String? ?? 'Default Title'; // Default title if null
+    final optionKey = params?['optionKey'] as String? ?? 'defaultOptionKey'; // Default option key if null
 
-          return BlocProvider.value(
-            value: context.read<PrivacySettingsCubit>(), // Use the existing instance
-            child: PrivacyAllowablePage(
-              title: title,
-              optionKey: optionKey,
-            ),
-          );
-        },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PrivacySettingsCubit>(
+          create: (context) => PrivacySettingsCubit(),
+        ),
+        // Add more BlocProviders here if needed
+      ],
+      child: PrivacyAllowablePage(
+        title: title,
+        optionKey: optionKey,
       ),
-
+    );
+  },
+),
+     GoRoute(
+  name: RouteNames.userStoryPage,
+  path: '/user-stories-page',
+  builder: (context, state) {
+    return BlocProvider(
+      create: (context) => StoriesCubit(), // Ensure you provide the appropriate Bloc/Cubit
+      child: UserStoryView(), // Your StoriesView widget
+    );
+  },
+),
+GoRoute(
+  name: RouteNames.storiesPage,
+  path: '/stories-page',
+  builder: (context, state) {
+    return BlocProvider(
+      create: (context) => StoriesCubit(), // Ensure you provide the appropriate Bloc/Cubit
+      child: StoriesView(), // Your StoriesView widget
+    );
+  },
+),
+GoRoute(
+  name: RouteNames.createStoryPage,
+  path: '/create-stories-page',
+  builder: (context, state) {
+    return BlocProvider(
+      create: (context) => StoriesCubit(), // Ensure you provide the appropriate Bloc/Cubit
+      child: CreateStoryPage(), // Your StoriesView widget
+    );
+  },
+),
     ],
   );
 }

@@ -29,7 +29,7 @@ class ApiService {
 // Function to launch Google Sign-In
   Future<void> signInWithGoogle() async {
     // initUniLinks();
-    const url = 'http://192.168.0.102:8080/api/v1/auth/google';
+    const url = '$baseUrl/auth/google';
 
     try {
       final Uri uri = Uri.parse(url); // Create a Uri object from the string
@@ -68,7 +68,7 @@ class ApiService {
   // }
 
   Future<void> signInWithFacebook() async {
-    const url = 'http://10.0.2.2:8080/api/v1/auth/github';
+    const url = '$baseUrl/auth/github';
 
     // const url = 'http://192.168.0.102:8080/api/v1/auth/github';
 
@@ -272,10 +272,13 @@ class ApiService {
       // final userLoginData = {'UUID': email, 'password': password};
       final response = await getit
           .get<Dio>()
-          .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
+          .post('$baseUrl/auth/login', data: userLoginData);
 
       await getit.get<FlutterSecureStorage>().write(
           key: 'accessToken', value: response.data['data']['accessToken']);
+          
+      dynamic token = response.data['data']['accessToken'];
+        await getit.get<TokenStorageService>().saveToken(token);
 
       // context.goNamed(RouteNames.home);
     } catch (e) {

@@ -60,7 +60,10 @@ dependencies:
   flutter_svg: ^2.0.10+1
   url_launcher: ^6.3.1
   uni_links: ^0.5.1
-
+  video_player: ^2.9.2
+  image_picker: ^1.1.2
+  image: ^3.0.1
+  intl: ^0.18.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -87,7 +90,7 @@ flutter:
     - assets/images/
     
     - assets/images/logo.png
-    #   - images/a_dot_ham.jpeg
+    - assets/images/story_image.jpg
     - assets/webpages/index.html
 
   # An image asset can refer to one or more resolution-specific "variants", see

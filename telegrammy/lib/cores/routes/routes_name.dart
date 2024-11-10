@@ -8,7 +8,9 @@ class RouteNames {
   static String verifyOTP = 'verifyOTP';
   static String profilePrivacyPage = 'privacy';
   static String storiesPage = 'story';
-  static String storiesSettingPage = 'storySetting';
-  static String privacyAllowablePage = 'privacyAllowable'; // New route name
+  static String privacyAllowablePage = 'privacyAllowable'; 
+  static String userStoryPage = 'userStoryPage'; 
+  static String createStoryPage = 'createStoryPage'; 
+
 }
 
