@@ -35,9 +35,9 @@ class ProfileApiService {
       //   profileVisibility.toJson()
       // );
       String? token = await getit.get<TokenStorageService>().getToken();
-      print(token);
+      // print(token);
       await dio.patch(
-        '$baseUrl/privacy/settings/profile-visibility',
+        '$baseUrl2/privacy/settings/profile-visibility',
           options: Options(headers: {
           'Authorization': 'Bearer$token',
           //  'Accept': 'application/json',
@@ -53,7 +53,7 @@ class ProfileApiService {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
       final response = await dio.get(
-        '$baseUrl/privacy/settings/blocked-users',
+        '$baseUrl2/privacy/settings/blocked-users',
         options: Options(headers: {
           'Authorization': 'token $token',
         }),
@@ -71,7 +71,7 @@ class ProfileApiService {
         String? token = await getit.get<TokenStorageService>().getToken();
         // print(token);
         final response = await dio.get(
-          '$baseUrl/user/stories',
+          '$baseUrl2/user/stories',
           options: Options(headers: {
             'Authorization': 'Bearer $token',
           }),
@@ -90,7 +90,7 @@ class ProfileApiService {
       // Send POST request to create a new story
       print(token);
       await dio.post(
-        '$baseUrl/user/stories',
+        '$baseUrl2/user/stories',
         options: Options(headers: {
           'Authorization': 'Bearer $token',
         }),
@@ -107,7 +107,7 @@ class ProfileApiService {
       String? token = await getit.get<TokenStorageService>().getToken();
       print(storyId);
       await dio.delete(
-        '$baseUrl/user/stories/$storyId',
+        '$baseUrl2/user/stories/$storyId',
         options: Options(headers: {
           'Authorization': 'Bearer $token',
         }),

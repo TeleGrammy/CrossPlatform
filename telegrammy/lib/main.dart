@@ -13,7 +13,7 @@ void main() async {
   setupServiceLocator();
   // await getit.get<TokenStorageService>().deleteToken(); //clearing the 
   // await getit.get<TokenStorageService>().deleteEmail();
-  runApp(
+  runApp( 
     const MyApp(),
   );
 }

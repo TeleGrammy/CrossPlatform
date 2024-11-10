@@ -1,18 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <queries>
-        <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="myapp" android:host="auth" />
-        </intent>
-        <!-- Separate PROCESS_TEXT action as its own intent -->
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain"/>
         </intent>
-        
     </queries>
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -25,42 +16,56 @@
         android:label="telegrammy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+            
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+            />
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="true"
+                />
+            <!-- Main entry point -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-                
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="http"
-                    android:host="192.168.0.102"
-                    android:pathPrefix="/5173" />
-
-
-
-
             </intent-filter>
+
+
+            <!-- <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="myapp" android:host="auth" android:path="/callback" />
+            </intent-filter> -->
             
+            <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="telware" android:host="telware.online"/>
+            <!-- Accepts URIs that begin with YOUR_SCHEME://YOUR_HOST -->
+            <!-- <data
+                android:scheme="https"
+                android:host="telegrammy-d0854.firebaseapp.com" /> -->
+            </intent-filter>
+
+            <!-- Google Sign-In intent filter -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="68668945345-0sr673socnp64m1v8ipk40mlhgg2qf61" android:host="oauth2redirect" />
+            </intent-filter>
         </activity>
         
         <meta-data

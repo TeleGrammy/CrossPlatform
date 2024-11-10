@@ -1,13 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = "1.8.21" // Define Kotlin version
+    ext.kotlin_version = "1.8.21"
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.2.2"
+        // Updated Android Gradle Plugin version
+        classpath "com.android.tools.build:gradle:8.1.0"  // Update to match compatibility with SDK 34
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.15'
     }
@@ -28,6 +29,13 @@ subprojects {
 
 subprojects {
     project.evaluationDependsOn(":app")
+
+    // Apply a resolution strategy for dependencies if needed
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.core:core-ktx:1.8.0'  // Ensures compatibility with AndroidX
+        }
+    }
 }
 
 tasks.register("clean", Delete) {

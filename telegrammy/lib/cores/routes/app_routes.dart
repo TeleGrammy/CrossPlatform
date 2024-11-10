@@ -21,25 +21,29 @@ import 'package:telegrammy/features/profile/presentation/views/user_story_view.d
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
-    redirect: (context, state) async {
-      RoutesHelper helper = RoutesHelper();
-      final bool isLoggedin = await helper.isLoggedIn();
-      final bool issignedUp = await helper.isSignedUp();
+    // redirect: (context, state) async {
+    //   RoutesHelper helper = RoutesHelper();
+    //   final bool isLoggedin = await helper.isLoggedIn();
+    //   final bool issignedUp = await helper.isSignedUp();
 
-      if (isLoggedin && state.uri.toString() == '/') {
-        return '/home'; // Redirect to the app main screen
-      }
+    //   // If the user has logged in and tries to access sign-up or login, send them to the home page
+    //   if (isLoggedin && state.uri.toString() == '/') {
+    //     return '/home'; //redirect to the app main screen
+    //   }
 
-      if (!isLoggedin && issignedUp) {
-        return '/email-verification';
-      }
+    //   // If the user has signedup but not verified send them to the verification page
+    //   if (!isLoggedin && issignedUp) {
+    //     return '/email-verification';
+    //   }
 
-      if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
-        return '/'; // Redirect to sign-up or login
-      }
-      
-      return null; // No redirection needed
-    },
+    //   // If the user is not authenticated and tries to access home, send them to the login/signup page
+    //   if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
+    //     return '/'; // Redirect to sign-up or login
+    //   }
+
+    //   // Return null to indicate no redirection needed
+    //   return null;
+    // },
     routes: [
       GoRoute(
         name: RouteNames.signUp,
@@ -75,12 +79,25 @@ class AppRoutes {
       GoRoute(
         name: RouteNames.resetPassword,
         path: '/reset-password',
-        builder: (context, state) => ForgotPasswordScreen(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => LoginCubit(),
+          child: ForgotPasswordScreen(),
+        ),
       ),
       GoRoute(
-        name: RouteNames.verifyOTP,
-        path: '/verify-otp',
-        builder: (context, state) => OTPVerificationPage(),
+        name: RouteNames.sentResetPasswordSuccessfully,
+        path: '/sentResetPasswordSuccessfully',
+        builder: (context, state) => CheckEmailScreen(),
+      ),
+      GoRoute(
+        name: 'socialAuthLoading',
+        path: '/social-auth-loading',
+        builder: (context, state) {
+          // Extract the accessToken from the query parameters
+          final accessToken = state.uri.queryParameters['accessToken'];
+          // print(accessToken);
+          return HomeView();
+        },
       ),
       GoRoute(
         name: RouteNames.profilePrivacyPage,

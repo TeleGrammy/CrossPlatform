@@ -12,13 +12,8 @@ class SignInUsingSocialMediaAccounts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Customsigninbutton(
-          icon: FontAwesomeIcons.facebook,
-          signinWithSocialAccount:
-              context.read<LoginCubit>().signinWithFacebookCubit,
-        ),
         Customsigninbutton(
           icon: FontAwesomeIcons.google,
           signinWithSocialAccount:

@@ -12,5 +12,6 @@ class RouteNames {
   static String userStoryPage = 'userStoryPage'; 
   static String createStoryPage = 'createStoryPage'; 
 
+  static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
 }
 
