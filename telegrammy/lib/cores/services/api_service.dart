@@ -97,16 +97,28 @@ class ApiService {
   // }
   Future<void> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        throw Exception('Sign-in aborted by user'); // User canceled the sign-in
-      }
-      print(googleUser);
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser.authentication;
-      print(googleAuth?.idToken);
-      final String idToken = googleAuth!.idToken!;
-      print(idToken);
+      final Uri url =
+          Uri.parse('http://backtest.telegrammy.tech:8080/api/v1/auth/google');
+      // if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication, // Open in external browser
+      );
+      // } else {
+      //   throw 'Could not launch $url';
+      // }
+
+      print('success');
+      // final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // if (googleUser == null) {
+      //   throw Exception('Sign-in aborted by user'); // User canceled the sign-in
+      // }
+      // print(googleUser);
+      // final GoogleSignInAuthentication? googleAuth =
+      //     await googleUser.authentication;
+      // print(googleAuth?.idToken);
+      // final String idToken = googleAuth!.idToken!;
+      // print(idToken);
       // Send the ID token to the backend using Dio or another HTTP client.
       // Example:
       // final response = await dio.post(...);

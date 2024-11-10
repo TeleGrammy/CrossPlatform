@@ -13,29 +13,29 @@ import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_v
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
-    redirect: (context, state) async {
-      RoutesHelper helper = RoutesHelper();
-      final bool isLoggedin = await helper.isLoggedIn();
-      final bool issignedUp = await helper.isSignedUp();
+    // redirect: (context, state) async {
+    //   RoutesHelper helper = RoutesHelper();
+    //   final bool isLoggedin = await helper.isLoggedIn();
+    //   final bool issignedUp = await helper.isSignedUp();
 
-      // If the user has logged in and tries to access sign-up or login, send them to the home page
-      if (isLoggedin && state.uri.toString() == '/') {
-        return '/home'; //redirect to the app main screen
-      }
+    //   // If the user has logged in and tries to access sign-up or login, send them to the home page
+    //   if (isLoggedin && state.uri.toString() == '/') {
+    //     return '/home'; //redirect to the app main screen
+    //   }
 
-      // If the user has signedup but not verified send them to the verification page
-      if (!isLoggedin && issignedUp) {
-        return '/email-verification';
-      }
+    //   // If the user has signedup but not verified send them to the verification page
+    //   if (!isLoggedin && issignedUp) {
+    //     return '/email-verification';
+    //   }
 
-      // If the user is not authenticated and tries to access home, send them to the login/signup page
-      if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
-        return '/'; // Redirect to sign-up or login
-      }
+    //   // If the user is not authenticated and tries to access home, send them to the login/signup page
+    //   if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
+    //     return '/'; // Redirect to sign-up or login
+    //   }
 
-      // Return null to indicate no redirection needed
-      return null;
-    },
+    //   // Return null to indicate no redirection needed
+    //   return null;
+    // },
     routes: [
       GoRoute(
         name: RouteNames.signUp,
@@ -87,8 +87,8 @@ class AppRoutes {
         builder: (context, state) {
           // Extract the accessToken from the query parameters
           final accessToken = state.uri.queryParameters['accessToken'];
-          print(accessToken);
-          return LoginView();
+          // print(accessToken);
+          return HomeView();
         },
       ),
     ],
