@@ -39,19 +39,15 @@ class ForgotPasswordScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Illustration
-              // SvgPicture.asset(
-              //   'assets/forgot_password_illustration.svg', // Replace with your SVG path
-              //   height: 150,
-              // ),
+              Image.asset('assets/icons/forgetPass.jpg'),
               SizedBox(height: 20),
               // Title
               Text(
                 'Forgot Password?',
                 style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               SizedBox(height: 8),
               // Subtitle

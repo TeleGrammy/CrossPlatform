@@ -10,18 +10,18 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial());
   Future<void> signinWithGoogleCubit() async {
-  //   StreamSubscription? uriLinkStreamSubscription;
-  //   uriLinkStreamSubscription = uriLinkStream.listen((Uri? uri) {
-  //     if (uri != null &&
-  //         uri.scheme == 'http' &&
-  //         uri.host == 'localhost' &&
-  //         uri.port == 8080) {
-  //       print('Redirected to app with URI: $uri');
-  //       // Handle successful sign-in here
-  //       uriLinkStreamSubscription
-  //           ?.cancel(); // Cancel the subscription once handled
-  //     }
-  //   });
+    //   StreamSubscription? uriLinkStreamSubscription;
+    //   uriLinkStreamSubscription = uriLinkStream.listen((Uri? uri) {
+    //     if (uri != null &&
+    //         uri.scheme == 'http' &&
+    //         uri.host == 'localhost' &&
+    //         uri.port == 8080) {
+    //       print('Redirected to app with URI: $uri');
+    //       // Handle successful sign-in here
+    //       uriLinkStreamSubscription
+    //           ?.cancel(); // Cancel the subscription once handled
+    //     }
+    //   });
 
     final result = await getit.get<AuthRepoImplemention>().signInWithGoogle();
     print(result);

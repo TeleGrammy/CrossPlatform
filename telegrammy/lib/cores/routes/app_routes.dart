@@ -10,6 +10,14 @@ import 'package:telegrammy/features/auth/presentation/views/account_verification
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/profile_privacy_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/stories_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/story_cubit/story_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/views/user_story_view.dart';
+
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
@@ -81,6 +89,82 @@ class AppRoutes {
         path: '/sentResetPasswordSuccessfully',
         builder: (context, state) => CheckEmailScreen(),
       ),
+      GoRoute(
+        name: 'socialAuthLoading',
+        path: '/social-auth-loading',
+        builder: (context, state) {
+          // Extract the accessToken from the query parameters
+          final accessToken = state.uri.queryParameters['accessToken'];
+          // print(accessToken);
+          return HomeView();
+        },
+      ),
+      GoRoute(
+        name: RouteNames.profilePrivacyPage,
+        path: '/profile_privacy',
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => PrivacySettingsCubit(
+               
+              ),
+            ),
+          ],
+          child: PrivacyView(),
+        ),
+      ),
+     GoRoute(
+  name: RouteNames.privacyAllowablePage,
+  path: '/privacy-allowable',
+  builder: (context, state) {
+    final params = state.extra as Map<String, dynamic>?; // Safe extraction of parameters
+    final title = params?['title'] as String? ?? 'Default Title'; // Default title if null
+    final optionKey = params?['optionKey'] as String? ?? 'defaultOptionKey'; // Default option key if null
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<PrivacySettingsCubit>(
+          create: (context) => PrivacySettingsCubit(),
+        ),
+        // Add more BlocProviders here if needed
+      ],
+      child: PrivacyAllowablePage(
+        title: title,
+        optionKey: optionKey,
+      ),
+    );
+  },
+),
+     GoRoute(
+  name: RouteNames.userStoryPage,
+  path: '/user-stories-page',
+  builder: (context, state) {
+    return BlocProvider(
+      create: (context) => StoriesCubit(), // Ensure you provide the appropriate Bloc/Cubit
+      child: UserStoryView(), // Your StoriesView widget
+    );
+  },
+),
+GoRoute(
+  name: RouteNames.storiesPage,
+  path: '/stories-page',
+  builder: (context, state) {
+    return BlocProvider(
+      create: (context) => StoriesCubit(), // Ensure you provide the appropriate Bloc/Cubit
+      child: StoriesView(), // Your StoriesView widget
+    );
+  },
+),
+GoRoute(
+  name: RouteNames.createStoryPage,
+  path: '/create-stories-page',
+  builder: (context, state) {
+    return BlocProvider(
+      create: (context) => StoriesCubit(), // Ensure you provide the appropriate Bloc/Cubit
+      child: CreateStoryPage(), // Your StoriesView widget
+    );
+  },
+),
     ],
   );
 }
