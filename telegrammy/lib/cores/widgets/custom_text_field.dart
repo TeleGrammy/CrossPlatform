@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final bool obsecureText;
   final String? Function(String?)? validator;
+  final Key inputFieldKey;
 
   const CustomTextField(
       {super.key,
@@ -14,13 +15,15 @@ class CustomTextField extends StatelessWidget {
       this.prefixIcon,
       required this.hintText,
       required this.obsecureText,
-      required this.validator});
+      required this.validator,
+      required this.inputFieldKey});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
       child: TextFormField(
+        key: inputFieldKey,
         validator: validator,
         controller: controller,
         obscureText: obsecureText,

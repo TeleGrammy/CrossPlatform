@@ -4,9 +4,10 @@ import 'package:telegrammy/cores/constants/app_colors.dart';
 class RoundedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonTitle;
+  final Key buttonKey;
 
   const RoundedButton(
-      {super.key, required this.onPressed, required this.buttonTitle});
+      {super.key, required this.onPressed, required this.buttonTitle, required this.buttonKey});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class RoundedButton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextButton(
+            key:buttonKey,
             onPressed: onPressed,
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(

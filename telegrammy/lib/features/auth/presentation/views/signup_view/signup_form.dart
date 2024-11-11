@@ -26,6 +26,7 @@ class SignUpForm extends StatelessWidget {
       child: Column(
         children: [
           CustomTextField(
+            inputFieldKey: Key('usernameField'),
             controller: usernameController,
             hintText: 'Username',
             obsecureText: false,
@@ -34,6 +35,7 @@ class SignUpForm extends StatelessWidget {
                 value!.isEmpty ? 'Username is required' : null,
           ),
           CustomTextField(
+            inputFieldKey: Key('emailField'),
             controller: emailController,
             hintText: 'Email',
             obsecureText: false,
@@ -46,6 +48,7 @@ class SignUpForm extends StatelessWidget {
             },
           ),
           CustomTextField(
+            inputFieldKey: Key('phoneField'),
             controller: phoneNumController,
             hintText: 'Phone Number',
             obsecureText: false,
@@ -54,6 +57,7 @@ class SignUpForm extends StatelessWidget {
                 value!.isEmpty ? 'Phone number is required' : null,
           ),
           CustomTextField(
+            inputFieldKey: Key('passwordField'),
             controller: passwordController,
             hintText: 'Password',
             obsecureText: true,
@@ -63,6 +67,7 @@ class SignUpForm extends StatelessWidget {
                 : null,
           ),
           CustomTextField(
+            inputFieldKey: Key('confirmPasswordField'),
             controller: confirmPasswordController,
             hintText: 'Confirm Password',
             obsecureText: true,

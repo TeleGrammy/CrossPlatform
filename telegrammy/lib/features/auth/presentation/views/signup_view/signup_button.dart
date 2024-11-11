@@ -52,6 +52,7 @@ class SignUpButton extends StatelessWidget {
           }
         },
         buttonTitle: 'Sign Up',
+        buttonKey: Key('signUpButton'),
       ),
     );
   }
