@@ -421,18 +421,20 @@ class ApiService {
     await getit
         .get<FlutterSecureStorage>()
         .write(key: 'accessToken', value: response.data['data']['accessToken']);
-        print(response.data['data']['accessToken']);
+    print(response.data['data']['accessToken']);
   }
 
   Future<Either<String, void>> login(userLoginData) async {
     try {
-      // print(userLoginData);
-      // print('$baseUrl/auth/login');
+      print(userLoginData);
+      print('$baseUrl/auth/login');
       final response = await getit
           .get<Dio>()
           .post('$baseUrl/auth/login', data: userLoginData);
 
       setTokenInLocalStorage(response);
+      print(response);
+      print(userLoginData);
 
       return const Right(null);
     } on DioException catch (DioException) {

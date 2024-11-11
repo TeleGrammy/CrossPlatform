@@ -11,11 +11,22 @@ import '../../widgets/profile_settings/status_and_last_seen_list.dart';
 import '../../widgets/profile_settings/settings_box.dart';
 import '../../../../../cores/styles/styles.dart';
 
-class ProfileInfoView extends StatelessWidget {
+class ProfileInfoView extends StatefulWidget {
   const ProfileInfoView({super.key});
 
+  @override
+  State<ProfileInfoView> createState() => _ProfileInfoViewState();
+}
+
+class _ProfileInfoViewState extends State<ProfileInfoView> {
   Future<void> _loadBasicProfileInfo(BuildContext context) async {
     await context.read<ProfileSettingsCubit>().loadBasicProfileInfo();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProfileSettingsCubit>().loadBasicProfileInfo();
   }
 
   @override
@@ -34,9 +45,7 @@ class ProfileInfoView extends StatelessWidget {
       body: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
         builder: (context, state) {
           print(state);
-          if (state is ProfileInitial) {
-            _loadBasicProfileInfo(context);
-          } else if (state is ProfileLoading) {
+          if (state is ProfileLoading || state is ProfileInitial) {
             return Center(child: CircularProgressIndicator());
           } else if (state is ProfileError) {
             return Center(child: Text(state.errorMessage));
@@ -70,7 +79,7 @@ class ProfileInfoView extends StatelessWidget {
                               title: Text('My Stories'),
                               trailing: Icon(Icons.arrow_forward),
                               onTap: () =>
-                                  context.pushNamed(RouteNames.stories),
+                                  context.pushNamed(RouteNames.storiesPage),
                             )
                           ],
                         ),
@@ -82,6 +91,8 @@ class ProfileInfoView extends StatelessWidget {
                                 trailing: Icon(Icons.arrow_forward),
                                 onTap: () {
                                   //TODO: navigate to privacy settings
+                                  context
+                                      .pushNamed(RouteNames.profilePrivacyPage);
                                 })
                           ],
                         ),
