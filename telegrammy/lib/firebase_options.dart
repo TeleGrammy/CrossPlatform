@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '4445093650',
     projectId: 'telegrammy-d0854',
     authDomain: 'telegrammy-d0854.firebaseapp.com',
-    storageBucket: 'telegrammy-d0854.appspot.com',
+    storageBucket: 'telegrammy-d0854.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -60,7 +60,7 @@ class DefaultFirebaseOptions {
     appId: '1:4445093650:android:eb11f97ff0392949da3dcb',
     messagingSenderId: '4445093650',
     projectId: 'telegrammy-d0854',
-    storageBucket: 'telegrammy-d0854.appspot.com',
+    storageBucket: 'telegrammy-d0854.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -68,7 +68,10 @@ class DefaultFirebaseOptions {
     appId: '1:4445093650:ios:81037b4f7637e472da3dcb',
     messagingSenderId: '4445093650',
     projectId: 'telegrammy-d0854',
-    storageBucket: 'telegrammy-d0854.appspot.com',
+    storageBucket: 'telegrammy-d0854.firebasestorage.app',
+    androidClientId: '4445093650-ubrld43a86sddle0asbhpm8phm361k58.apps.googleusercontent.com',
+    iosClientId: '4445093650-4m31lah6h6vquq897if7qdm3dvfnf0e4.apps.googleusercontent.com',
     iosBundleId: 'com.example.telegrammy',
   );
+
 }

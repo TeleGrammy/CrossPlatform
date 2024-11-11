@@ -10,7 +10,10 @@ class StoriesBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: IconButton(
         onPressed: () {
-          Navigator.pop(context);
+          context.goNamed(
+      RouteNames.home,
+      
+    );
         },
         icon: Icon(Icons.arrow_back, color: Colors.white),
       ),

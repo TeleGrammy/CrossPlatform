@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
+// import 'package:flutter_web_auth_plus/flutter_web_auth_plus.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 
 class ApiService {
   ApiService({required this.dio});
@@ -27,48 +31,108 @@ class ApiService {
   // }
 
 // Function to launch Google Sign-In
-  Future<void> signInWithGoogle() async {
-    // initUniLinks();
-    const url = 'http://192.168.0.102:8080/api/v1/auth/google';
 
+  // Future<void> signInWithGoogle() async {
+  //   final url = "http://192.168.0.102:8080/api/v1/auth/google";
+
+  //   try {
+  //     // Launch the URL and listen for the callback URL
+  //     final result = await FlutterWebAuth.authenticate(
+  //         url: url,
+  //         callbackUrlScheme:
+  //             "myapp" // match the scheme in the URL returned by backend
+  //         );
+
+  //     // Extract the token from the result
+  //     final token = Uri.parse(result).queryParameters['token'];
+
+  //     if (token != null) {
+  //       // Store the token and navigate in the app as needed
+  //       print(token);
+  //       // await saveToken(token);
+  //       // navigateToHomeScreen();
+  //     }
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
+
+  // Future<void> signInWithGoogle() async {
+  //   final url = "http://backtest.telegrammy.tech:8080/api/v1/auth/google";
+
+  //   try {
+  //     // Launch the URL and listen for the callback URL
+  //     final result = await FlutterWebAuth.authenticate(
+  //         url: url,
+  //         callbackUrlScheme:
+  //             "myapp" // match the scheme in the URL returned by backend
+  //         );
+
+  //     // Extract the token from the result
+  //     final token = Uri.parse(result).queryParameters['token'];
+  //     print(token);
+  //     if (token != null) {
+  //       // Store the token and navigate in the app as needed
+  //       // await saveToken(token);
+  //       // navigateToHomeScreen();
+  //     }
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
+
+  // Future<void> signInWithGoogle() async {
+  //   // initUniLinks();
+  //   const url = 'http://192.168.0.102:8080/api/v1/auth/google';
+
+  //   try {
+  //     final Uri uri = Uri.parse(url); // Create a Uri object from the string
+  //     await launchUrl(uri,
+  //         mode: LaunchMode
+  //             .externalApplication); // Use launchUrl with the Uri object
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+  Future<void> signInWithGoogle() async {
     try {
-      final Uri uri = Uri.parse(url); // Create a Uri object from the string
-      await launchUrl(uri,
-          mode: LaunchMode
-              .externalApplication); // Use launchUrl with the Uri object
-    } catch (e) {
-      print(e);
+      final Uri url =
+          Uri.parse('http://backtest.telegrammy.tech:8080/api/v1/auth/google');
+      // if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication, // Open in external browser
+      );
+      // } else {
+      //   throw 'Could not launch $url';
+      // }
+
+      print('success');
+      // final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // if (googleUser == null) {
+      //   throw Exception('Sign-in aborted by user'); // User canceled the sign-in
+      // }
+      // print(googleUser);
+      // final GoogleSignInAuthentication? googleAuth =
+      //     await googleUser.authentication;
+      // print(googleAuth?.idToken);
+      // final String idToken = googleAuth!.idToken!;
+      // print(idToken);
+      // Send the ID token to the backend using Dio or another HTTP client.
+      // Example:
+      // final response = await dio.post(...);
+      // if (response.statusCode != 200) {
+      //   throw Exception('Sign-in failed: ${response.data['error']}');
+      // }
+
+      // If successful, do nothing and return void
+    } catch (error) {
+      throw Exception('Sign-in error: $error'); // Propagate error
     }
   }
 
-  // Future<void> signInWithGoogle() async {
-  //   final response = await dio.get('http://10.0.2.2:8080/api/v1/auth/google');
-  //   print(response);
-  //   // try {
-  //   //   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-  //   //   if (googleUser == null) {
-  //   //     throw Exception('Sign-in aborted by user'); // User canceled the sign-in
-  //   //   }
-  //   //   print(googleUser);
-  //   //   final GoogleSignInAuthentication googleAuth =
-  //   //       await googleUser.authentication;
-  //   //   // final String idToken = googleAuth.idToken!;
-
-  //   //   // Send the ID token to the backend using Dio or another HTTP client.
-  //   //   // Example:
-  //   //   // final response = await dio.post(...);
-  //   //   // if (response.statusCode != 200) {
-  //   //   //   throw Exception('Sign-in failed: ${response.data['error']}');
-  //   //   // }
-
-  //   //   // If successful, do nothing and return void
-  //   // } catch (error) {
-  //   //   throw Exception('Sign-in error: $error'); // Propagate error
-  //   // }
-  // }
-
   Future<void> signInWithFacebook() async {
-    const url = 'http://10.0.2.2:8080/api/v1/auth/github';
+    const url = '$baseUrl/auth/github';
 
     // const url = 'http://192.168.0.102:8080/api/v1/auth/github';
 
@@ -93,30 +157,116 @@ class ApiService {
   }
 
   Future<void> signInWithGitHub() async {
-    const url = 'http://192.168.0.102:8080/api/v1/auth/github';
+    final Uri url =
+        Uri.parse('http://backtest.telegrammy.tech:8080/api/v1/auth/github');
+    // if (await canLaunchUrl(url)) {
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication, // Open in external browser
+    );
+    // } else {
+    //   throw 'Could not launch $url';
+    // }
 
-    try {
-      final Uri uri = Uri.parse(url); // Create a Uri object from the string
-      print(uri);
-      await launchUrl(uri,
-          mode: LaunchMode
-              .externalApplication); // Use launchUrl with the Uri object
-    } catch (e) {
-      print(e);
-    }
+    print('success');
     // final clientId = 'Ov23lickxMhmwQkCMM4W';
-    // final redirectUri =
-    //     'http://localhost:8000/auth/callback'; // Same as in GitHub settings
+    // final clientSecret = 'c2316813977f0abdbb00650f299a3925ced6272b';
+    //    const String url = "https://github.com/login/oauth/authorize" +
+    //       "?client_id=" + 'Ov23lickxMhmwQkCMM4W' +
+    //       "&scope=public_repo%20read:user%20user:email";
+    // if (await canLaunch(url)) {
+    //     await launch(
+    //       url,
+    //       forceSafariVC: false,
+    //       forceWebView: false,
+    //     );
+    //   } else {
+    //     print("CANNOT LAUNCH THIS URL!");
+    //   }
+
+    // GithubAuthProvider githubAuthProvider = GithubAuthProvider();
+    // UserCredential userCredential =
+    //     await FirebaseAuth.instance.signInWithProvider(githubAuthProvider);
+    // print(userCredential);
+    // return userCredential;
+    // final firebaseAuth = FirebaseAuth.instance;
+    // final dio = Dio();
+
+    // // GitHub OAuth URL
+    // final clientId = 'Ov23lickxMhmwQkCMM4W';
+    // final clientSecret = 'c2316813977f0abdbb00650f299a3925ced6272b';
+    // final redirectUrl =
+    //     'https://telegrammy-d0854.firebaseapp.com/__/auth/handler';
+
+    // // Step 1: Trigger the GitHub authentication process
+    // final result = await FlutterWebAuth.authenticate(
+    //   url:
+    //       'https://github.com/login/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUrl',
+    //   callbackUrlScheme: 'https',
+    // );
+
+    // // Step 2: Extract the code from the callback URL
+    // final code = Uri.parse(result).queryParameters['code'];
+
+    // // Step 3: Exchange the code for an access token using Dio
+    // try {
+    //   final response = await dio.post(
+    //     'https://github.com/login/oauth/access_token',
+    //     data: {
+    //       'client_id': clientId,
+    //       'client_secret': clientSecret,
+    //       'code': code,
+    //     },
+    //     options: Options(
+    //       headers: {
+    //         'Accept': 'application/json',
+    //       },
+    //     ),
+    //   );
+
+    //   final accessToken = response.data['access_token'];
+
+    //   // Step 4: Use the GitHub access token to sign in with Firebase
+    //   final githubAuthCredential = GithubAuthProvider.credential(accessToken);
+
+    //   return await firebaseAuth.signInWithCredential(githubAuthCredential);
+    // } on DioException catch (e) {
+    //   print("Error during GitHub sign-in: ${e.response?.data}");
+    //   throw e;
+    // }
+
+//  final github = GitHub(
+//     clientId: 'YOUR_CLIENT_ID',
+//     clientSecret: 'YOUR_CLIENT_SECRET',
+//     redirectUrl: 'yourapp://auth',
+//   );
+
+//   try {
+//     final authUrl = github.getAuthorizationUrl();
+//     // Use a webview or browser to navigate to authUrl.
+//     // After user authenticates, GitHub will redirect to the callback with a code.
+
+//     // Retrieve the code from the redirect and exchange it for an access token.
+//     final token = await github.exchangeOAuthCodeForToken(code);
+//     // Use the token to make authenticated requests.
+//   } catch (error) {
+//     print('GitHub sign-in failed: $error');
+//   }
+
+    // final clientId = 'Ov23lickxMhmwQkCMM4W';
+    // // final redirectUri =
+    // //     'http://localhost:8000/auth/callback'; // Same as in GitHub settings
+    // final redirectUri = 'telegrammy://auth';
 
     // final url = Uri.https('github.com', '/login/oauth/authorize', {
     //   'client_id': clientId,
     //   'redirect_uri': redirectUri,
     //   'scope': 'read:user user:email',
     // });
-
+    // print(url.toString());
     // // Open the GitHub login page
     // final result = await FlutterWebAuth.authenticate(
-    //     url: url.toString(), callbackUrlScheme: "yourapp");
+    //     url: url.toString(), callbackUrlScheme: "telegrammy");
 
     // // Extract the code from the result
     // final code = Uri.parse(result).queryParameters['code'];
@@ -267,19 +417,63 @@ class ApiService {
     }
   }
 
-  Future<void> login(userLoginData) async {
+  void setTokenInLocalStorage(response) async {
+    await getit
+        .get<FlutterSecureStorage>()
+        .write(key: 'accessToken', value: response.data['data']['accessToken']);
+        print(response.data['data']['accessToken']);
+  }
+
+  Future<Either<String, void>> login(userLoginData) async {
     try {
-      // final userLoginData = {'UUID': email, 'password': password};
+      // print(userLoginData);
+      // print('$baseUrl/auth/login');
       final response = await getit
           .get<Dio>()
-          .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
+          .post('$baseUrl/auth/login', data: userLoginData);
 
-      await getit.get<FlutterSecureStorage>().write(
-          key: 'accessToken', value: response.data['data']['accessToken']);
+      setTokenInLocalStorage(response);
 
-      // context.goNamed(RouteNames.home);
+      return const Right(null);
+    } on DioException catch (DioException) {
+      print(DioException);
+      if (DioException.response != null) {
+        if (DioException.response?.statusCode == 404) {
+          return const Left<String, void>('Invalid email or password.');
+        }
+      }
+      return const Left<String, void>('Something went wrong.');
     } catch (e) {
-      print(e);
+      return const Left<String, void>('Something went wrong.');
+    }
+  }
+
+  Future<void> forgetPassword(String email) async {
+    try {
+      final response = await dio.post(
+        'http://10.0.2.2:8080/api/v1/auth/forget-password', // Use 10.0.2.2 for emulator
+        data: {
+          'email': email,
+        },
+      );
+
+      print('Response status code: ${response.statusCode}');
+      print('Response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        print('Verification code sent successfully: ${response.data}');
+      } else {
+        throw Exception('Failed to resend verification code');
+      }
+    } on DioException catch (dioError) {
+      String errorMessage =
+          dioError.response?.data['message'] ?? 'An error occurred';
+      print('Dio error: $errorMessage'); // Log the error message
+      throw Exception('Error: $errorMessage'); // Re-throw the exception
+    } catch (e) {
+      print('General error: $e'); // Log the general error
+      throw Exception(
+          'An unexpected error occurred'); // Provide a general error message
     }
   }
 

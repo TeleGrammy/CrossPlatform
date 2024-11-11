@@ -20,12 +20,12 @@ abstract class AuthRepo {
   Future<Either<Failure, void>> signInWithGoogle();
   Future<Either<Failure, void>> signInWithFacebook();
   Future<Either<Failure, void>> signInWithGitHub();
-  Future<Either<Failure, void>> signInUser(Map<String, dynamic> userData);
+  Future<Either<String, void>> signInUser(Map<String, dynamic> userData);
   Future<Either<Failure, void>> signUpUser(Map<String, dynamic> userData);
   Future<Either<Failure, void>> emailVerification(
       String email, String verificationCode);
   Future<Either<Failure, void>> resendEmailVerification(String email);
-  // Future<Either<Failure, void>> forgetPassword(String email);
+  Future<Either<Failure, void>> forgetPassword(String email);
   // Future<Either<Failure, void>> resetPassword(
   //     String password, String newPassword);
 }
