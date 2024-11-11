@@ -4,11 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_state.dart';
 
 User user = User(
-    screenName: 'Oykushi',
-    username: 'navoni',
-    email: 'navoni@gmail.com',
+    screenName: 'Khalid',
+    username: 'jayjay',
+    email: 'khalid_forreal@gmail.com',
     phoneNumber: '01001010100',
-    bio: 'big football fan and stuff',
+    bio: 'really cool bio and stuff',
     status: 'Online',
     lastSeen: DateTime.now());
 
@@ -78,21 +78,21 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
     }
   }
 
-  Future<void> setStory() async {
+  Future<void> addStory() async {
     final pickedFile = await pickImage();
 
     if (pickedFile != null) {
       // TODO: send to backend via API
       User user = (state as ProfileLoaded).user;
-      user.story = File(pickedFile.path);
+      user.stories.add(File(pickedFile.path));
       emit(ProfileLoaded(user: user));
     }
   }
 
-  void removeStory() {
+  void removeStory(File storyToRemove) {
     if (state is ProfileLoaded) {
       User user = (state as ProfileLoaded).user;
-      user.story = null;
+      user.stories.remove(storyToRemove);
       // TODO: call api to delete story
       emit(ProfileLoaded(user: user));
     }

@@ -27,9 +27,7 @@ class ProfileInfoView extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.edit),
             color: Colors.white,
-            onPressed: () {
-              context.pushNamed(RouteNames.editProfileInfo);
-            },
+            onPressed: () => context.pushNamed(RouteNames.editProfileInfo),
           ),
         ],
       ),
@@ -71,9 +69,8 @@ class ProfileInfoView extends StatelessWidget {
                             ListTile(
                               title: Text('My Stories'),
                               trailing: Icon(Icons.arrow_forward),
-                              onTap: () {
-                                context.pushNamed(RouteNames.stories);
-                              },
+                              onTap: () =>
+                                  context.pushNamed(RouteNames.stories),
                             )
                           ],
                         ),

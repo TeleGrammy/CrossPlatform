@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/helpers/routes_helper.dart';
@@ -26,8 +28,6 @@ import '../../features/profile/presentation/views/profile_settings/stories_page.
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
     redirect: (context, state) async {
-      return null;
-      return '/profile-info';
       RoutesHelper helper = RoutesHelper();
       final bool isLoggedin = await helper.isLoggedIn();
       final bool issignedUp = await helper.isSignedUp();
@@ -50,7 +50,6 @@ class AppRoutes {
       // Return null to indicate no redirection needed
       return null;
     },
-    initialLocation: '/profile-info',
     routes: [
       GoRoute(
         name: RouteNames.signUp,
@@ -158,6 +157,14 @@ class AppRoutes {
           create: (context) => ProfileSettingsCubit(),
           child: StoriesPage(),
         ),
+      ),
+      GoRoute(
+        name: RouteNames.storyView,
+        path: '/storyView',
+        builder: (context, state) {
+          final image = state.extra as File;
+          return StoryView(image: image);
+        },
       ),
     ],
   );

@@ -29,7 +29,7 @@ class User {
   File? profilePic;
   String? status;
   DateTime? lastSeen;
-  File? story;
+  List<File> stories = [];
 
   User(
       {this.screenName,

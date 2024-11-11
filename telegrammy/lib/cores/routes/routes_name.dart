@@ -13,4 +13,5 @@ class RouteNames {
   static String profileInfo = 'profileInfo';
   static String editProfileInfo = 'editProfileInfo';
   static String stories = 'storiesPage';
+  static String storyView = 'storyView';
 }
