@@ -12,13 +12,22 @@ import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/v
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
 
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_privacy_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/profile_settings/story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/stories_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
+
+import 'package:telegrammy/features/profile/presentation/views/profile_settings/profile_info_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/profile_settings/edit_profile_info_view.dart';
+
+import '../../features/profile/presentation/views/profile_settings/stories_page.dart';
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
     redirect: (context, state) async {
+      return null;
+      return '/profile-info';
       RoutesHelper helper = RoutesHelper();
       final bool isLoggedin = await helper.isLoggedIn();
       final bool issignedUp = await helper.isSignedUp();
@@ -37,10 +46,11 @@ class AppRoutes {
       if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
         return '/'; // Redirect to sign-up or login
       }
-      
+
       // Return null to indicate no redirection needed
       return null;
     },
+    initialLocation: '/profile-info',
     routes: [
       GoRoute(
         name: RouteNames.signUp,
@@ -83,7 +93,7 @@ class AppRoutes {
         path: '/verify-otp',
         builder: (context, state) => OTPVerificationPage(),
       ),
-        GoRoute(
+      GoRoute(
         name: RouteNames.profilePrivacyPage,
         path: '/',
         builder: (context, state) => MultiBlocProvider(
@@ -105,16 +115,19 @@ class AppRoutes {
           child: StoriesView(),
         ),
       ),
-     GoRoute(
+      GoRoute(
         name: RouteNames.privacyAllowablePage,
         path: '/privacy-allowable',
         builder: (context, state) {
           // Retrieve parameters from the state
-          final title = state.extra?.toString().split(',').first ?? 'Default Title'; // Safely extract title
-          final optionKey = state.extra?.toString().split(',').last ?? 'Default Option'; // Safely extract optionKey
+          final title = state.extra?.toString().split(',').first ??
+              'Default Title'; // Safely extract title
+          final optionKey = state.extra?.toString().split(',').last ??
+              'Default Option'; // Safely extract optionKey
 
           return BlocProvider.value(
-            value: context.read<PrivacySettingsCubit>(), // Use the existing instance
+            value: context
+                .read<PrivacySettingsCubit>(), // Use the existing instance
             child: PrivacyAllowablePage(
               title: title,
               optionKey: optionKey,
@@ -122,7 +135,30 @@ class AppRoutes {
           );
         },
       ),
-
+      GoRoute(
+        name: RouteNames.profileInfo,
+        path: '/profile-info',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ProfileSettingsCubit(),
+          child: ProfileInfoView(),
+        ),
+      ),
+      GoRoute(
+        name: RouteNames.editProfileInfo,
+        path: '/edit-profile-info',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ProfileSettingsCubit(),
+          child: EditProfileInfoView(),
+        ),
+      ),
+      GoRoute(
+        name: RouteNames.stories,
+        path: '/storiesPage',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ProfileSettingsCubit(),
+          child: StoriesPage(),
+        ),
+      ),
     ],
   );
 }
