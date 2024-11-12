@@ -17,9 +17,8 @@ import 'package:telegrammy/cores/errors/Failture.dart';
 import 'package:telegrammy/cores/models/user_model.dart';
 
 abstract class AuthRepo {
-  Future<Either<Failure, void>> signInWithGoogle();
-  Future<Either<Failure, void>> signInWithFacebook();
-  Future<Either<Failure, void>> signInWithGitHub();
+  Future<Either<String, void>> signInWithGoogle();
+  Future<Either<String, void>> signInWithGitHub();
   Future<Either<String, void>> signInUser(Map<String, dynamic> userData);
   Future<Either<Failure, void>> signUpUser(Map<String, dynamic> userData);
   Future<Either<Failure, void>> emailVerification(

@@ -53,6 +53,7 @@ class _FormLoginState extends State<FormLogin> {
       child: Column(
         children: [
           CustomTextField(
+            inputFieldKey: Key('UUIDField'),
             controller: emailController,
             hintText: 'Email address',
             obsecureText: false,
@@ -69,6 +70,7 @@ class _FormLoginState extends State<FormLogin> {
             prefixIcon: Icons.email,
           ),
           CustomTextField(
+            inputFieldKey: Key('passwordField'),
             controller: passwordController,
             hintText: 'Password',
             obsecureText: true,
@@ -96,7 +98,11 @@ class _FormLoginState extends State<FormLogin> {
             ),
             alignment: Alignment.bottomRight,
           ),
-          RoundedButton(onPressed: login, buttonTitle: 'Log in')
+          RoundedButton(
+            onPressed: login,
+            buttonTitle: 'Log in',
+            buttonKey: Key('loginButton'),
+          )
         ],
       ),
     );

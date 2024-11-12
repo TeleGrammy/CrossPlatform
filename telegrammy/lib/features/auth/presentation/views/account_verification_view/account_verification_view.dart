@@ -125,10 +125,12 @@ class _AccountVerificationViewState extends State<AccountVerificationView> {
                   }
                 },
                 child: RoundedButton(
-                    onPressed: () {
-                      cubit.emailVerification(email, verificationCode);
-                    },
-                    buttonTitle: 'Verify'),
+                  onPressed: () {
+                    cubit.emailVerification(email, verificationCode);
+                  },
+                  buttonTitle: 'Verify',
+                  buttonKey: Key('AccountVerificationButton'),
+                ),
               ),
             ],
           ),
