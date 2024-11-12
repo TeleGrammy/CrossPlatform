@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
@@ -165,15 +167,20 @@ class ApiService {
     await getit
         .get<FlutterSecureStorage>()
         .write(key: 'accessToken', value: response.data['data']['accessToken']);
+    print(response.data['data']['accessToken']);
   }
 
   Future<Either<String, void>> login(userLoginData) async {
     try {
+      print(userLoginData);
+      print('$baseUrl/auth/login');
       final response = await getit
           .get<Dio>()
-          .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
+          .post('$baseUrl/auth/login', data: userLoginData);
 
       setTokenInLocalStorage(response);
+      print(response);
+      print(userLoginData);
 
       return const Right(null);
     } on DioException catch (DioException) {

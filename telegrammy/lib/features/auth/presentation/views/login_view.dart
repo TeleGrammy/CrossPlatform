@@ -17,7 +17,7 @@ class LoginView extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSucess) {
-          context.goNamed(RouteNames.home);
+          context.goNamed(RouteNames.profileInfo);
         } else if (state is LoginError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
@@ -43,7 +43,7 @@ class LoginView extends StatelessWidget {
                 const SizedBox(height: 47),
                 CustomRowDivider(),
                 const SizedBox(height: 22),
-                SignInUsingSocialMediaAccounts(),
+                // SignInUsingSocialMediaAccounts(),
                 const SizedBox(height: 40), // Additional space for scrolling
                 Center(
                   child: RichText(
