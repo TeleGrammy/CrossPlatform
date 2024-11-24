@@ -15,9 +15,7 @@ import 'package:telegrammy/features/auth/data/repos/auth_repo_implemention.dart'
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 
 class FormLogin extends StatefulWidget {
-  const FormLogin({
-    super.key,
-  });
+  const FormLogin({super.key});
 
   @override
   State<FormLogin> createState() => _FormLoginState();
@@ -53,7 +51,7 @@ class _FormLoginState extends State<FormLogin> {
       child: Column(
         children: [
           CustomTextField(
-            inputFieldKey: Key('UUIDField'),
+            inputFieldKey: const Key('UUIDField'),
             controller: emailController,
             hintText: 'Email address',
             obsecureText: false,
@@ -61,7 +59,6 @@ class _FormLoginState extends State<FormLogin> {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter your email';
               }
-              // Basic email validation
               if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                 return 'Please enter a valid email';
               }
@@ -70,7 +67,7 @@ class _FormLoginState extends State<FormLogin> {
             prefixIcon: Icons.email,
           ),
           CustomTextField(
-            inputFieldKey: Key('passwordField'),
+            inputFieldKey: const Key('passwordField'),
             controller: passwordController,
             hintText: 'Password',
             obsecureText: true,
@@ -86,23 +83,25 @@ class _FormLoginState extends State<FormLogin> {
             prefixIcon: Icons.lock,
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 30),
+            key: const Key('forgotPasswordLink'),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            alignment: Alignment.bottomRight,
             child: GestureDetector(
               onTap: () {
                 context.goNamed(RouteNames.resetPassword);
               },
-              child: Text(
+              child: const Text(
                 'Forgot password?',
                 style: textStyle13,
               ),
             ),
-            alignment: Alignment.bottomRight,
           ),
           RoundedButton(
+            key: const Key('loginButton'),
             onPressed: login,
             buttonTitle: 'Log in',
             buttonKey: Key('loginButton'),
-          )
+          ),
         ],
       ),
     );
