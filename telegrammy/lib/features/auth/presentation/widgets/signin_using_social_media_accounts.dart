@@ -5,9 +5,7 @@ import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/lo
 import 'package:telegrammy/features/auth/presentation/widgets/customSigninButton.dart';
 
 class SignInUsingSocialMediaAccounts extends StatelessWidget {
-  const SignInUsingSocialMediaAccounts({
-    super.key,
-  });
+  const SignInUsingSocialMediaAccounts({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +13,17 @@ class SignInUsingSocialMediaAccounts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Customsigninbutton(
+          key: const ValueKey('googleSignInButton'),
           icon: FontAwesomeIcons.google,
           signinWithSocialAccount:
               context.read<LoginCubit>().signinWithGoogleCubit,
         ),
         Customsigninbutton(
-            icon: FontAwesomeIcons.github,
-            signinWithSocialAccount:
-                context.read<LoginCubit>().signinWithGithubCubit),
+          key: const ValueKey('githubSignInButton'),
+          icon: FontAwesomeIcons.github,
+          signinWithSocialAccount:
+              context.read<LoginCubit>().signinWithGithubCubit,
+        ),
       ],
     );
   }

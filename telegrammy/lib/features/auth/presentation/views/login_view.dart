@@ -37,16 +37,19 @@ class LoginView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                logo(),
+                logo(key: const ValueKey('logo')),
                 const SizedBox(height: 30),
-                FormLogin(),
+                FormLogin(key: const ValueKey('form_login')),
                 const SizedBox(height: 47),
-                CustomRowDivider(),
+                CustomRowDivider(key: const ValueKey('row_divider')),
                 const SizedBox(height: 22),
-                // SignInUsingSocialMediaAccounts(),
+                SignInUsingSocialMediaAccounts(
+                  key: const ValueKey('signin_social_media'),
+                ),
                 const SizedBox(height: 40), // Additional space for scrolling
                 Center(
                   child: RichText(
+                    key: const ValueKey('signup_text'),
                     text: TextSpan(
                       text: 'Don’t have an account? ',
                       style: const TextStyle(color: Colors.black),
@@ -54,8 +57,7 @@ class LoginView extends StatelessWidget {
                         TextSpan(
                           text: 'Sign up',
                           style: const TextStyle(
-                            color: Colors
-                                .white, // Changed to blue for better contrast
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                           recognizer: TapGestureRecognizer()
