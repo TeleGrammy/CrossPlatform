@@ -6,4 +6,5 @@ class RouteNames {
   static String splash = 'splash';
   static String resetPassword = 'resetPassword';
   static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
+  static String oneToOneMessaging = 'oneToOneMessaging';
 }
