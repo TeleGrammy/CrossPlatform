@@ -1,10 +1,11 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+
 class TokenStorageService {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   // Keys used for secure storage
-  static const String _tokenKey = 'token';
+  static const String _tokenKey = 'accessToken';
   static const String _emailKey = 'emil';
 
   // Save token to secure storage
