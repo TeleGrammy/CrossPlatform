@@ -35,7 +35,6 @@ class ChatDetailsBody extends StatelessWidget {
     return ListView.builder(
       controller: scrollController,
       itemCount: messages.length,
-      reverse: true,
       padding: EdgeInsets.symmetric(vertical: 8.0),
       itemBuilder: (context, index) {
         final message = messages[index];

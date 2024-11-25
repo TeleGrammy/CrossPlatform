@@ -3,7 +3,13 @@ import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 
 class BottomBar extends StatefulWidget {
   final void Function(String) onSend;
-  const BottomBar({super.key, required this.onSend});
+  final void Function(Message, String) onEdit;
+  final Message? editedMessage;
+  const BottomBar(
+      {super.key,
+      required this.onSend,
+      required this.onEdit,
+      this.editedMessage});
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -16,27 +22,35 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
+    _initializeMessage();
     _messageController.addListener(() {
-      // Check if the TextField has text and update the icon
       setState(() {
         _isTyping = _messageController.text.isNotEmpty;
       });
     });
   }
 
-//   void _sendMessage() {
-//     // Handle sending the message
-//     final message = _messageController.text.trim();
-//     if (message.isNotEmpty) {
-// messages.add(Message(text: message, time: DateTime.now().toString(), isSentByUser: true));
-//       _messageController.clear();
-//     }
-//   }
+  @override
+  void didUpdateWidget(covariant BottomBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.editedMessage != oldWidget.editedMessage) {
+      _initializeMessage();
+    }
+  }
+
+  void _initializeMessage() {
+    if (widget.editedMessage != null) {
+      _messageController.text = widget.editedMessage!.text;
+      _isTyping = true;
+    } else {
+      _messageController.clear();
+      _isTyping = false;
+    }
+  }
 
   @override
   void dispose() {
-    _messageController
-        .dispose(); // Dispose of the controller to free up resources
+    _messageController.dispose();
     super.dispose();
   }
 
@@ -62,7 +76,14 @@ class _BottomBarState extends State<BottomBar> {
         IconButton(
           icon: Icon(_isTyping ? Icons.send : Icons.mic),
           onPressed: _isTyping
-              ? () => {widget.onSend(_messageController.text.trim())}
+              ? () {
+                  if (widget.editedMessage == null) {
+                    widget.onSend(_messageController.text.trim());
+                  } else {
+                    widget.onEdit(
+                        widget.editedMessage!, _messageController.text.trim());
+                  }
+                }
               : () {
                   // Handle voice note functionality here
                   print('Recording voice note...');

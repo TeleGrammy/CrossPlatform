@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class SelectedMessageAppbar extends StatelessWidget
     implements PreferredSizeWidget {
   final Function() onMessageUnTap;
-  const SelectedMessageAppbar({super.key, required this.onMessageUnTap});
+  final Function() onClickEdit;
+  final Function() onClickDelete;
+  const SelectedMessageAppbar({super.key, required this.onMessageUnTap,required this.onClickEdit,required this.onClickDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +15,10 @@ class SelectedMessageAppbar extends StatelessWidget
       actions: [
         IconButton(
           icon: Icon(Icons.edit),
-          onPressed: () {},
+          onPressed:onClickEdit,
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: onClickDelete,
           icon: Icon(Icons.delete),
         ),
       ],

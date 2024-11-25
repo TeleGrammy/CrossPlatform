@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SelectedMessageBottomBar extends StatelessWidget {
-  const SelectedMessageBottomBar({super.key});
+  final void Function() onReply;
+  const SelectedMessageBottomBar({super.key,required this.onReply});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class SelectedMessageBottomBar extends StatelessWidget {
         ),
         IconButton(
           icon: Icon(Icons.reply),
-          onPressed: () {},
+          onPressed:onReply,
           // onPressed: () => _replyToMessage(_selectedMessage),
         ),
       ],

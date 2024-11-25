@@ -19,6 +19,7 @@ class _ChatDetailsState extends State<ChatDetails> {
       ScrollController(); // Add ScrollController
   Message? _selectedMessage;
   Message? _repliedMessage;
+  Message? _editedMessage;
 
   void _onMessageTap(Message message) {
     setState(() {
@@ -35,6 +36,27 @@ class _ChatDetailsState extends State<ChatDetails> {
   void _clearReply() {
     setState(() {
       _repliedMessage = null;
+      _editedMessage = null;
+    });
+  }
+
+  void _onClickEdit() {
+    setState(() {
+      _editedMessage = _selectedMessage;
+      _repliedMessage = _selectedMessage!.repliedTo;
+      _selectedMessage = null;
+    });
+  }
+
+  void _onClickDelete() {
+    setState(() {
+      messages.add(Message(
+        text: "message has been deleted",
+        time: DateTime.now().toString(),
+        isSentByUser: true,
+        repliedTo: null, // Store replied message
+      ));
+      _clearReply(); // Clear after sending
     });
   }
 
@@ -65,9 +87,13 @@ class _ChatDetailsState extends State<ChatDetails> {
         backgroundColor: Colors.white,
         appBar: _selectedMessage == null
             ? ChatAppbar()
-            : SelectedMessageAppbar(onMessageUnTap: () {
-                setState(() => _selectedMessage = null);
-              }),
+            : SelectedMessageAppbar(
+                onMessageUnTap: () {
+                  setState(() => _selectedMessage = null);
+                },
+                onClickEdit: _onClickEdit,
+                onClickDelete: _onClickDelete,
+              ),
         body: Column(
           children: [
             Expanded(
@@ -101,8 +127,32 @@ class _ChatDetailsState extends State<ChatDetails> {
                         });
                       }
                     },
+                    onEdit: (Message message, String editedString) {
+                      if (editedString.trim().isNotEmpty) {
+                        final index = messages.indexOf(message);
+                        // after this you need to edit the message
+                        setState(() {
+                          messages.add(Message(
+                            text: editedString,
+                            time: DateTime.now().toString(),
+                            isSentByUser: true,
+                            repliedTo:
+                                message.repliedTo, // Store replied message
+                          ));
+                          _clearReply(); // Clear after sending
+                        });
+                      }
+                    },
+                    editedMessage: _editedMessage,
                   )
-                : SelectedMessageBottomBar(),
+                : SelectedMessageBottomBar(
+                    onReply: () {
+                      _onMessageSwipe(_selectedMessage!);
+                      setState(() {
+                        _selectedMessage = null;
+                      });
+                    },
+                  ),
           ],
         ),
       ),
