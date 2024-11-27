@@ -19,6 +19,7 @@ class StatusAndLastSeenList extends StatelessWidget {
     return SettingsBox(
       children: [
         ListTile(
+          key: const ValueKey('StatusTile'),
           title: Text(status ?? '-'),
           subtitle: Text('Status'),
           trailing: DropdownButton<String>(
@@ -35,6 +36,7 @@ class StatusAndLastSeenList extends StatelessWidget {
           ),
         ),
         ListTile(
+          key: const ValueKey('LastSeenTile'),
           title: Text(lastSeen != null ? lastSeen.toString() : '-'),
           subtitle: Text('Last Seen'),
         ),

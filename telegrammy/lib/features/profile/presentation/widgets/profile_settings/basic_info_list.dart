@@ -9,18 +9,22 @@ class BasicInfoList extends StatelessWidget {
     return SettingsBox(
       children: [
         ListTile(
+          key: const ValueKey('UsernameTile'),
           title: Text(user.username != null ? '@${user.username}' : ""),
           subtitle: Text('Username'),
         ),
         ListTile(
+          key: const ValueKey('EmailTile'),
           title: Text(user.email),
           subtitle: Text('email'),
         ),
         ListTile(
+          key: const ValueKey('PhoneNumberTile'),
           title: Text(user.phoneNumber ?? ""),
           subtitle: Text('phone number'),
         ),
         ListTile(
+          key: const ValueKey('BioTile'),
           title: Text(user.bio ?? ""),
           subtitle: Text('Bio'),
         ),

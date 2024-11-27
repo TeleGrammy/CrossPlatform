@@ -74,6 +74,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
                             lastSeen: state.user.lastSeen),
                         SizedBox(height: 20),
                         SettingsBox(
+                          valueKey: const ValueKey('StoriesBox'),
                           children: [
                             ListTile(
                               title: Text('My Stories'),
@@ -85,6 +86,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
                         ),
                         SizedBox(height: 20),
                         SettingsBox(
+                          valueKey: const ValueKey('PrivacySettingsBox'),
                           children: [
                             ListTile(
                                 title: Text('Privacy and Security Settings'),

@@ -103,6 +103,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                         key: _formKey,
                         child: Column(children: [
                           ProfileInfoTextFormField(
+                            valueKey: const ValueKey('ScreenNameTextField'),
                             controller: _screenNameController,
                             labelText: 'Screen Name',
                             validator: (value) {
@@ -113,6 +114,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                             },
                           ),
                           ProfileInfoTextFormField(
+                            valueKey: const ValueKey('UsernameTextField'),
                             controller: _usernameController,
                             labelText: 'Username',
                             validator: (value) {
@@ -124,6 +126,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                             },
                           ),
                           ProfileInfoTextFormField(
+                            valueKey: const ValueKey('EmailTextField'),
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             labelText: 'Email',
@@ -138,6 +141,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                             },
                           ),
                           ProfileInfoTextFormField(
+                            valueKey: const ValueKey('PhoneNumberTextField'),
                             controller: _phoneNumberController,
                             keyboardType: TextInputType.number,
                             labelText: 'Phone Number',
@@ -151,7 +155,10 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                               return null;
                             },
                           ),
-                          BioTextField(controller: _bioController),
+                          BioTextField(
+                            controller: _bioController,
+                            valueKey: const ValueKey('BioTextField'),
+                          ),
                         ])),
                   ],
                 )),
@@ -168,16 +175,19 @@ class ProfileInfoTextFormField extends StatelessWidget {
   final String labelText;
   final FormFieldValidator<String>? validator;
   final TextInputType keyboardType;
+  final ValueKey<String>? valueKey;
   const ProfileInfoTextFormField(
       {super.key,
       this.controller,
       this.keyboardType = TextInputType.text,
       this.labelText = "",
-      this.validator});
+      this.validator,
+      this.valueKey});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: valueKey,
       controller: controller,
       keyboardType: keyboardType,
       style: TextStyle(color: Colors.white),

@@ -15,6 +15,7 @@ class ProfilePictureCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
+      key: const ValueKey('ProfilePictureCircle'),
       alignment: Alignment.center,
       child: ClipOval(
         child: Container(

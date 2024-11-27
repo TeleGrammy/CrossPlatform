@@ -13,6 +13,7 @@ class ProfileSettingsAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      key: const ValueKey('ProfileSettingsAppBar'),
       leading: IconButton(
         onPressed: () {
           context.pop();
