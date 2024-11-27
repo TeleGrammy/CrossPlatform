@@ -52,10 +52,10 @@ class _StoriesPageState extends State<StoriesPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     getStoryCards(context, state.user.stories),
-                    RoundedButton(
-                        onPressed: () => _showPopUp(
-                            context, context.read<ProfileSettingsCubit>()),
-                        buttonTitle: 'Add Story'),
+                    // RoundedButton(
+                    //     onPressed: () => _showPopUp(
+                    //         context, context.read<ProfileSettingsCubit>()),
+                    //     buttonTitle: 'Add Story', buttonKey: 'null',),
                   ],
                 ),
               ),
