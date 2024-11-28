@@ -40,6 +40,12 @@ class _ChatDetailsState extends State<ChatDetails> {
     });
   }
 
+  void _onSendAudio(Message message) {
+    setState(() {
+      messages.add(message);
+    });
+  }
+
   void _onClickEdit() {
     setState(() {
       _editedMessage = _selectedMessage;
@@ -127,6 +133,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                         });
                       }
                     },
+                    onSendAudio: _onSendAudio,
                     onEdit: (Message message, String editedString) {
                       if (editedString.trim().isNotEmpty) {
                         final index = messages.indexOf(message);

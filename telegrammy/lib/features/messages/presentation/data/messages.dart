@@ -8,12 +8,14 @@ class Message {
   final String time; // Formatted as a string (e.g., '10:00 AM')
   final bool isSentByUser; // Whether the message was sent by the user
   final Message? repliedTo; // The message being replied to, if any
+  final String? audioUrl;
 
   Message({
     String? id, // Optional ID, auto-generated if not provided
     required this.text,
     required this.time,
     required this.isSentByUser,
+    this.audioUrl,
     this.repliedTo,
   }) : id = id ?? uuid.v4(); // Generate a unique ID if none is provided
 
@@ -34,10 +36,10 @@ class Message {
 
 List<Message> messagess = [
   Message(
-    text: 'Hey, how are you?',
-    time: '10:00 AM',
-    isSentByUser: true,
-  ),
+      text: 'Hey, how are you?',
+      time: '10:00 AM',
+      isSentByUser: true,
+      audioUrl: 'lib/features/messages/presentation/data/audio.wav'),
   Message(
     text: 'I\'m good, thanks! How about you?',
     time: '10:02 AM',
