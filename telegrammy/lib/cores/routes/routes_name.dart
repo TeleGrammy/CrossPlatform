@@ -13,5 +13,11 @@ class RouteNames {
   static String createStoryPage = 'createStoryPage'; 
 
   static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
+  static String profileInfo = 'profileInfo';
+  static String editProfileInfo = 'editProfileInfo';
+  static String stories = 'storiesPage';
+  static String storyView = 'storyView';
+  static String blockingView = 'blockingView';
+  static String ContactsToBlockFromView = 'contactsToBlockFromView';
 }
 

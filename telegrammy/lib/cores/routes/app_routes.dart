@@ -10,7 +10,10 @@ import 'package:telegrammy/features/auth/presentation/views/account_verification
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/views/blocked_users_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/contacts_to_block.dart';
 import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_privacy_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/stories_view.dart';
@@ -99,27 +102,59 @@ class AppRoutes {
           return HomeView();
         },
       ),
-      GoRoute(
-        name: RouteNames.profilePrivacyPage,
-        path: '/profile_privacy',
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => PrivacySettingsCubit(
-               
-              ),
-            ),
-          ],
-          child: PrivacyView(),
-        ),
+GoRoute(
+  name: RouteNames.profilePrivacyPage,
+  path: '/profile_privacy',
+  builder: (context, state) => MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => PrivacySettingsCubit(),
       ),
-     GoRoute(
-  name: RouteNames.privacyAllowablePage,
-  path: '/privacy-allowable',
-  builder: (context, state) {
-    final params = state.extra as Map<String, dynamic>?; // Safe extraction of parameters
-    final title = params?['title'] as String? ?? 'Default Title'; // Default title if null
-    final optionKey = params?['optionKey'] as String? ?? 'defaultOptionKey'; // Default option key if null
+      BlocProvider(
+        create: (context) => BlockedUsersCubit(), // Initialize and load blocked users
+      ),
+    ],
+    child: PrivacyView(),
+  ),
+),
+GoRoute(
+  name: RouteNames.blockingView,
+  path: '/blocking_view',
+  builder: (context, state) => MultiBlocProvider(
+    providers: [
+      
+      BlocProvider(
+        create: (context) => BlockedUsersCubit(), // Initialize and load blocked users
+      ),
+    ],
+    child: BlockingPage(),
+  ),
+),
+GoRoute(
+  name: RouteNames.ContactsToBlockFromView,
+  path: '/contacts_view',
+  builder: (context, state) => MultiBlocProvider(
+    providers: [
+      
+      BlocProvider(
+        create: (context) =>ContactsCubit(), // Initialize and load blocked users
+      ),
+    ],
+    child:  ContactsPage(),
+  ),
+),
+
+
+      GoRoute(
+        name: RouteNames.privacyAllowablePage,
+        path: '/privacy-allowable',
+        builder: (context, state) {
+          final params = state.extra
+              as Map<String, dynamic>?; // Safe extraction of parameters
+          final title = params?['title'] as String? ??
+              'Default Title'; // Default title if null
+          final optionKey = params?['optionKey'] as String? ??
+              'defaultOptionKey'; // Default option key if null
 
     return MultiBlocProvider(
       providers: [

@@ -23,7 +23,7 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
         titleBar,
         style: textStyle17.copyWith(fontWeight: FontWeight.w600), 
       ),
-      backgroundColor: appBarDarkMoodColor, // Ensure appBarDarkMoodColor is defined
+      backgroundColor: primaryColor, // Ensure appBarDarkMoodColor is defined
     );
   }
 
