@@ -10,7 +10,7 @@ class logo extends StatelessWidget {
     return Image.asset(
       'assets/images/logo.png',
       width: 121,
-      height: 133,
+      height: MediaQuery.of(context).size.height * 0.2,
     );
   }
 }

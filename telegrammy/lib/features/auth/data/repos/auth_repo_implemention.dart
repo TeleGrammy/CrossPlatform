@@ -35,35 +35,30 @@ class AuthRepoImplemention extends AuthRepo {
     );
   }
 
-  Future<Either<Failure, void>> signInWithGoogle() async {
-    try {
-      await apiService.signInWithGoogle(); // No return value needed for success
-      return const Right(null); // Right with void (no value)
-    } catch (error) {
-      return Left(
-          ServerError(errorMessage: 'Sign-in error: $error')); // Error message
-    }
+  Future<Either<String, void>> signInWithGoogle() async {
+    final result = await apiService
+        .signInWithGoogle(); // No return value needed for success
+    return result.fold(
+      (errorMessage) {
+        return Left(errorMessage);
+      },
+      (_) {
+        return const Right(null); // Successful registration
+      },
+    );
   }
 
-  Future<Either<Failure, void>> signInWithFacebook() async {
-    try {
-      await apiService
-          .signInWithFacebook(); // No return value needed for success
-      return const Right(null); // Right with void (no value)
-    } catch (error) {
-      return Left(
-          ServerError(errorMessage: 'Sign-in error: $error')); // Error message
-    }
-  }
-
-  Future<Either<Failure, void>> signInWithGitHub() async {
-    try {
-      await apiService.signInWithGitHub(); // No return value needed for success
-      return const Right(null); // Right with void (no value)
-    } catch (error) {
-      return Left(
-          ServerError(errorMessage: 'Sign-in error: $error')); // Error message
-    }
+  Future<Either<String, void>> signInWithGitHub() async {
+    final result = await apiService
+        .signInWithGitHub(); // No return value needed for success
+    return result.fold(
+      (errorMessage) {
+        return Left(errorMessage);
+      },
+      (_) {
+        return const Right(null); // Successful registration
+      },
+    );
   }
 
   @override

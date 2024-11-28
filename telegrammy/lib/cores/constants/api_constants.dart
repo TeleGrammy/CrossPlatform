@@ -6,5 +6,4 @@ const registerPath = '/auth/register';
 const verificationPath = '/auth/verify';
 const resendVerificationPath = '/auth/resend-verification';
 const profileVisisbility = '/privacy/settings/profile-visibility';
-const gettingUserStory ='/api/v1/user/stories'; 
- 
+const gettingUserStory = '/api/v1/user/stories';

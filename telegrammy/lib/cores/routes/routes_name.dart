@@ -8,11 +8,12 @@ class RouteNames {
   static String verifyOTP = 'verifyOTP';
   static String profilePrivacyPage = 'privacy';
   static String storiesPage = 'story';
-  static String privacyAllowablePage = 'privacyAllowable'; 
-  static String userStoryPage = 'userStoryPage'; 
-  static String createStoryPage = 'createStoryPage'; 
+  static String privacyAllowablePage = 'privacyAllowable';
+  static String userStoryPage = 'userStoryPage';
+  static String createStoryPage = 'createStoryPage';
 
   static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
+  static String oneToOneMessaging = 'oneToOneMessaging';
   static String profileInfo = 'profileInfo';
   static String editProfileInfo = 'editProfileInfo';
   static String stories = 'storiesPage';
@@ -20,4 +21,3 @@ class RouteNames {
   static String blockingView = 'blockingView';
   static String ContactsToBlockFromView = 'contactsToBlockFromView';
 }
-

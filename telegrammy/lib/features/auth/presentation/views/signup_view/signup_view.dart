@@ -43,14 +43,11 @@ class _SignUpViewState extends State<SignUpView> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             const logo(),
-            const SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
 
             SignUpForm(
               formKey: _formKey,
@@ -61,7 +58,7 @@ class _SignUpViewState extends State<SignUpView> {
               confirmPasswordController: confirmPasswordController,
             ),
 
-            const SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
 
             // I am not a robot verification
             SizedBox(

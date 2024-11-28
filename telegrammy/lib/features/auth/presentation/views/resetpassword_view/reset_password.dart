@@ -5,12 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
-
 class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
 
   bool _isEmailValid(String email) {
-    // Simple email regex for validation
     final RegExp emailRegex = RegExp(
       r'^[^@]+@[^@]+\.[^@]+',
     );
@@ -27,8 +25,10 @@ class ForgotPasswordScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
+          key: const ValueKey('appBar'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            key: const ValueKey('backButton'),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => context.goNamed(RouteNames.login),
           ),
           backgroundColor: Colors.transparent,
@@ -39,26 +39,30 @@ class ForgotPasswordScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/icons/forgetPass.jpg'),
-              SizedBox(height: 20),
-              // Title
+              Image.asset(
+                'assets/icons/forgetPass.jpg',
+                key: const ValueKey('forgotPasswordImage'),
+              ),
+              const SizedBox(height: 20),
               Text(
                 'Forgot Password?',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                key: const ValueKey('forgotPasswordTitle'),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-              SizedBox(height: 8),
-              // Subtitle
+              const SizedBox(height: 8),
               Text(
                 "Don't worry, it happens to the best of us.",
+                key: const ValueKey('forgotPasswordSubtitle'),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
-              SizedBox(height: 30),
-              // Email Input Field
+              const SizedBox(height: 30),
               TextFormField(
+                key: const ValueKey('emailField'),
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
@@ -66,21 +70,19 @@ class ForgotPasswordScreen extends StatelessWidget {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.email),
                 ),
               ),
-              SizedBox(height: 20),
-              // Continue Button
+              const SizedBox(height: 20),
               ElevatedButton(
+                key: const ValueKey('continueButton'),
                 onPressed: () {
-                  // Validate email before proceeding
                   String email = _emailController.text.trim();
                   if (_isEmailValid(email)) {
                     context.read<LoginCubit>().forgetPassword(email);
                   } else {
-                    // Show an error message
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
                         content: Text('Please enter a valid email address.'),
                       ),
                     );
@@ -90,18 +92,17 @@ class ForgotPasswordScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text('Continue'),
                     SizedBox(width: 8),
                     Icon(Icons.arrow_forward),
                   ],
                 ),
               ),
-              SizedBox(height: 10),
             ],
           ),
         ),
