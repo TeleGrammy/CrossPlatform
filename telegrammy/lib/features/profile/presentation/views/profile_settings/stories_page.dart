@@ -27,47 +27,87 @@ class _StoriesPageState extends State<StoriesPage> {
     super.initState();
     _loadBasicProfileInfo(context);
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: ProfileSettingsAppBar(title: 'My Stories'),
-      body: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
-          builder: (context, state) {
-        print(state);
-        if (state is ProfileInitial) {
-          _loadBasicProfileInfo(context);
-        } else if (state is ProfileLoading) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state is ProfileError) {
-          return Center(child: Text(state.errorMessage));
-        } else if (state is ProfileLoaded) {
-          print(state.user.stories);
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    getStoryCards(context, state.user.stories),
-                    RoundedButton(
-                      onPressed: () => _showPopUp(
-                          context, context.read<ProfileSettingsCubit>()),
-                      buttonTitle: 'Add Story',
-                      buttonKey: Key('AddStoryButton'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }
-        return Center(child: Text('-'));
-      }),
-    );
-  }
+  
+// @override
+// Widget build(BuildContext context) {
+//   return Scaffold(
+//     appBar: ProfileSettingsAppBar(
+//       title: 'My Stories',
+//       backButtonOnPressed: () => context.goNamed(RouteNames.profileInfo),
+//     ),
+//     body: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
+//         builder: (context, state) {
+//       print(state);
+//       if (state is ProfileInitial) {
+//         _loadBasicProfileInfo(context);
+//       } else if (state is ProfileLoading) {
+//         return Center(child: CircularProgressIndicator());
+//       } else if (state is ProfileError) {
+//         return Center(child: Text(state.errorMessage));
+//       } else if (state is ProfileLoaded) {
+//         //print(state.user.stories);
+//         return SafeArea(
+//           child: Padding(
+//             padding: const EdgeInsets.all(20.0),
+//             child: SingleChildScrollView(
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 crossAxisAlignment: CrossAxisAlignment.stretch,
+//                 children: [
+//                   //getStoryCards(context, state.user.stories),
+//                   RoundedButton(
+//                       buttonKey: const ValueKey('AddStoryButton'),
+//                       onPressed: () => _showPopUp(
+//                           context, context.read<ProfileSettingsCubit>()),
+//                       buttonTitle: 'Add Story'),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         );
+//       }
+//       return Center(child: Text('-'));
+//     }),
+//   );
+// }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: ProfileSettingsAppBar(title: 'My Stories'),
+//       body: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
+//           builder: (context, state) {
+//         print(state);
+//         if (state is ProfileInitial) {
+//           _loadBasicProfileInfo(context);
+//         } else if (state is ProfileLoading) {
+//           return Center(child: CircularProgressIndicator());
+//         } else if (state is ProfileError) {
+//           return Center(child: Text(state.errorMessage));
+//         } else if (state is ProfileLoaded) {
+//           print(state.user.stories);
+//           return SafeArea(
+//             child: Padding(
+//               padding: const EdgeInsets.all(20.0),
+//               child: SingleChildScrollView(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.stretch,
+//                   children: [
+//                     getStoryCards(context, state.user.stories),
+//                     RoundedButton(
+//                         onPressed: () => _showPopUp(
+//                             context, context.read<ProfileSettingsCubit>()),
+//                         buttonTitle: 'Add Story'),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           );
+//         }
+//         return Center(child: Text('-'));
+//       }),
+//     );
+//   }
 
   Future<void> _showPopUp(
       BuildContext context, ProfileSettingsCubit cubit) async {
@@ -119,22 +159,36 @@ class _StoriesPageState extends State<StoriesPage> {
                 backgroundImage: FileImage(storyImageFile),
               ),
               SizedBox(width: 16.0),
-
-              // Centered "View" button
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    context.pushNamed(RouteNames.storyView,
-                        extra: storyImageFile);
-                  },
-                  child: Text("View"),
-                  style: TextButton.styleFrom(
-                    backgroundColor: backGroundColor,
-                    //primary: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.0),
+// Centered "View" button
+// Expanded(
+//   child: TextButton(
+//     onPressed: () {
+//       //context.pushNamed(RouteNames.storyView,
+//       //    extra: storyImageFile);
+//     },
+//     child: Text("View"),
+//     style: TextButton.styleFrom(
+//       backgroundColor: backGroundColor,
+//       //primary: Colors.white,
+//     ),
+//   ),
+// ),
+// SizedBox(width: 8.0),
+//               // Centered "View" button
+//               Expanded(
+//                 child: TextButton(
+//                   onPressed: () {
+//                     context.pushNamed(RouteNames.storyView,
+//                         extra: storyImageFile);
+//                   },
+//                   child: Text("View"),
+//                   style: TextButton.styleFrom(
+//                     backgroundColor: backGroundColor,
+//                     //primary: Colors.white,
+//                   ),
+//                 ),
+//               ),
+//               SizedBox(width: 8.0),
 
               IconButton(
                 onPressed: () {

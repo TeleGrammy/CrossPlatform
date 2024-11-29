@@ -2,7 +2,7 @@ services:
   backend:
     image: telegrammy/backend:messaging # telegrammy/backend:[module_name] (check with the backend repo)
     ports:
-      - "${PORT}:${PORT}"
+      - "8080:${PORT}"
     env_file:
       - .env
     networks:

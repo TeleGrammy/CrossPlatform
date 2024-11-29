@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BioTextField extends StatefulWidget {
-  const BioTextField({super.key, required this.controller});
+  const BioTextField({super.key, required this.controller, this.valueKey});
   final TextEditingController controller;
+  final ValueKey<String>? valueKey;
 
   @override
   State<BioTextField> createState() => _BioTextFieldState();
@@ -12,6 +13,7 @@ class _BioTextFieldState extends State<BioTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: widget.valueKey,
       controller: widget.controller,
       cursorColor: Colors.white,
       style: TextStyle(color: Colors.white),
