@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
 // import 'package:flutter_web_auth_plus/flutter_web_auth_plus.dart';
@@ -250,4 +251,29 @@ class ApiService {
   //     print(e);
   //   }
   // }
+
+  Future<List<Contact>> fetchChats() async {
+    try {
+      const String token =
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjIiLCJlbWFpbCI6Im1rMDAxNTI2NEBnbWFpbC5jb20iLCJwaG9uZSI6IjAxMDEwMTAxMDExMSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczMjkwMzMyNiwiZXhwIjoxNzMyOTA2OTI2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.5VPSWqkgIdW6KVRBPQP0yaUTezIm1yeXxz6NUooSvC0';
+      final response = await getit.get<Dio>().get(
+            'http://10.0.2.2:8080/api/v1/chats/all-chats?page=1&limit=50',
+            options: Options(
+              headers: {
+                'Authorization': 'Bearer $token',
+              },
+            ),
+          );
+      print(response);
+      if (response.statusCode == 200) {
+        final List<dynamic> chats = response.data['chats'];
+        return chats.map((chat) => Contact.fromJson(chat)).toList();
+      } else {
+        throw Exception('Failed to fetch contacts');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Error: $e');
+    }
+  }
 }
