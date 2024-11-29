@@ -92,6 +92,7 @@ class ProfileRepoImplementation extends ProfileRepo {
   Future<Either<Failure, ProfileInfoResponse>> getProfileInfo() async {
     try {
       final ProfileInfoResponse = await profileApiService.getProfileInfo();
+      print(ProfileInfoResponse);
       return Right(ProfileInfoResponse);
     } catch (error) {
       return Left(ServerError(errorMessage: error.toString()));

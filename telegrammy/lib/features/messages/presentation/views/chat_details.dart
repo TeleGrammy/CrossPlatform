@@ -8,15 +8,16 @@ import 'package:telegrammy/features/messages/presentation/widgets/selected_messa
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatDetails extends StatefulWidget {
-  const ChatDetails({super.key});
+  final String participantNames;
+
+  const ChatDetails({super.key, required this.participantNames});
 
   @override
   State<ChatDetails> createState() => _ChatDetailsState();
 }
 
 class _ChatDetailsState extends State<ChatDetails> {
-  final ScrollController _scrollController =
-      ScrollController(); // Add ScrollController
+  // Add ScrollController
   Message? _selectedMessage;
   Message? _repliedMessage;
   Message? _editedMessage;
@@ -40,6 +41,12 @@ class _ChatDetailsState extends State<ChatDetails> {
     });
   }
 
+  void _onSendAudio(Message message) {
+    setState(() {
+      messages.add(message);
+    });
+  }
+
   void _onClickEdit() {
     setState(() {
       _editedMessage = _selectedMessage;
@@ -60,15 +67,31 @@ class _ChatDetailsState extends State<ChatDetails> {
     });
   }
 
-  void _scrollToMessage(Message message) {
-    final index = messages.indexOf(message);
-    if (index != -1) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent -
-            index * 72.0, // Adjust height
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+  void _onSend(text) {
+    if (text.trim().isNotEmpty) {
+      setState(() {
+        messages.add(Message(
+          text: text,
+          time: DateTime.now().toString(),
+          isSentByUser: true,
+          repliedTo: _repliedMessage, // Store replied message
+        ));
+      });
+    }
+  }
+
+  void _onEdit(Message message, String editedString) {
+    if (editedString.trim().isNotEmpty) {
+      final index = messages.indexOf(message);
+      // after this you need to edit the message
+      setState(() {
+        messages.add(Message(
+          text: editedString,
+          time: DateTime.now().toString(),
+          isSentByUser: true,
+          repliedTo: message.repliedTo, // Store replied message
+        ));
+      });
     }
   }
 
@@ -86,7 +109,9 @@ class _ChatDetailsState extends State<ChatDetails> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: _selectedMessage == null
-            ? ChatAppbar()
+            ? ChatAppbar(
+                participantNames: widget.participantNames,
+              )
             : SelectedMessageAppbar(
                 onMessageUnTap: () {
                   setState(() => _selectedMessage = null);
@@ -101,7 +126,6 @@ class _ChatDetailsState extends State<ChatDetails> {
                 onMessageTap: _onMessageTap,
                 onMessageSwipe: _onMessageSwipe,
                 selectedMessage: _selectedMessage,
-                scrollController: _scrollController,
               ),
             ),
             if (_repliedMessage != null)
@@ -114,35 +138,9 @@ class _ChatDetailsState extends State<ChatDetails> {
               ),
             _selectedMessage == null
                 ? BottomBar(
-                    onSend: (text) {
-                      if (text.trim().isNotEmpty) {
-                        setState(() {
-                          messages.add(Message(
-                            text: text,
-                            time: DateTime.now().toString(),
-                            isSentByUser: true,
-                            repliedTo: _repliedMessage, // Store replied message
-                          ));
-                          _clearReply(); // Clear after sending
-                        });
-                      }
-                    },
-                    onEdit: (Message message, String editedString) {
-                      if (editedString.trim().isNotEmpty) {
-                        final index = messages.indexOf(message);
-                        // after this you need to edit the message
-                        setState(() {
-                          messages.add(Message(
-                            text: editedString,
-                            time: DateTime.now().toString(),
-                            isSentByUser: true,
-                            repliedTo:
-                                message.repliedTo, // Store replied message
-                          ));
-                          _clearReply(); // Clear after sending
-                        });
-                      }
-                    },
+                    onSend: _onSend,
+                    onSendAudio: _onSendAudio,
+                    onEdit: _onEdit,
                     editedMessage: _editedMessage,
                   )
                 : SelectedMessageBottomBar(

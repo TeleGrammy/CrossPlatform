@@ -14,6 +14,7 @@ class RouteNames {
 
   static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
   static String oneToOneMessaging = 'oneToOneMessaging';
+  static String forwardToPage = 'forwardToPage';
   static String profileInfo = 'profileInfo';
   static String editProfileInfo = 'editProfileInfo';
   static String changeUsername = 'changeUsername';

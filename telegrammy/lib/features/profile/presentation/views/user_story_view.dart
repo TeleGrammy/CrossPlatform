@@ -49,12 +49,15 @@ class _UserStoryViewState extends State<UserStoryView> {
             child: ListView.builder(
               itemCount: viewers.keys.length,
               itemBuilder: (context, index) {
-                String viewer = viewers.keys.elementAt(index); // Get viewer name or ID
+                String viewer =
+                    viewers.keys.elementAt(index); // Get viewer name or ID
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(viewer), // Assuming viewer is URL or ID for avatar
+                    backgroundImage: NetworkImage(
+                        viewer), // Assuming viewer is URL or ID for avatar
                   ),
-                  title: Text(viewer), // You may adjust based on your data structure
+                  title: Text(
+                      viewer), // You may adjust based on your data structure
                 );
               },
             ),
@@ -73,9 +76,10 @@ class _UserStoryViewState extends State<UserStoryView> {
   }
 
   // Method to format and show the expiration date
- String _formatExpirationDate(DateTime expirationDateTime) {
-  return DateFormat('yyyy-MM-dd HH:mm:ss').format(expirationDateTime); // Format to desired string
-}
+  String _formatExpirationDate(DateTime expirationDateTime) {
+    return DateFormat('yyyy-MM-dd HH:mm:ss')
+        .format(expirationDateTime); // Format to desired string
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +95,9 @@ class _UserStoryViewState extends State<UserStoryView> {
           } else if (state is StoryLoaded) {
             if (state.storyResponse.data.isEmpty) {
               return Center(
-                  child: Text("No stories available", style: textStyle17.copyWith(fontWeight: FontWeight.w500)));
+                  child: Text("No stories available",
+                      style:
+                          textStyle17.copyWith(fontWeight: FontWeight.w500)));
             }
 
             return Stack(
@@ -146,7 +152,8 @@ class _UserStoryViewState extends State<UserStoryView> {
                     ),
                     onPressed: () {
                       // Delete the story using its ID
-                      _deleteStory(state.storyResponse.data[0].id); // Adjust the index if needed
+                      _deleteStory(state.storyResponse.data[0]
+                          .id); // Adjust the index if needed
                     },
                   ),
                 ),
@@ -164,7 +171,10 @@ class _UserStoryViewState extends State<UserStoryView> {
                       GestureDetector(
                         onTap: () {
                           // Get the viewers from the current story and show the dialog
-                          Map<String, DateTime>? viewers = state.storyResponse.data[0].viewers; // Assuming each story has a Map<String, DateTime> of viewers
+                          Map<String, DateTime>? viewers = state
+                              .storyResponse
+                              .data[0]
+                              .viewers; // Assuming each story has a Map<String, DateTime> of viewers
                           _showViewersDialog(viewers!);
                         },
                         child: Text(
@@ -180,14 +190,18 @@ class _UserStoryViewState extends State<UserStoryView> {
                   bottom: 50,
                   left: 20,
                   child: Text(
-                    'Expires at: ${_formatExpirationDate(state.storyResponse.data[0].expiresAt )}',
+                    'Expires at: ${_formatExpirationDate(state.storyResponse.data[0].expiresAt)}',
                     style: TextStyle(color: Colors.white, fontSize: 14),
                   ),
                 ),
               ],
             );
           } else {
-            return Center(child: Text("No stories available", style: textStyle17.copyWith(fontWeight: FontWeight.w400, color: tileInfoHintColor)));
+            return Center(
+                child: Text("No stories available",
+                    style: textStyle17.copyWith(
+                        fontWeight: FontWeight.w400,
+                        color: tileInfoHintColor)));
           }
         },
       ),

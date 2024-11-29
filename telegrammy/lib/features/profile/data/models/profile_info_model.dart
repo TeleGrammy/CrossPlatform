@@ -42,7 +42,7 @@ class ProfileInfo {
       bio: json['bio'],
       phoneNumber: json['phone'],
       status: json['status'],
-      lastSeen: DateTime.parse(json['lastSeen']),
+      //lastSeen: DateTime.parse(json['lastSeen']),
       profilePic: json['picture'],
     );
   }

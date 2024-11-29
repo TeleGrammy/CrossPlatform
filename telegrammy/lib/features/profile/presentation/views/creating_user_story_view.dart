@@ -17,31 +17,33 @@ class CreateStoryPage extends StatefulWidget {
 
 class _CreateStoryPageState extends State<CreateStoryPage> {
   final ImagePicker _picker = ImagePicker();
-  String? _imageUrl;  // This will store the image preview
+  String? _imageUrl; // This will store the image preview
   final TextEditingController _captionController = TextEditingController();
 
   // Pick an image from the gallery
   Future<void> _pickImageFromGallery() async {
-    final XFile? selectedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? selectedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
     if (selectedFile != null) {
       final bytes = await selectedFile.readAsBytes();
       final compressedImage = await _compressImage(bytes);
-      final base64Image = base64Encode(compressedImage);  // Encode to Base64
+      final base64Image = base64Encode(compressedImage); // Encode to Base64
       setState(() {
-        _imageUrl = base64Image;  // Update the image preview
+        _imageUrl = base64Image; // Update the image preview
       });
     }
   }
 
   // Capture an image with the camera
   Future<void> _captureImageWithCamera() async {
-    final XFile? capturedFile = await _picker.pickImage(source: ImageSource.camera);
+    final XFile? capturedFile =
+        await _picker.pickImage(source: ImageSource.camera);
     if (capturedFile != null) {
       final bytes = await capturedFile.readAsBytes();
       final compressedImage = await _compressImage(bytes);
-      final base64Image = base64Encode(compressedImage);  // Encode to Base64
+      final base64Image = base64Encode(compressedImage); // Encode to Base64
       setState(() {
-        _imageUrl = base64Image;  // Update the image preview
+        _imageUrl = base64Image; // Update the image preview
       });
     }
   }
@@ -58,7 +60,8 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
     img.Image resizedImage = img.copyResize(image, width: 800);
 
     // Encode the resized image to JPEG with 85% quality
-    final compressedBytes = Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
+    final compressedBytes =
+        Uint8List.fromList(img.encodeJpg(resizedImage, quality: 85));
 
     return compressedBytes; // Return the compressed image bytes
   }
@@ -66,12 +69,12 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
   // Post the story (Base64 image and caption)
   void _postStory() {
     final story = StoryCreation(
-      content: _captionController.text,  // Caption
-      media: _imageUrl,  // Base64 encoded image (can be null)
+      content: _captionController.text, // Caption
+      media: _imageUrl, // Base64 encoded image (can be null)
     );
     // Call API to send the story data to the backend
     context.read<StoriesCubit>().updateStory(story);
-    
+
     // Show success dialog after story is posted
     _showSuccessDialog();
   }
@@ -108,14 +111,19 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GeneralAppBar('Create Story'),
-      backgroundColor: Colors.black,  // Set background color to black
+      backgroundColor: Colors.black, // Set background color to black
       body: Column(
         children: [
           Expanded(
             child: _imageUrl == null
-                ? Center(child: Text("No image selected", style: textStyle17.copyWith(fontWeight: FontWeight.w400, color: tileInfoHintColor)))
+                ? Center(
+                    child: Text("No image selected",
+                        style: textStyle17.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: tileInfoHintColor)))
                 : Image.memory(
-                    base64Decode(_imageUrl!),  // Display the Base64 image preview
+                    base64Decode(
+                        _imageUrl!), // Display the Base64 image preview
                     fit: BoxFit.cover,
                   ),
           ),
@@ -125,28 +133,34 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
               controller: _captionController,
               decoration: InputDecoration(
                 labelText: 'Add a caption...',
-                labelStyle: TextStyle(color: Colors.white),  // Change label text color to white
+                labelStyle: TextStyle(
+                    color: Colors.white), // Change label text color to white
                 border: OutlineInputBorder(),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),  // Change border color to white
+                  borderSide: BorderSide(
+                      color: Colors.white), // Change border color to white
                 ),
               ),
-              style: TextStyle(color: Colors.white),  // Change text color to white
+              style:
+                  TextStyle(color: Colors.white), // Change text color to white
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: Icon(Icons.image, color: Colors.white),  // Change icon color to white
+                icon: Icon(Icons.image,
+                    color: Colors.white), // Change icon color to white
                 onPressed: _pickImageFromGallery,
               ),
               IconButton(
-                icon: Icon(Icons.camera_alt, color: Colors.white),  // Change icon color to white
+                icon: Icon(Icons.camera_alt,
+                    color: Colors.white), // Change icon color to white
                 onPressed: _captureImageWithCamera,
               ),
               IconButton(
-                icon: Icon(Icons.send, color: Colors.white),  // Change icon color to white
+                icon: Icon(Icons.send,
+                    color: Colors.white), // Change icon color to white
                 onPressed: _postStory,
               ),
             ],
@@ -156,5 +170,3 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
     );
   }
 }
-
-
