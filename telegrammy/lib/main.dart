@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
-          scaffoldBackgroundColor: const Color.fromARGB(255, 15, 118, 146)),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 249, 249, 249)),
     );
   }
 }

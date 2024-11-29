@@ -12,6 +12,10 @@ import 'package:telegrammy/features/auth/presentation/views/account_verification
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
+import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
+import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
+import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
+import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/views/contacts_view.dart';
