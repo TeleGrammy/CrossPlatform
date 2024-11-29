@@ -12,8 +12,10 @@ import 'package:telegrammy/features/auth/presentation/views/account_verification
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
+import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
+import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
+import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
-=======
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
@@ -56,16 +58,25 @@ class AppRoutes {
     // },
     routes: [
       GoRoute(
-        // name: RouteNames.signUp,
-        // path: '/',
-        // builder: (context, state) => BlocProvider(
-        //   create: (context) => SignUpCubit(),
-        //   child: const SignUpView(),
-        // ),
-        name: RouteNames.oneToOneMessaging,
-        path: '/',
-        builder: (context, state) => ChatDetails(),
-      ),
+          // name: RouteNames.signUp,
+          // path: '/',
+          // builder: (context, state) => BlocProvider(
+          //   create: (context) => SignUpCubit(),
+          //   child: const SignUpView(),
+          // ),
+          //   name: RouteNames.oneToOneMessaging,
+          //   path: '/',
+          //   builder: (context, state) => ChatDetails(),
+          // ),
+          name: RouteNames.channel,
+          path: '/',
+          builder: (context, state) {
+            // final channelId = state.uri.queryParameters['id']!;
+            return BlocProvider(
+              create: (context) => ChannelCubit(),
+              child: CreateChannelView(),
+            );
+          }),
       GoRoute(
         name: RouteNames.emailVerification,
         path: '/email-verification',

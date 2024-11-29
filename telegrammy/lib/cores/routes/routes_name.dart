@@ -18,4 +18,6 @@ class RouteNames {
   static String editProfileInfo = 'editProfileInfo';
   static String stories = 'storiesPage';
   static String storyView = 'storyView';
+  static String createChannel = 'createChannel';
+  static String channel = 'channel';
 }

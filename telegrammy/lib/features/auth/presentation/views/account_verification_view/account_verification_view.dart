@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:telegrammy/cores/widgets/rounded_button.dart';
@@ -39,6 +42,14 @@ class _AccountVerificationViewState extends State<AccountVerificationView> {
   Widget build(BuildContext context) {
     final cubit = context.read<SignUpCubit>();
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.goNamed(RouteNames.signUp);
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

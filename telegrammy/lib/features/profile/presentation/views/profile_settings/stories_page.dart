@@ -53,9 +53,11 @@ class _StoriesPageState extends State<StoriesPage> {
                   children: [
                     getStoryCards(context, state.user.stories),
                     RoundedButton(
-                        onPressed: () => _showPopUp(
-                            context, context.read<ProfileSettingsCubit>()),
-                        buttonTitle: 'Add Story'),
+                      onPressed: () => _showPopUp(
+                          context, context.read<ProfileSettingsCubit>()),
+                      buttonTitle: 'Add Story',
+                      buttonKey: Key('AddStories'),
+                    ),
                   ],
                 ),
               ),
