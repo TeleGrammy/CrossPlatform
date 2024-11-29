@@ -12,7 +12,9 @@ import 'package:telegrammy/features/auth/presentation/views/account_verification
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
+import 'package:telegrammy/features/messages/presentation/views/contacts_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
@@ -62,14 +64,25 @@ class AppRoutes {
         //   create: (context) => SignUpCubit(),
         //   child: const SignUpView(),
         // ),
-        name: RouteNames.oneToOneMessaging,
+        // name: RouteNames.oneToOneMessaging,
         path: '/',
-        builder: (context, state) => ChatDetails(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => ContactsCubit(),
+          child: ContactsScreen(),
+        ),
       ),
       GoRoute(
         name: RouteNames.forwardToPage,
         path: '/forwardToPage',
         builder: (context, state) => ForwardToPage(),
+      ),
+      GoRoute(
+        name: RouteNames.oneToOneMessaging,
+        path: '/oneToOneMessaging',
+  builder: (context, state) {
+    final participantNames = state.extra as String? ?? 'Unknown Participants';
+    return ChatDetails(participantNames: participantNames);
+  },
       ),
       GoRoute(
         name: RouteNames.emailVerification,

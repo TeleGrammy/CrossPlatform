@@ -173,6 +173,9 @@ class _BottomBarState extends State<BottomBar> {
               await _stopRecording();
             } else if (_isTyping) {
               widget.onSend(_messageController.text.trim());
+              setState(() {
+                _messageController.clear();
+              });
             } else {
               await _startRecording();
             }

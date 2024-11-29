@@ -3,25 +3,57 @@ import 'package:flutter/material.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/audio_player_widget.dart';
 
-class ChatDetailsBody extends StatelessWidget {
+class ChatDetailsBody extends StatefulWidget {
   final void Function(Message message) onMessageTap;
   final void Function(Message message) onMessageSwipe;
   final Message? selectedMessage;
-  final ScrollController scrollController;
 
   const ChatDetailsBody({
     super.key,
     required this.onMessageTap,
     required this.onMessageSwipe,
     required this.selectedMessage,
-    required this.scrollController,
   });
+
+  @override
+  State<ChatDetailsBody> createState() => _ChatDetailsBodyState();
+}
+
+class _ChatDetailsBodyState extends State<ChatDetailsBody> {
+  final ScrollController scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    // Scroll to the bottom after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
+
+  @override
+  void didUpdateWidget(ChatDetailsBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Scroll to the bottom if the message list is updated
+    if (scrollController.hasClients &&
+        oldWidget.selectedMessage != widget.selectedMessage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    }
+  }
+
+  void _scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
 
   void _scrollToMessage(Message message) {
     final index = messages.indexWhere((m) => m.text == message.text);
     if (index != -1) {
+      final messagePosition = index * 72.0; // Approximate height per message
       scrollController.animateTo(
-        (messages.length - 1 - index) * 72.0,
+        messagePosition,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -39,11 +71,11 @@ class ChatDetailsBody extends StatelessWidget {
       itemBuilder: (context, index) {
         final message = messages[index];
         final isSentByUser = message.isSentByUser;
-        final isSelected = message == selectedMessage;
+        final isSelected = message == widget.selectedMessage;
 
         return GestureDetector(
           onHorizontalDragEnd: (details) {
-            onMessageSwipe(message);
+            widget.onMessageSwipe(message);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -66,7 +98,7 @@ class ChatDetailsBody extends StatelessWidget {
                     : MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () => onMessageTap(message),
+                    onTap: () => widget.onMessageTap(message),
                     child: Container(
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.7,
