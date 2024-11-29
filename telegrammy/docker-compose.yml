@@ -14,7 +14,7 @@
 #   my-network:
 services:
   backend:
-    image: telegrammy/backend:profile-management # telegrammy/backend:[module_name] (check with the backend repo)
+    image:  telegrammy/backend:messaging # telegrammy/backend:[module_name] (check with the backend repo)
 
     ports: 
       - "8080:${PORT}"
