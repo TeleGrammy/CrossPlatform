@@ -56,7 +56,7 @@ class _StoriesPageState extends State<StoriesPage> {
                       onPressed: () => _showPopUp(
                           context, context.read<ProfileSettingsCubit>()),
                       buttonTitle: 'Add Story',
-                      buttonKey: Key('AddStories'),
+                      buttonKey: Key('AddStoryButton'),
                     ),
                   ],
                 ),

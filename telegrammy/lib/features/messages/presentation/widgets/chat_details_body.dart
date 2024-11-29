@@ -1,27 +1,59 @@
+import 'package:audioplayers/audioplayers.dart'; // Add this package for audio playback
 import 'package:flutter/material.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
+import 'package:telegrammy/features/messages/presentation/widgets/audio_player_widget.dart';
 
-class ChatDetailsBody extends StatelessWidget {
+class ChatDetailsBody extends StatefulWidget {
   final void Function(Message message) onMessageTap;
-  final void Function(Message message)
-      onMessageSwipe; // Callback for swipe action
+  final void Function(Message message) onMessageSwipe;
   final Message? selectedMessage;
-  final ScrollController scrollController;
 
   const ChatDetailsBody({
     super.key,
     required this.onMessageTap,
     required this.onMessageSwipe,
     required this.selectedMessage,
-    required this.scrollController,
   });
+
+  @override
+  State<ChatDetailsBody> createState() => _ChatDetailsBodyState();
+}
+
+class _ChatDetailsBodyState extends State<ChatDetailsBody> {
+  final ScrollController scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    // Scroll to the bottom after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+  }
+
+  @override
+  void didUpdateWidget(ChatDetailsBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Scroll to the bottom if the message list is updated
+    if (scrollController.hasClients &&
+        oldWidget.selectedMessage != widget.selectedMessage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    }
+  }
+
+  void _scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
 
   void _scrollToMessage(Message message) {
     final index = messages.indexWhere((m) => m.text == message.text);
-    print(messages.length - 1 - index);
     if (index != -1) {
+      final messagePosition = index * 72.0; // Approximate height per message
       scrollController.animateTo(
-        (messages.length - 1 - 0) * 72.0,
+        messagePosition,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -35,16 +67,15 @@ class ChatDetailsBody extends StatelessWidget {
     return ListView.builder(
       controller: scrollController,
       itemCount: messages.length,
-      padding: EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       itemBuilder: (context, index) {
         final message = messages[index];
         final isSentByUser = message.isSentByUser;
-        final isSelected = message == selectedMessage;
+        final isSelected = message == widget.selectedMessage;
 
         return GestureDetector(
           onHorizontalDragEnd: (details) {
-            // Swipe right detected
-            onMessageSwipe(message);
+            widget.onMessageSwipe(message);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -54,12 +85,12 @@ class ChatDetailsBody extends StatelessWidget {
                   : Colors.white,
             ),
             child: AnimatedPadding(
-              duration: Duration(milliseconds: 300), // Animation duration
-              curve: Curves.easeInOut, // Animation curve
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
               padding: isSelected
                   ? (isSentByUser
-                      ? EdgeInsets.only(right: 50, top: 4, bottom: 4)
-                      : EdgeInsets.only(left: 50, top: 4, bottom: 4))
+                      ? const EdgeInsets.only(right: 50, top: 4, bottom: 4)
+                      : const EdgeInsets.only(left: 50, top: 4, bottom: 4))
                   : const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
               child: Row(
                 mainAxisAlignment: isSentByUser
@@ -67,22 +98,24 @@ class ChatDetailsBody extends StatelessWidget {
                     : MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () => onMessageTap(message),
+                    onTap: () => widget.onMessageTap(message),
                     child: Container(
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.7),
-                      padding: EdgeInsets.all(12.0),
+                        maxWidth: MediaQuery.of(context).size.width * 0.7,
+                      ),
+                      padding: const EdgeInsets.all(12.0),
                       decoration: BoxDecoration(
-                        color: (isSentByUser
-                            ? Colors.blue[100]
-                            : Colors.grey[200]),
+                        color:
+                            isSentByUser ? Colors.blue[100] : Colors.grey[200],
                         borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(12),
-                          topRight: Radius.circular(12),
-                          bottomLeft:
-                              isSentByUser ? Radius.circular(12) : Radius.zero,
-                          bottomRight:
-                              isSentByUser ? Radius.zero : Radius.circular(12),
+                          topLeft: const Radius.circular(12),
+                          topRight: const Radius.circular(12),
+                          bottomLeft: isSentByUser
+                              ? const Radius.circular(12)
+                              : Radius.zero,
+                          bottomRight: isSentByUser
+                              ? Radius.zero
+                              : const Radius.circular(12),
                         ),
                       ),
                       child: Column(
@@ -92,32 +125,35 @@ class ChatDetailsBody extends StatelessWidget {
                             GestureDetector(
                               onTap: () => _scrollToMessage(message.repliedTo!),
                               child: Container(
-                                padding: EdgeInsets.all(8.0),
-                                margin: EdgeInsets.only(bottom: 8.0),
+                                padding: const EdgeInsets.all(8.0),
+                                margin: const EdgeInsets.only(bottom: 8.0),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[300],
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
                                 child: Text(
-                                  message.repliedTo!.text,
-                                  style: TextStyle(
+                                  message.repliedTo!.text ?? '',
+                                  style: const TextStyle(
                                     fontStyle: FontStyle.italic,
                                     color: Colors.black54,
                                   ),
                                 ),
                               ),
                             ),
-                          Text(
-                            message.text,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 16.0,
+                          if (message.audioUrl != null)
+                            AudioPlayerWidget(audioUrl: message.audioUrl!)
+                          else
+                            Text(
+                              message.text,
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontSize: 16.0,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 4.0),
+                          const SizedBox(height: 4.0),
                           Text(
                             'Sent at ${message.time}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black45,
                               fontSize: 12.0,
                             ),

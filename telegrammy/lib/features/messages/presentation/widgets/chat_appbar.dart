@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const ChatAppbar({super.key});
+  final String participantNames;
+  const ChatAppbar({required this.participantNames, super.key});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -44,7 +47,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => context.go('/'),
       ),
       title: Row(
         children: [
@@ -56,7 +59,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Person Name'),
+              Text('person name'),
               Text('Last seen: 10 minutes ago', style: TextStyle(fontSize: 12)),
             ],
           ),
