@@ -16,7 +16,7 @@ class ContactsScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            
+            context.goNamed(RouteNames.profileInfo);
           },
           icon: Icon(Icons.person),
         ),

@@ -35,7 +35,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
       appBar: ProfileSettingsAppBar(
         title: 'Profile Info',
         backButtonOnPressed: () {
-          context.goNamed(RouteNames.home);
+          context.goNamed(RouteNames.contacts);
         },
         actions: [
           IconButton(
@@ -97,7 +97,6 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
                                 title: Text('Privacy and Security Settings'),
                                 trailing: Icon(Icons.arrow_forward),
                                 onTap: () {
-                                  //TODO: navigate to privacy settings
                                   context
                                       .pushNamed(RouteNames.profilePrivacyPage);
                                 })

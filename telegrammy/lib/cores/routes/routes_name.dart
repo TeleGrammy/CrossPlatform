@@ -22,8 +22,7 @@ class RouteNames {
   static String changeUsername = 'changeUsername';
   static String changeEmail = 'changeEmail';
   static String changePhoneNumber = 'changePhoneNumber';
-  static String stories = 'storiesPage';
-  static String storyView = 'storyView';
+  static String contacts = 'contacts';
   static String blockingView = 'blockingView';
   static String ContactsToBlockFromView = 'contactsToBlockFromView';
 }

@@ -11,9 +11,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   setupServiceLocator();
-  // await getit.get<TokenStorageService>().deleteToken(); //clearing the 
+  // await getit.get<TokenStorageService>().deleteToken(); //clearing the
   // await getit.get<TokenStorageService>().deleteEmail();
-  runApp( 
+  runApp(
     const MyApp(),
   );
 }
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
-          scaffoldBackgroundColor: const Color.fromARGB(255, 249, 249, 249)),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 15, 118, 146)),
     );
   }
 }

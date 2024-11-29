@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../cores/routes/routes_name.dart';
+
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String participantNames;
 
@@ -52,8 +54,8 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: IconButton(
         key: const Key('back_button'),
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => context.go('/'),
+        icon: Icon(Icons.arrow_back),
+        onPressed: () => context.goNamed(RouteNames.contacts),
       ),
       title: Row(
         key: const Key('appbar_title_row'),

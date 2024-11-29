@@ -47,40 +47,26 @@ class AppRoutes {
     //   RoutesHelper helper = RoutesHelper();
     //   final bool isLoggedin = await helper.isLoggedIn();
     //   final bool issignedUp = await helper.isSignedUp();
-
+    //
     //   // If the user has logged in and tries to access sign-up or login, send them to the home page
     //   if (isLoggedin && state.uri.toString() == '/') {
-    //     return '/home'; //redirect to the app main screen
+    //     return '/contacts'; //redirect to the app main screen
     //   }
-
+    //
     //   // If the user has signedup but not verified send them to the verification page
     //   if (!isLoggedin && issignedUp) {
     //     return '/email-verification';
     //   }
-
+    //
     //   // If the user is not authenticated and tries to access home, send them to the login/signup page
-    //   if (!isLoggedin && !issignedUp && state.uri.toString() == '/home') {
+    //   if (!isLoggedin && !issignedUp) {
     //     return '/'; // Redirect to sign-up or login
     //   }
-
+    //
     //   // Return null to indicate no redirection needed
     //   return null;
     // },
     routes: [
-      GoRoute(
-        // name: RouteNames.signUp,
-        // path: '/',
-        // builder: (context, state) => BlocProvider(
-        //   create: (context) => SignUpCubit(),
-        //   child: const SignUpView(),
-        // ),
-        // name: RouteNames.oneToOneMessaging,
-        path: '/contacts',
-        builder: (context, state) => BlocProvider(
-          create: (context) => ContactsCubit(),
-          child: ContactsScreen(),
-        ),
-      ),
       GoRoute(
         name: RouteNames.signUp,
         path: '/',
@@ -88,12 +74,14 @@ class AppRoutes {
           create: (context) => SignUpCubit(),
           child: const SignUpView(),
         ),
-        // name: RouteNames.oneToOneMessaging,
-        // path: '/contacts',
-        // builder: (context, state) => BlocProvider(
-        //   create: (context) => ContactsCubit(),
-        //   child: ContactsScreen(),
-        // ),
+      ),
+      GoRoute(
+        name: RouteNames.contacts,
+        path: '/contacts',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ContactsCubit(),
+          child: ContactsScreen(),
+        ),
       ),
       GoRoute(
         name: RouteNames.forwardToPage,
