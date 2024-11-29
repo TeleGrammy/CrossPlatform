@@ -8,17 +8,13 @@ class StatusAndLastSeenList extends StatelessWidget {
   final String? status;
   final DateTime? lastSeen;
 
-  final List<String> _statusOptions = const [
-    "Online",
-    "Busy",
-    "Away",
-    "Offline",
-  ];
+  final List<String> _statusOptions = const ["active", "inactive", "banned"];
   @override
   Widget build(BuildContext context) {
     return SettingsBox(
       children: [
         ListTile(
+          key: const ValueKey('StatusTile'),
           title: Text(status ?? '-'),
           subtitle: Text('Status'),
           trailing: DropdownButton<String>(
@@ -35,6 +31,7 @@ class StatusAndLastSeenList extends StatelessWidget {
           ),
         ),
         ListTile(
+          key: const ValueKey('LastSeenTile'),
           title: Text(lastSeen != null ? lastSeen.toString() : '-'),
           subtitle: Text('Last Seen'),
         ),

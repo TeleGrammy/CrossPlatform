@@ -34,12 +34,16 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
     return Scaffold(
       appBar: ProfileSettingsAppBar(
         title: 'Profile Info',
+        backButtonOnPressed: () {
+          context.goNamed(RouteNames.home);
+        },
         actions: [
           IconButton(
-            icon: Icon(Icons.edit),
-            color: Colors.white,
-            onPressed: () => context.pushNamed(RouteNames.editProfileInfo),
-          ),
+              icon: Icon(Icons.edit),
+              color: Colors.white,
+              onPressed: () => context.goNamed(RouteNames
+                  .editProfileInfo) //context.pushNamed(RouteNames.editProfileInfo),
+              ),
         ],
       ),
       body: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
@@ -59,21 +63,23 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: 20),
-                        ProfilePictureCircle(image: state.user.profilePic),
+                        ProfilePictureCircle(
+                            imageUrl: state.profileInfo.profilePic),
                         SizedBox(height: 20),
                         Text(
-                          state.user.screenName ?? "",
+                          state.profileInfo.screenName ?? "",
                           style: textStyle30,
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 20),
-                        BasicInfoList(user: state.user),
+                        BasicInfoList(profileInfo: state.profileInfo),
                         SizedBox(height: 20),
                         StatusAndLastSeenList(
-                            status: state.user.status,
-                            lastSeen: state.user.lastSeen),
+                            status: state.profileInfo.status,
+                            lastSeen: state.profileInfo.lastSeen),
                         SizedBox(height: 20),
                         SettingsBox(
+                          valueKey: const ValueKey('StoriesBox'),
                           children: [
                             ListTile(
                               title: Text('My Stories'),
@@ -85,6 +91,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
                         ),
                         SizedBox(height: 20),
                         SettingsBox(
+                          valueKey: const ValueKey('PrivacySettingsBox'),
                           children: [
                             ListTile(
                                 title: Text('Privacy and Security Settings'),

@@ -43,6 +43,7 @@ class ChangeProfilePictureButton extends StatelessWidget {
     final profileCubit = context.read<ProfileSettingsCubit>();
 
     return TextButton(
+        key: const ValueKey('ChangeProfilePictureButton'),
         onPressed: () => _showOptions(context, profileCubit),
         child: Text('Change Profile Picture', style: textStyle17));
   }

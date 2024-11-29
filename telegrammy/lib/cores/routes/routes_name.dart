@@ -17,6 +17,9 @@ class RouteNames {
   static String forwardToPage = 'forwardToPage';
   static String profileInfo = 'profileInfo';
   static String editProfileInfo = 'editProfileInfo';
-  static String stories = 'storiesPage';
-  static String storyView = 'storyView';
+  static String createChannel = 'createChannel';
+  static String channel = 'channel';
+  static String changeUsername = 'changeUsername';
+  static String changeEmail = 'changeEmail';
+  static String changePhoneNumber = 'changePhoneNumber';
 }

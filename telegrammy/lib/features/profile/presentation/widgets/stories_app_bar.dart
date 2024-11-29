@@ -11,9 +11,8 @@ class StoriesBar extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         onPressed: () {
           context.goNamed(
-      RouteNames.home,
-      
-    );
+            RouteNames.profileInfo,
+          );
         },
         icon: Icon(Icons.arrow_back, color: Colors.white),
       ),
@@ -37,28 +36,28 @@ class StoriesBar extends StatelessWidget implements PreferredSizeWidget {
           },
           icon: Icon(Icons.search, color: Colors.white),
         ),
-      PopupMenuButton<String>(
-  onSelected: (value) {
-    if (value == 'Settings') {
-      context.goNamed(RouteNames.profilePrivacyPage);
-    } else if (value == 'Story Settings') {
-      context.pushNamed(RouteNames.storiesPage);
-    }
-  },
-  icon: Icon(Icons.settings, color: Colors.white),
-  itemBuilder: (BuildContext context) {
-    return [
-      PopupMenuItem(
-        value: 'Settings',
-        child: Text('Settings'),
-      ),
-      PopupMenuItem(
-        value: 'Story Settings',
-        child: Text('Story Settings'),
-      ),
-    ];
-  },
-),
+        PopupMenuButton<String>(
+          onSelected: (value) {
+            if (value == 'Settings') {
+              context.goNamed(RouteNames.profilePrivacyPage);
+            } else if (value == 'Story Settings') {
+              context.pushNamed(RouteNames.storiesPage);
+            }
+          },
+          icon: Icon(Icons.settings, color: Colors.white),
+          itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem(
+                value: 'Settings',
+                child: Text('Settings'),
+              ),
+              PopupMenuItem(
+                value: 'Story Settings',
+                child: Text('Story Settings'),
+              ),
+            ];
+          },
+        ),
       ],
     );
   }

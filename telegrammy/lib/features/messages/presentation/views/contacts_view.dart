@@ -14,8 +14,13 @@ class ContactsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
-        title: const Text('Contacts'),
+        leading: IconButton(
+          onPressed: () {
+            
+          },
+          icon: Icon(Icons.person),
+        ),
+        title: Text('Contacts'),
         backgroundColor: Colors.blueAccent,
       ),
       body: BlocBuilder<ContactsCubit, ContactsState>(

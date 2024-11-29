@@ -2,26 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/settings_box.dart';
 
 class BasicInfoList extends StatelessWidget {
-  final user;
-  const BasicInfoList({required this.user});
+  final profileInfo;
+  const BasicInfoList({required this.profileInfo});
   @override
   Widget build(BuildContext context) {
     return SettingsBox(
       children: [
         ListTile(
-          title: Text(user.username != null ? '@${user.username}' : ""),
+          key: const ValueKey('UsernameTile'),
+          title: Text(
+              profileInfo.username != null ? '@${profileInfo.username}' : ""),
           subtitle: Text('Username'),
         ),
         ListTile(
-          title: Text(user.email),
+          key: const ValueKey('EmailTile'),
+          title: Text(profileInfo.email),
           subtitle: Text('email'),
         ),
         ListTile(
-          title: Text(user.phoneNumber ?? ""),
+          key: const ValueKey('PhoneNumberTile'),
+          title: Text(profileInfo.phoneNumber ?? ""),
           subtitle: Text('phone number'),
         ),
         ListTile(
-          title: Text(user.bio ?? ""),
+          key: const ValueKey('BioTile'),
+          title: Text(profileInfo.bio ?? ""),
           subtitle: Text('Bio'),
         ),
       ],
