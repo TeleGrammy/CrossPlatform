@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/bio_text_field.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/change_profile_picture_button.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
 import '../../view_models/profile_settings_cubit/profile_state.dart';
 import '../../widgets/profile_settings/profile_picture_circle.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/settings_box.dart';
+import 'dart:io';
 
 class EditProfileInfoView extends StatefulWidget {
   const EditProfileInfoView({super.key});
@@ -19,17 +22,11 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _screenNameController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
 
   @override
   void dispose() {
     _screenNameController.dispose();
-    _usernameController.dispose();
-    _emailController.dispose();
-    _phoneNumberController.dispose();
     _bioController.dispose();
     super.dispose();
   }
@@ -45,6 +42,9 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
     return Scaffold(
         appBar: ProfileSettingsAppBar(
           title: 'Edit Profile Info',
+          backButtonOnPressed: () {
+            context.goNamed(RouteNames.profileInfo);
+          },
           actions: [
             TextButton(
                 onPressed: () async {
@@ -53,15 +53,13 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                         .read<ProfileSettingsCubit>()
                         .updateBasicProfileInfo(
                             screenName: _screenNameController.text,
-                            userName: _usernameController.text,
-                            email: _emailController.text,
-                            phoneNumber: _phoneNumberController.text,
                             bio: _bioController.text);
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Profile updated successfully!')),
                     );
-                    context.pop();
+                    //context.pop();
+                    context.goNamed(RouteNames.profileInfo);
                   }
                 },
                 child: Text(
@@ -81,25 +79,23 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
           }
 
           if (state is ProfileLoaded) {
-            _screenNameController.text = state.user.screenName ?? "";
-            _usernameController.text = state.user.username ?? "";
-            _emailController.text = state.user.email;
-            _phoneNumberController.text = state.user.phoneNumber ?? "";
-            _bioController.text = state.user.bio ?? "";
+            _screenNameController.text = state.profileInfo.screenName ?? "";
+            _bioController.text = state.profileInfo.bio ?? "";
 
             return SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: SingleChildScrollView(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: 20),
-                    ProfilePictureCircle(image: state.user.profilePic),
-                    ChangeProfilePictureButton(),
-                    SizedBox(height: 20),
-                    Form(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: 20),
+                      ProfilePictureCircle(
+                          imageUrl: state.profileInfo.profilePic),
+                      ChangeProfilePictureButton(),
+                      SizedBox(height: 20),
+                      Form(
                         key: _formKey,
                         child: Column(children: [
                           ProfileInfoTextFormField(
@@ -113,55 +109,42 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                               return null;
                             },
                           ),
-                          ProfileInfoTextFormField(
-                            valueKey: const ValueKey('UsernameTextField'),
-                            controller: _usernameController,
-                            labelText: 'Username',
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a username';
-                              }
-                              //TODO: verify username is unique
-                              return null;
-                            },
-                          ),
-                          ProfileInfoTextFormField(
-                            valueKey: const ValueKey('EmailTextField'),
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            labelText: 'Email',
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter an email';
-                              }
-                              if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                                return 'Please enter a valid email address';
-                              }
-                              return null;
-                            },
-                          ),
-                          ProfileInfoTextFormField(
-                            valueKey: const ValueKey('PhoneNumberTextField'),
-                            controller: _phoneNumberController,
-                            keyboardType: TextInputType.number,
-                            labelText: 'Phone Number',
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a phone number';
-                              }
-                              if (value.length != 11) {
-                                return 'Phone number must be 11 digits';
-                              }
-                              return null;
-                            },
-                          ),
                           BioTextField(
                             controller: _bioController,
                             valueKey: const ValueKey('BioTextField'),
                           ),
-                        ])),
-                  ],
-                )),
+                        ]),
+                      ),
+                      SizedBox(height: 40),
+                      SettingsBox(
+                        valueKey: const ValueKey('EditProfileInfoBox'),
+                        children: [
+                          ListTile(
+                            title: Text('Change username'),
+                            trailing: Icon(Icons.arrow_forward),
+                            onTap: () {
+                              context.pushNamed(RouteNames.changeUsername);
+                            },
+                          ),
+                          ListTile(
+                            title: Text('Change email'),
+                            trailing: Icon(Icons.arrow_forward),
+                            onTap: () {
+                              context.pushNamed(RouteNames.changeEmail);
+                            },
+                          ),
+                          ListTile(
+                            title: Text('Change phone number'),
+                            trailing: Icon(Icons.arrow_forward),
+                            onTap: () {
+                              context.pushNamed(RouteNames.changePhoneNumber);
+                            },
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               ),
             );
           }

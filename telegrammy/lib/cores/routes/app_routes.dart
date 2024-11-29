@@ -18,6 +18,9 @@ import 'package:telegrammy/features/profile/presentation/view_models/privacy_cub
 import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_privacy_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_email.dart';
+import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_phone_number.dart';
+import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_username.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/stories_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
@@ -199,21 +202,29 @@ class AppRoutes {
         ),
       ),
       GoRoute(
-        name: RouteNames.stories,
-        path: '/storiesPage',
+        name: RouteNames.changeUsername,
+        path: '/change-username',
         builder: (context, state) => BlocProvider(
           create: (context) => ProfileSettingsCubit(),
-          child: StoriesPage(),
+          child: ChangeUsernameView(),
         ),
       ),
       GoRoute(
-        name: RouteNames.storyView,
-        path: '/storyView',
-        builder: (context, state) {
-          final image = state.extra as File;
-          return StoryView(image: image);
-        },
+        name: RouteNames.changeEmail,
+        path: '/change-email',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ProfileSettingsCubit(),
+          child: ChangeEmailView(),
+        ),
       ),
+      GoRoute(
+        name: RouteNames.changePhoneNumber,
+        path: '/change-phone-number',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ProfileSettingsCubit(),
+          child: ChangePhoneNumberView(),
+        ),
+      )
     ],
   );
 }

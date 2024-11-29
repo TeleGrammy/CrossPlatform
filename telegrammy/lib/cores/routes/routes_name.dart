@@ -16,6 +16,7 @@ class RouteNames {
   static String oneToOneMessaging = 'oneToOneMessaging';
   static String profileInfo = 'profileInfo';
   static String editProfileInfo = 'editProfileInfo';
-  static String stories = 'storiesPage';
-  static String storyView = 'storyView';
+  static String changeUsername = 'changeUsername';
+  static String changeEmail = 'changeEmail';
+  static String changePhoneNumber = 'changePhoneNumber';
 }

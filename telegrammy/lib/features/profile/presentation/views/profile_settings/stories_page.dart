@@ -31,7 +31,10 @@ class _StoriesPageState extends State<StoriesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProfileSettingsAppBar(title: 'My Stories'),
+      appBar: ProfileSettingsAppBar(
+        title: 'My Stories',
+        backButtonOnPressed: () => context.goNamed(RouteNames.profileInfo),
+      ),
       body: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
           builder: (context, state) {
         print(state);
@@ -42,7 +45,7 @@ class _StoriesPageState extends State<StoriesPage> {
         } else if (state is ProfileError) {
           return Center(child: Text(state.errorMessage));
         } else if (state is ProfileLoaded) {
-          print(state.user.stories);
+          //print(state.user.stories);
           return SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -51,7 +54,7 @@ class _StoriesPageState extends State<StoriesPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    getStoryCards(context, state.user.stories),
+                    //getStoryCards(context, state.user.stories),
                     RoundedButton(
                         buttonKey: const ValueKey('AddStoryButton'),
                         onPressed: () => _showPopUp(
@@ -123,8 +126,8 @@ class _StoriesPageState extends State<StoriesPage> {
               Expanded(
                 child: TextButton(
                   onPressed: () {
-                    context.pushNamed(RouteNames.storyView,
-                        extra: storyImageFile);
+                    //context.pushNamed(RouteNames.storyView,
+                    //    extra: storyImageFile);
                   },
                   child: Text("View"),
                   style: TextButton.styleFrom(
