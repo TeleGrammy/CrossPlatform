@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';  // Import GoRouter
+import 'package:go_router/go_router.dart'; // Import GoRouter
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 // import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
@@ -27,10 +27,14 @@ class PrivacyOptions extends StatelessWidget {
         // Loaded state
         if (state is PrivacyOptionsLoaded) {
           return Column(
+            key: const ValueKey('PrivacyOptions'),
             children: [
-              buildPrivacyTile(context, 'Last Seen & Online', 'lastSeen', state.privacyOptions.lastSeen),
-              buildPrivacyTile(context, 'Profile Photo', 'profilePicture', state.privacyOptions.profilePicture),
-              buildPrivacyTile(context, 'Stories', 'stories', state.privacyOptions.stories),
+              buildPrivacyTile(context, 'Last Seen & Online', 'lastSeen',
+                  state.privacyOptions.lastSeen),
+              buildPrivacyTile(context, 'Profile Photo', 'profilePicture',
+                  state.privacyOptions.profilePicture),
+              buildPrivacyTile(
+                  context, 'Stories', 'stories', state.privacyOptions.stories),
             ],
           );
         }
@@ -41,28 +45,30 @@ class PrivacyOptions extends StatelessWidget {
   }
 }
 
-
-  Widget buildPrivacyTile(BuildContext context, String title, String optionKey, String? optionValue) {
-    return Container(
-      color: primaryColor,
-      child: ListTile(
-        leading: Text(
-          title,
-          style: textStyle17.copyWith(fontWeight: FontWeight.w400),
-        ),
-        trailing: Text(
-          _privacyOptionText(optionValue),
-          style: textStyle17.copyWith(fontWeight: FontWeight.w400, color: tileInfoHintColor),
-        ),
-        onTap: () {
-          navigateToPrivacySettings(context, title, optionKey);
-        },
+Widget buildPrivacyTile(
+    BuildContext context, String title, String optionKey, String? optionValue) {
+  return Container(
+    color: primaryColor,
+    child: ListTile(
+      leading: Text(
+        title,
+        style: textStyle17.copyWith(fontWeight: FontWeight.w400),
       ),
-    );
-  }
+      trailing: Text(
+        _privacyOptionText(optionValue),
+        style: textStyle17.copyWith(
+            fontWeight: FontWeight.w400, color: tileInfoHintColor),
+      ),
+      onTap: () {
+        navigateToPrivacySettings(context, title, optionKey);
+      },
+    ),
+  );
+}
 
 String _privacyOptionText(String? option) {
-  switch (option?.toLowerCase()) { // Use lowercase for consistent matching
+  switch (option?.toLowerCase()) {
+    // Use lowercase for consistent matching
     case 'everyone':
       return 'Everyone';
     case 'my contacts':
@@ -74,9 +80,10 @@ String _privacyOptionText(String? option) {
   }
 }
 
-  void navigateToPrivacySettings(BuildContext context, String title, String optionKey) {
-    context.goNamed(
-      RouteNames.privacyAllowablePage,
-      extra: {'title': title, 'optionKey': optionKey},
-    );
-  }
+void navigateToPrivacySettings(
+    BuildContext context, String title, String optionKey) {
+  context.goNamed(
+    RouteNames.privacyAllowablePage,
+    extra: {'title': title, 'optionKey': optionKey},
+  );
+}

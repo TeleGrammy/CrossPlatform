@@ -110,7 +110,10 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GeneralAppBar('Create Story'),
+      appBar: GeneralAppBar(
+        titleBar: 'Create Story',
+        key: const ValueKey('CreatingUserStoryAppBar'),
+      ),
       backgroundColor: Colors.black, // Set background color to black
       body: Column(
         children: [
@@ -128,6 +131,7 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
                   ),
           ),
           Padding(
+            key: const ValueKey('AddStoryCaptionField'),
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _captionController,
@@ -146,6 +150,7 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
             ),
           ),
           Row(
+            key: const ValueKey('StoryOptionsRow'),
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(

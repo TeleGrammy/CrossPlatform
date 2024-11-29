@@ -268,7 +268,7 @@ class ApiService {
       //       ),
       //     );
       final response = await getit.get<Dio>().get(
-            'http://10.0.2.2:8080/api/v1/chats/all-chats?page=1&limit=50',
+            '$baseUrl/chats/all-chats?page=1&limit=50',
             options: Options(
               headers: {
                 'Authorization': 'Bearer $token',

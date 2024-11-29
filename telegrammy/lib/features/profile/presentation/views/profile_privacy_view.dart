@@ -28,8 +28,12 @@ class _PrivacyViewState extends State<PrivacyView> {
     return BlocProvider(
       create: (_) => _cubit,
       child: Scaffold(
-        appBar: GeneralAppBar('Privacy & Security'),
+        appBar: GeneralAppBar(
+          titleBar: 'Privacy & Security',
+          key: const ValueKey('PrivacyAndSecurityAppBar'),
+        ),
         body: Container(
+          key: const ValueKey('PrivacyAndSecuritySettingsBody'),
           // color: backGroundColor,
           width: double.infinity,
           height: double.infinity,

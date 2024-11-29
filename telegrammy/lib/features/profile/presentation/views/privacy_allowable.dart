@@ -18,7 +18,10 @@ class PrivacyAllowablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GeneralAppBar(title),
+      appBar: GeneralAppBar(
+        titleBar: title,
+        key: const ValueKey('PrivacyAllowableAppBar'),
+      ),
       backgroundColor: secondaryColor,
       body: BlocBuilder<PrivacySettingsCubit, PrivacyState>(
         builder: (context, state) {
@@ -36,11 +39,15 @@ class PrivacyAllowablePage extends StatelessWidget {
                     : profileVisibility.lastSeen;
 
             return Column(
+              key: const ValueKey('PrivacyOptionsColumn'),
               children: [
                 SizedBox(height: 50),
-                buildPrivacyAllowableTile(context, 'Everybody', PrivacyOption.everyone, selectedOption),
-                buildPrivacyAllowableTile(context, 'My Contacts', PrivacyOption.contacts, selectedOption),
-                buildPrivacyAllowableTile(context, 'Nobody', PrivacyOption.nobody, selectedOption),
+                buildPrivacyAllowableTile(context, 'Everybody',
+                    PrivacyOption.everyone, selectedOption),
+                buildPrivacyAllowableTile(context, 'My Contacts',
+                    PrivacyOption.contacts, selectedOption),
+                buildPrivacyAllowableTile(
+                    context, 'Nobody', PrivacyOption.nobody, selectedOption),
               ],
             );
           }
@@ -56,13 +63,15 @@ class PrivacyAllowablePage extends StatelessWidget {
     );
   }
 
-  Widget buildPrivacyAllowableTile(BuildContext context, String title, PrivacyOption value, String? selectedOption) {
+  Widget buildPrivacyAllowableTile(BuildContext context, String title,
+      PrivacyOption value, String? selectedOption) {
     return Container(
       color: appBarDarkMoodColor,
       child: RadioListTile<PrivacyOption>(
         title: Text(
           title,
-          style: textStyle17.copyWith(fontWeight: FontWeight.w400, color: Colors.white),
+          style: textStyle17.copyWith(
+              fontWeight: FontWeight.w400, color: Colors.white),
         ),
         value: value,
         groupValue: _getPrivacyOptionFromName(selectedOption),
@@ -70,7 +79,9 @@ class PrivacyAllowablePage extends StatelessWidget {
         onChanged: (PrivacyOption? selectedValue) {
           if (selectedValue != null) {
             print('iam hereeeeeeeeeeeeeeeeeeeeeeee');
-            context.read<PrivacySettingsCubit>().updatePrivacyOption(optionKey, selectedValue);
+            context
+                .read<PrivacySettingsCubit>()
+                .updatePrivacyOption(optionKey, selectedValue);
             // Navigator.pop(context);
           }
         },

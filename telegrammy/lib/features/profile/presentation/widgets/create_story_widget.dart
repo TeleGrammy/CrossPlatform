@@ -8,10 +8,12 @@ class CreateStoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: const ValueKey('CreateStory'),
       padding: EdgeInsets.symmetric(vertical: 20), // Adjust vertical padding
       alignment: Alignment.centerLeft, // Align container content to the left
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Align children to the start (left)
+        mainAxisAlignment:
+            MainAxisAlignment.start, // Align children to the start (left)
         children: [
           GestureDetector(
             onTap: () {
@@ -23,11 +25,14 @@ class CreateStoryWidget extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30, // Size of the circle
-                  backgroundImage: AssetImage('assets/images/story_image.jpg'), // Replace with your asset
+                  backgroundImage: AssetImage(
+                      'assets/images/story_image.jpg'), // Replace with your asset
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.blue, width: 2), // Border around the avatar
+                      border: Border.all(
+                          color: Colors.blue,
+                          width: 2), // Border around the avatar
                     ),
                   ),
                 ),
@@ -60,11 +65,13 @@ class CreateStoryWidget extends StatelessWidget {
           ),
           SizedBox(width: 40), // Space between avatar and text
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Align texts to the start within the column
+            crossAxisAlignment: CrossAxisAlignment
+                .start, // Align texts to the start within the column
             children: [
               Text(
                 'My Status',
-                style: textStyle17.copyWith(fontWeight: FontWeight.w600), // Title 1
+                style: textStyle17.copyWith(
+                    fontWeight: FontWeight.w600), // Title 1
               ),
               GestureDetector(
                 onTap: () {
@@ -73,7 +80,8 @@ class CreateStoryWidget extends StatelessWidget {
                 },
                 child: Text(
                   'Tap to see your status update',
-                  style: textStyle17.copyWith(fontWeight: FontWeight.w400, color: tileInfoHintColor),
+                  style: textStyle17.copyWith(
+                      fontWeight: FontWeight.w400, color: tileInfoHintColor),
                 ),
               ),
             ],

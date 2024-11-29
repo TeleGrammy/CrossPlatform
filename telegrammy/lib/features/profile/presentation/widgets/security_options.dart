@@ -38,6 +38,7 @@ class _SecurityOptionsState extends State<SecurityOptions> {
         return Column(
           children: [
             Container(
+              key: const ValueKey('SecurityOptions'),
               color: primaryColor, // Set the background color for the tile
               child: ListTile(
                 leading: Icon(Icons.block, color: Colors.red),
@@ -46,7 +47,8 @@ class _SecurityOptionsState extends State<SecurityOptions> {
                   style: textStyle17.copyWith(fontWeight: FontWeight.w400),
                 ),
                 trailing: Row(
-                  mainAxisSize: MainAxisSize.min, // Keep trailing elements constrained
+                  mainAxisSize:
+                      MainAxisSize.min, // Keep trailing elements constrained
                   children: [
                     Text(
                       '$blockedUsersCount',
@@ -55,14 +57,18 @@ class _SecurityOptionsState extends State<SecurityOptions> {
                         color: tileInfoHintColor,
                       ), // Display blocked users count
                     ),
-                    SizedBox(width: 8), // Add some space between the count and the icon
-                    Icon(Icons.arrow_forward, color: tileForwardArrowColor), // Arrow icon for navigation
+                    SizedBox(
+                        width:
+                            8), // Add some space between the count and the icon
+                    Icon(Icons.arrow_forward,
+                        color:
+                            tileForwardArrowColor), // Arrow icon for navigation
                   ],
                 ),
                 onTap: () {
                   print('Blocked users pressed');
                   // Navigate to blocked users page
-                          context.pushNamed(RouteNames.blockingView);
+                  context.pushNamed(RouteNames.blockingView);
                 },
               ),
             ),

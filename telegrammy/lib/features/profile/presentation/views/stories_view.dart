@@ -11,13 +11,15 @@ class StoriesView extends StatelessWidget {
     return Scaffold(
       appBar: StoriesBar(),
       body: Container(
+        key: const ValueKey('StoryViewKey'),
         // color: appBarDarkMoodColor,
         width: double.infinity,
         height: double.infinity,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-            padding: const EdgeInsets.only(left: 20.0), // Adjust the top padding here
+            padding: const EdgeInsets.only(
+                left: 20.0), // Adjust the top padding here
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -30,9 +32,8 @@ class StoriesView extends StatelessWidget {
                 CreateStoryWidget(),
                 // SizedBox(height: 50),
                 // StoryListWidget(),
-                
-                // PrivacyOptions(),
 
+                // PrivacyOptions(),
               ],
             ),
           ),

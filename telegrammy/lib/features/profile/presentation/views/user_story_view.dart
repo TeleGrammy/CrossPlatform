@@ -84,7 +84,10 @@ class _UserStoryViewState extends State<UserStoryView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GeneralAppBar("My Status"),
+      appBar: GeneralAppBar(
+        titleBar: "My Status",
+        key: const ValueKey('UserStoryAppBar'),
+      ),
       backgroundColor: secondaryColor,
       body: BlocBuilder<StoriesCubit, StoryState>(
         builder: (context, state) {
@@ -101,6 +104,7 @@ class _UserStoryViewState extends State<UserStoryView> {
             }
 
             return Stack(
+              key: const ValueKey('UserStoryStack'),
               children: [
                 StoryView(
                   storyItems: state.storyResponse.data.map((story) {

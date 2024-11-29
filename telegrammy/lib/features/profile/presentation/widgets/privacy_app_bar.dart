@@ -21,12 +21,16 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       title: Text(
         titleBar,
-        style: textStyle17.copyWith(fontWeight: FontWeight.w600), // Ensure textStyle17 is defined in your styles
+        style: textStyle17.copyWith(
+            fontWeight: FontWeight
+                .w600), // Ensure textStyle17 is defined in your styles
       ),
-      backgroundColor: appBarDarkMoodColor, // Ensure appBarDarkMoodColor is defined in your app_colors.dart
+      backgroundColor:
+          appBarDarkMoodColor, // Ensure appBarDarkMoodColor is defined in your app_colors.dart
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight); // Default height of the AppBar
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight); // Default height of the AppBar
 }

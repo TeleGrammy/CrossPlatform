@@ -26,7 +26,10 @@ class _BlockingPageState extends State<BlockingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Colors.black, // Set background to black
-      appBar: GeneralAppBar('Blocked Users'),
+      appBar: GeneralAppBar(
+        titleBar: 'Blocked Users',
+        key: const ValueKey('BlockedUsersAppBar'),
+      ),
       body: BlocBuilder<BlockedUsersCubit, BlockedUsersState>(
         builder: (context, state) {
           if (state is BlockedUsersLoaded) {
@@ -34,8 +37,11 @@ class _BlockingPageState extends State<BlockingPage> {
 
             return Column(
               children: [
-                SizedBox(height: 30,),
+                SizedBox(
+                  height: 30,
+                ),
                 Expanded(
+                  key: const ValueKey('BlockedUsersListView'),
                   child: blockedUsers.isNotEmpty
                       ? ListView.builder(
                           itemCount: blockedUsers.length,
@@ -45,13 +51,15 @@ class _BlockingPageState extends State<BlockingPage> {
                               tileColor: primaryColor, // Tile background color
                               title: Text(
                                 user.userName,
-                                style: TextStyle(color: tileInfoHintColor), // Text color
+                                style: TextStyle(
+                                    color: tileInfoHintColor), // Text color
                               ),
                               trailing: IconButton(
-                                icon: Icon(Icons.lock_open, color: Colors.green),
+                                icon:
+                                    Icon(Icons.lock_open, color: Colors.green),
                                 onPressed: () {
                                   // context.read<BlockedUsersCubit>().removeBlockedUser(user.id);
-                                  print('unbloced');
+                                  print('unblocked');
                                 },
                               ),
                             );
@@ -60,11 +68,14 @@ class _BlockingPageState extends State<BlockingPage> {
                       : Center(
                           child: Text(
                             'No users blocked yet.',
-                            style: TextStyle(color: tileInfoHintColor), // Text color for contrast
+                            style: TextStyle(
+                                color:
+                                    tileInfoHintColor), // Text color for contrast
                           ),
                         ),
                 ),
                 ElevatedButton.icon(
+                  key: const ValueKey('BlockUserButton'),
                   icon: Icon(
                     Icons.person_add,
                     size: 24.0,
@@ -72,10 +83,11 @@ class _BlockingPageState extends State<BlockingPage> {
                   ),
                   label: Text(
                     'Add User to Block List',
-                    style: TextStyle(color: appBarDarkMoodColor), // Button text color
+                    style: TextStyle(
+                        color: appBarDarkMoodColor), // Button text color
                   ),
                   onPressed: () {
-                  context.pushNamed(RouteNames.ContactsToBlockFromView);
+                    context.pushNamed(RouteNames.ContactsToBlockFromView);
                     print('contacts');
                   },
                 ),
@@ -84,9 +96,11 @@ class _BlockingPageState extends State<BlockingPage> {
             );
           } else if (state is BlockedUsersError) {
             return Center(
+              key: const ValueKey('BlockUserErrorText'),
               child: Text(
                 state.message,
-                style: TextStyle(color: Colors.white), // Error message text color
+                style:
+                    TextStyle(color: Colors.white), // Error message text color
               ),
             );
           }

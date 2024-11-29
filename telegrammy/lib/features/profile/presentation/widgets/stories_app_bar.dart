@@ -8,6 +8,7 @@ class StoriesBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      key: const ValueKey('StoriesAppBar'),
       leading: IconButton(
         onPressed: () {
           context.goNamed(
