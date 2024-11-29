@@ -6,6 +6,8 @@ import 'package:telegrammy/features/messages/presentation/view_models/contacts_c
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ContactsScreen extends StatelessWidget {
+  const ContactsScreen({Key? key}) : super(key: key); // Add a key to the ContactsScreen widget
+
   @override
   Widget build(BuildContext context) {
     context.read<ContactsCubit>().getContacts();
@@ -24,10 +26,11 @@ class ContactsScreen extends StatelessWidget {
       body: BlocBuilder<ContactsCubit, ContactsState>(
         builder: (context, state) {
           if (state is ContactsLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (state is ContactsSuccess) {
             final contacts = state.contacts;
             return ListView.builder(
+              key: const Key('contactsList'), // Add a key to the ListView
               itemCount: contacts.length,
               itemBuilder: (context, index) {
                 final contact = contacts[index];
@@ -35,6 +38,7 @@ class ContactsScreen extends StatelessWidget {
                     contact.participants.map((p) => p.user.username).join(', ');
 
                 return ContactItem(
+                  key: Key('contactItem_$index'), // Unique key for each ContactItem
                   title: contact.isGroup
                       ? 'Group: $participantNames'
                       : participantNames,
@@ -43,9 +47,9 @@ class ContactsScreen extends StatelessWidget {
               },
             );
           } else if (state is ContactsFailture) {
-            return Center(child: Text('Failed to load contacts'));
+            return const Center(child: Text('Failed to load contacts'));
           } else {
-            return Center(child: Text('No contacts available'));
+            return const Center(child: Text('No contacts available'));
           }
         },
       ),
@@ -58,20 +62,22 @@ class ContactItem extends StatelessWidget {
   final String subtitle;
 
   const ContactItem({
+    Key? key, // Add key to the ContactItem widget
     required this.title,
     required this.subtitle,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      key: Key('contactItemTile_$title'), // Key for the ListTile
       title: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
         subtitle,
-        style: TextStyle(fontSize: 14, color: Colors.grey),
+        style: const TextStyle(fontSize: 14, color: Colors.grey),
       ),
       onTap: () {
         context.goNamed(

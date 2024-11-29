@@ -28,13 +28,18 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      key: const Key('audio_player_row'),
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
+          key: const Key('play_pause_button'),
           icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
           onPressed: _togglePlayPause,
         ),
-        Text(isPlaying ? 'Playing...' : 'Paused'),
+        Text(
+          isPlaying ? 'Playing...' : 'Paused',
+          key: const Key('play_status_text'),
+        ),
       ],
     );
   }

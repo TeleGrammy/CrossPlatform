@@ -127,9 +127,11 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      key: const Key('bottom_bar_row'),
       children: [
         if (!_isRecording)
           IconButton(
+            key: const Key('emoji_button'),
             icon: Icon(Icons.insert_emoticon),
             onPressed: () {
               _showEmojiPicker(context);
@@ -137,6 +139,7 @@ class _BottomBarState extends State<BottomBar> {
           ),
         if (_isRecording)
           IconButton(
+            key: const Key('delete_recording_button'),
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
               setState(() {
@@ -146,12 +149,15 @@ class _BottomBarState extends State<BottomBar> {
             },
           ),
         Expanded(
+          key: const Key('message_input_container'),
           child: _isRecording
               ? Text(
                   'Recording...',
+                  key: const Key('recording_status_text'),
                   style: TextStyle(color: Colors.red),
                 )
               : TextField(
+                  key: const Key('message_input_field'),
                   controller: _messageController,
                   decoration: InputDecoration(
                     hintText: 'Type a message',
@@ -160,6 +166,7 @@ class _BottomBarState extends State<BottomBar> {
                 ),
         ),
         IconButton(
+          key: const Key('send_or_record_button'),
           icon: Icon(
             _isRecording
                 ? Icons.stop

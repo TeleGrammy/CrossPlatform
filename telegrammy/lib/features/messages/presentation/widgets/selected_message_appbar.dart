@@ -5,26 +5,38 @@ class SelectedMessageAppbar extends StatelessWidget
   final Function() onMessageUnTap;
   final Function() onClickEdit;
   final Function() onClickDelete;
-  const SelectedMessageAppbar({super.key, required this.onMessageUnTap,required this.onClickEdit,required this.onClickDelete});
+
+  const SelectedMessageAppbar({
+    super.key,
+    required this.onMessageUnTap,
+    required this.onClickEdit,
+    required this.onClickDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // title: Text('Edit/Delete'),
-      leading: IconButton(onPressed: onMessageUnTap, icon: Icon(Icons.close)),
+      key: const Key('selected_message_appbar'),
+      leading: IconButton(
+        key: const Key('selected_message_close_button'),
+        onPressed: onMessageUnTap,
+        icon: const Icon(Icons.close),
+      ),
       actions: [
         IconButton(
-          icon: Icon(Icons.edit),
-          onPressed:onClickEdit,
+          key: const Key('selected_message_edit_button'),
+          icon: const Icon(Icons.edit),
+          onPressed: onClickEdit,
         ),
         IconButton(
+          key: const Key('selected_message_delete_button'),
+          icon: const Icon(Icons.delete),
           onPressed: onClickDelete,
-          icon: Icon(Icons.delete),
         ),
       ],
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
