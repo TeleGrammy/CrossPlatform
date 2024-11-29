@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:telegrammy/cores/errors/Failture.dart';
 import 'package:telegrammy/cores/services/profile_api_service.dart';
 import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart';
+import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart';
 import 'package:telegrammy/features/profile/data/models/stories_model.dart';
 import 'package:telegrammy/features/profile/data/repos/profile_repo.dart';
 import 'package:telegrammy/features/profile/data/models/profile_visibility_model.dart';
@@ -41,18 +42,34 @@ class ProfileRepoImplementation extends ProfileRepo {
     }
   }
 
-  @override
-  Future<Either<Failure, BlockedUsersResponse>> getBlockedUser() async {
-    try {
-      // Call the API service to get blocked users
-      final blockedUsersResponse = await profileApiService.getBlockedUsers();
-      return Right(blockedUsersResponse); // Successful response
-    } catch (error) {
-      // Handle the error and return a failure
-      return Left(ServerError(errorMessage: error.toString()));
-    }
+@override
+Future<Either<Failure, BlockedUsersResponse>> getBlockedUser() async {
+  try {
+    // print('salma');
+    // Call the API service to get blocked users
+    final blockedUsersResponse = await profileApiService.getBlockedUsers();
+    
+    return Right(blockedUsersResponse); // Successful response
+  } catch (error) {
+    // print('error');
+    // Handle the error and return a failure
+    return Left(ServerError(errorMessage: error.toString()));
   }
-
+}
+@override
+Future<Either<Failure, ContactsResponse>> getContacts() async {
+  try {
+    // print('salma');
+    // Call the API service to get blocked users
+    final contactsResponse = await profileApiService.getContacts();
+    
+    return Right(contactsResponse); // Successful response
+  } catch (error) {
+    // print('error');
+    // Handle the error and return a failure
+    return Left(ServerError(errorMessage: error.toString()));
+  }
+}
 ///////////////////////////////////////////
   @override
   Future<Either<Failure, StoryResponse>> getUserStories() async {

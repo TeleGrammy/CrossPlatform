@@ -21,7 +21,7 @@ class StoriesBar extends StatelessWidget implements PreferredSizeWidget {
         'Stories',
         style: textStyle17.copyWith(fontWeight: FontWeight.w600),
       ),
-      backgroundColor: appBarDarkMoodColor,
+      backgroundColor: primaryColor,
       actions: [
         IconButton(
           onPressed: () {

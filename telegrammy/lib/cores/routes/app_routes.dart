@@ -20,7 +20,10 @@ import 'package:telegrammy/features/messages/presentation/view_models/contacts_c
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/views/contacts_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/views/blocked_users_view.dart';
+import 'package:telegrammy/features/profile/presentation/views/contacts_to_block.dart';
 import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_privacy_view.dart';
@@ -158,12 +161,41 @@ class AppRoutes {
         builder: (context, state) => MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => PrivacySettingsCubit(),
-            ),
+        create: (context) => PrivacySettingsCubit(),
+      ),
+      BlocProvider(
+        create: (context) => BlockedUsersCubit(), // Initialize and load blocked users
+      ),
           ],
           child: PrivacyView(),
         ),
       ),
+      GoRoute(
+  name: RouteNames.blockingView,
+  path: '/blocking_view',
+  builder: (context, state) => MultiBlocProvider(
+    providers: [
+      
+      BlocProvider(
+        create: (context) => BlockedUsersCubit(), // Initialize and load blocked users
+      ),
+    ],
+    child: BlockingPage(),
+  ),
+),
+GoRoute(
+  name: RouteNames.ContactsToBlockFromView,
+  path: '/contacts_view',
+  builder: (context, state) => MultiBlocProvider(
+    providers: [
+      
+      BlocProvider(
+        create: (context) =>ContactstoCubit(), // Initialize and load blocked users
+      ),
+    ],
+    child:  ContactsPage(),
+  ),
+),
       GoRoute(
         name: RouteNames.privacyAllowablePage,
         path: '/privacy-allowable',

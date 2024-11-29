@@ -44,7 +44,7 @@ class PrivacyOptions extends StatelessWidget {
 
   Widget buildPrivacyTile(BuildContext context, String title, String optionKey, String? optionValue) {
     return Container(
-      color: appBarDarkMoodColor,
+      color: primaryColor,
       child: ListTile(
         leading: Text(
           title,

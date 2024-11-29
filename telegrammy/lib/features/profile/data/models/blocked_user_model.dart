@@ -4,37 +4,45 @@ class BlockedUsersResponse {
 
   BlockedUsersResponse({required this.status, required this.data});
 
-  // Factory constructor to create an instance from JSON
   factory BlockedUsersResponse.fromJson(Map<String, dynamic> json) {
+    // print("Parsing BlockedUsersResponse: $json");
+
+    final blockedUsers = (json['data']?['blockedUsers'] as List<dynamic>? ?? []);
+    // print("Blocked Users: $blockedUsers");
+
+    final userDataList = UserData.listFromJson(blockedUsers);
+    // print("Final Parsed UserData List: $userDataList");
+
     return BlockedUsersResponse(
-      status: json['status'],
-      data: List<UserData>.from(json['data'].map((item) => UserData.fromJson(item))),
+      status: json['status'] ?? "unknown",
+      data: userDataList,
     );
   }
 }
 
 class UserData {
   final String userId;
-  final String username;
+  final String userName;
 
-  UserData({required this.userId, required this.username});
+  UserData({required this.userId, required this.userName});
 
-  // Factory constructor to create an instance from JSON
   factory UserData.fromJson(Map<String, dynamic> json) {
+    // print("Parsing UserData: $json");
     return UserData(
       userId: json['userId'],
-      username: json['username'],
+      userName: json['userName'],
     );
   }
-}
-class UserActionRequest {
-  final String userId;
 
-  UserActionRequest({required this.userId});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'userId': userId,
-    };
+  static List<UserData> listFromJson(List<dynamic> jsonList) {
+    // print("Parsing List of UserData: $jsonList");
+    return jsonList.map((json) {
+      final userData = UserData.fromJson(json as Map<String, dynamic>);
+      // print("Parsed UserData: ${userData.userId}, ${userData.userName}");
+      return userData;
+    }).toList();
   }
+
+  @override
+  String toString() => "UserData(userId: $userId, userName: $userName)";
 }

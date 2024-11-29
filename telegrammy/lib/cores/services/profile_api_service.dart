@@ -7,6 +7,7 @@ import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:telegrammy/features/profile/data/models/profile_info_model.dart';
+import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart';
 import 'package:telegrammy/features/profile/data/models/profile_visibility_model.dart';
 import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart';
 import 'package:telegrammy/features/profile/data/models/stories_model.dart';
@@ -56,18 +57,39 @@ class ProfileApiService {
   Future<BlockedUsersResponse> getBlockedUsers() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
+    //  print('token:$token');
       final response = await dio.get(
-        '$baseUrl2/privacy/settings/blocked-users',
+        '$baseUrl2/privacy/settings/get-blocked-users',
         options: Options(headers: {
-          'Authorization': 'token $token',
+          'Authorization': 'Bearer $token',
         }),
       );
-
+      // print(BlockedUsersResponse.fromJson(response.data));
       return BlockedUsersResponse.fromJson(response.data);
     } on DioException catch (dioError) {
+      // print('error');
       throw Exception('Error fetching blocked users: ${dioError.message}');
     }
   }
+
+     Future<ContactsResponse> getContacts() async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
+    //  print('token:$token');
+      final response = await dio.get(
+        '$baseUrl2/privacy/settings/get-contacts',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      print(response);
+      return ContactsResponse.fromJson(response.data);
+    } on DioException catch (dioError) {
+      // print('error');
+      throw Exception('Error fetching blocked users: ${dioError.message}');
+    }
+  }
+
 
 ////////////////////////////////////////////////////////Stories
   Future<StoryResponse> getUserStories() async {

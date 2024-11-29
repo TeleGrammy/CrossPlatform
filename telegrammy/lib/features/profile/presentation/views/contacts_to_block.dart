@@ -1,50 +1,93 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:telegrammy/cores/styles/styles.dart';
-// import 'package:telegrammy/cores/constants/app_colors.dart';
-// import 'package:telegrammy/cores/widgets/app_bar.dart';
-// import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart'; 
-// import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:telegrammy/cores/styles/styles.dart';
+import 'package:telegrammy/cores/constants/app_colors.dart';
+import 'package:telegrammy/cores/widgets/app_bar.dart';
+import 'package:telegrammy/features/profile/data/repos/profile_repo.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_state.dart';
 
-// class ContactsPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     final contacts = [
-//       User(id: 4, name: 'User 4', isBlocked: false),
-//       User(id: 5, name: 'User 5', isBlocked: false),
-//     ];
 
-//     return Scaffold(
-//       appBar: GeneralAppBar(
-//         'Block User', // Title for the app bar
-//       ),
-//       body: Container(
-//         color: Colors.black, // Set background color of the column to black
-//         child: Column(
-//           children: [
-//             Expanded(
-//               child: ListView.builder(
-//                 itemCount: contacts.length,
-//                 itemBuilder: (context, index) {
-//                   final user = contacts[index];
-//                   return ListTile(
-//                     tileColor: Colors.white, // White background for each tile
-//                     leading: Icon(Icons.person, color: tileInfoHintColor),
-//                     title: Text(
-//                       user.name,
-//                       style: TextStyle(color: tileInfoHintColor), // Text color for contrast
-//                     ),
-//                     onTap: () {
-//                       context.read<SecurityCubit>().addBlockedUser(user);                   
-//                       Navigator.pop(context); // Go back after blocking the user
-//                     },
-//                   );
-//                 },
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+class ContactsPage extends StatefulWidget {
+  @override
+  _ContactsPageState createState() => _ContactsPageState();
+}
+
+class _ContactsPageState extends State<ContactsPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Load contacts when the widget is initialized
+    context.read<ContactstoCubit>().loadContacts();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: GeneralAppBar('Block User'),
+      body: BlocBuilder<ContactstoCubit, ContactstoState>(
+        builder: (context, state) {
+          if (state is ContactsLoading) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is ContactsError) {
+            return Center(
+              child: Text(
+                state.message,
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          } else if (state is ContactsLoaded) {
+            final contacts = state.contacts;
+
+            return Column(
+  children: [
+    SizedBox(height: 30),
+    Expanded(
+      child: contacts.isNotEmpty
+          ? ListView.builder(
+              itemCount: contacts.length,
+              itemBuilder: (context, index) {
+                final contact = contacts[index];
+                return ListTile(
+                  tileColor: primaryColor, // Tile background color
+                  leading: CircleAvatar(
+       backgroundImage: AssetImage('assets/images/logo.png'), // Use AssetImage for image assets
+    radius: 20, // Size of the circular avatar
+  ),
+                  title: Text(
+                    contact.contactId,
+                    style: TextStyle(color: tileInfoHintColor), // Text color
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.block, color: Colors.red),
+                    onPressed: () {
+                      // Uncomment and implement block user functionality
+                      // context.read<ContactsCubit>().blockUser(contact.contactId);
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(
+                      //     content: Text('${contact.userName} has been blocked.'),
+                      //   ),
+                      // );
+                    },
+                  ),
+                );
+              },
+            )
+          : Center(
+              child: Text(
+                'No contacts available.',
+                style: TextStyle(color: tileInfoHintColor), // Text color for contrast
+              ),
+            ),
+    ),
+  ],
+);
+
+          }
+
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
+  }
+}

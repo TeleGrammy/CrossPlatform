@@ -6,6 +6,7 @@ import 'package:telegrammy/cores/widgets/app_bar.dart';
 // import 'package:telegrammy/features/profile/presentation/widgets/security_options.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/privacy_options.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/security_options.dart';
 
 class PrivacyView extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ class _PrivacyViewState extends State<PrivacyView> {
       child: Scaffold(
         appBar: GeneralAppBar('Privacy & Security'),
         body: Container(
-          color: secondaryColor,
+          // color: backGroundColor,
           width: double.infinity,
           height: double.infinity,
           child: SingleChildScrollView(
@@ -38,7 +39,7 @@ class _PrivacyViewState extends State<PrivacyView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 50),
-                // SecurityOptions(), // Uncomment if needed
+                SecurityOptions(), // Uncomment if needed
                 SizedBox(height: 50),
                 PrivacyOptions(), // This will now receive updates from the cubit
               ],

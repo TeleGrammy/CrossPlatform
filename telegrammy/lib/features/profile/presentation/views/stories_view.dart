@@ -11,7 +11,7 @@ class StoriesView extends StatelessWidget {
     return Scaffold(
       appBar: StoriesBar(),
       body: Container(
-        color: appBarDarkMoodColor,
+        // color: appBarDarkMoodColor,
         width: double.infinity,
         height: double.infinity,
         child: SingleChildScrollView(
