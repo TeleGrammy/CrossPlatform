@@ -21,6 +21,7 @@ class ChatDetailsBody extends StatefulWidget {
 
 class _ChatDetailsBodyState extends State<ChatDetailsBody> {
   final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +66,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      key: const Key('chat_messages_list'),
       controller: scrollController,
       itemCount: messages.length,
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -74,10 +76,14 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
         final isSelected = message == widget.selectedMessage;
 
         return GestureDetector(
+          key: Key('message_${message.id}'),
           onHorizontalDragEnd: (details) {
             widget.onMessageSwipe(message);
           },
           child: Container(
+            key: isSelected
+                ? Key('selected_message_${message.id}')
+                : Key('unselected_message_${message.id}'),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: isSelected
@@ -85,6 +91,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                   : Colors.white,
             ),
             child: AnimatedPadding(
+              key: Key('animated_padding_${message.id}'),
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               padding: isSelected
@@ -98,8 +105,10 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                     : MainAxisAlignment.start,
                 children: [
                   GestureDetector(
+                    key: Key('message_container_${message.id}'),
                     onTap: () => widget.onMessageTap(message),
                     child: Container(
+                      key: Key('message_bubble_${message.id}'),
                       constraints: BoxConstraints(
                         maxWidth: MediaQuery.of(context).size.width * 0.7,
                       ),
@@ -119,12 +128,16 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                         ),
                       ),
                       child: Column(
+                        key: Key('message_content_${message.id}'),
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (message.repliedTo != null)
                             GestureDetector(
-                              onTap: () => _scrollToMessage(message.repliedTo!),
+                              key: Key('replied_message_${message.id}'),
+                              onTap: () =>
+                                  _scrollToMessage(message.repliedTo!),
                               child: Container(
+                                key: Key('replied_message_container_${message.id}'),
                                 padding: const EdgeInsets.all(8.0),
                                 margin: const EdgeInsets.only(bottom: 8.0),
                                 decoration: BoxDecoration(
@@ -141,10 +154,14 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                               ),
                             ),
                           if (message.audioUrl != null)
-                            AudioPlayerWidget(audioUrl: message.audioUrl!)
+                            AudioPlayerWidget(
+                              key: Key('audio_player_${message.id}'),
+                              audioUrl: message.audioUrl!,
+                            )
                           else
                             Text(
                               message.text,
+                              key: Key('message_text_${message.id}'),
                               style: const TextStyle(
                                 color: Colors.black87,
                                 fontSize: 16.0,
@@ -153,6 +170,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                           const SizedBox(height: 4.0),
                           Text(
                             'Sent at ${message.time}',
+                            key: Key('message_time_${message.id}'),
                             style: const TextStyle(
                               color: Colors.black45,
                               fontSize: 12.0,

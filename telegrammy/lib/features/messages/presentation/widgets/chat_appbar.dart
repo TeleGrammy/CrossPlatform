@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String participantNames;
+
   const ChatAppbar({required this.participantNames, super.key});
 
   void _showSettingsMenu(BuildContext context) {
@@ -11,9 +11,11 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
       context: context,
       builder: (context) {
         return ListView(
+          key: const Key('settings_menu_list'),
           children: [
             ListTile(
-              title: Text('Mute'),
+              key: const Key('settings_mute_option'),
+              title: const Text('Mute'),
               onTap: () => _showMuteOptions(context),
             ),
           ],
@@ -27,13 +29,16 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
       context: context,
       builder: (context) {
         return ListView(
+          key: const Key('mute_options_list'),
           children: [
             ListTile(
-              title: Text('Mute for 1 hour'),
+              key: const Key('mute_1_hour_option'),
+              title: const Text('Mute for 1 hour'),
               onTap: () {},
             ),
             ListTile(
-              title: Text('Mute Permanently'),
+              key: const Key('mute_permanent_option'),
+              title: const Text('Mute Permanently'),
               onTap: () {},
             ),
           ],
@@ -46,32 +51,45 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        key: const Key('back_button'),
+        icon: const Icon(Icons.arrow_back),
         onPressed: () => context.go('/'),
       ),
       title: Row(
+        key: const Key('appbar_title_row'),
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage('assets/images/logo.png'),
+            key: const Key('profile_picture'),
+            backgroundImage: const AssetImage('assets/images/logo.png'),
             radius: 20,
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Column(
+            key: const Key('participant_info_column'),
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('person name'),
-              Text('Last seen: 10 minutes ago', style: TextStyle(fontSize: 12)),
+            children: const [
+              Text(
+                'person name',
+                key: Key('participant_name'),
+              ),
+              Text(
+                'Last seen: 10 minutes ago',
+                key: Key('last_seen_info'),
+                style: TextStyle(fontSize: 12),
+              ),
             ],
           ),
         ],
       ),
       actions: [
         IconButton(
-          icon: Icon(Icons.call),
+          key: const Key('call_button'),
+          icon: const Icon(Icons.call),
           onPressed: () {},
         ),
         IconButton(
-          icon: Icon(Icons.more_vert),
+          key: const Key('settings_button'),
+          icon: const Icon(Icons.more_vert),
           onPressed: () => _showSettingsMenu(context),
         ),
       ],
@@ -79,5 +97,5 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

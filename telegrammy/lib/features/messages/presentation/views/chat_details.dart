@@ -10,14 +10,14 @@ import 'package:telegrammy/features/messages/presentation/widgets/selected_messa
 class ChatDetails extends StatefulWidget {
   final String participantNames;
 
-  const ChatDetails({super.key, required this.participantNames});
+  const ChatDetails({Key? key, required this.participantNames})
+      : super(key: key); // Key for ChatDetails widget
 
   @override
   State<ChatDetails> createState() => _ChatDetailsState();
 }
 
 class _ChatDetailsState extends State<ChatDetails> {
-  // Add ScrollController
   Message? _selectedMessage;
   Message? _repliedMessage;
   Message? _editedMessage;
@@ -61,20 +61,20 @@ class _ChatDetailsState extends State<ChatDetails> {
         text: "message has been deleted",
         time: DateTime.now().toString(),
         isSentByUser: true,
-        repliedTo: null, // Store replied message
+        repliedTo: null,
       ));
-      _clearReply(); // Clear after sending
+      _clearReply();
     });
   }
 
-  void _onSend(text) {
+  void _onSend(String text) {
     if (text.trim().isNotEmpty) {
       setState(() {
         messages.add(Message(
           text: text,
           time: DateTime.now().toString(),
           isSentByUser: true,
-          repliedTo: _repliedMessage, // Store replied message
+          repliedTo: _repliedMessage,
         ));
       });
     }
@@ -83,14 +83,13 @@ class _ChatDetailsState extends State<ChatDetails> {
   void _onEdit(Message message, String editedString) {
     if (editedString.trim().isNotEmpty) {
       final index = messages.indexOf(message);
-      // after this you need to edit the message
       setState(() {
-        messages.add(Message(
+        messages[index] = Message(
           text: editedString,
           time: DateTime.now().toString(),
           isSentByUser: true,
-          repliedTo: message.repliedTo, // Store replied message
-        ));
+          repliedTo: message.repliedTo,
+        );
       });
     }
   }
@@ -110,9 +109,12 @@ class _ChatDetailsState extends State<ChatDetails> {
         backgroundColor: Colors.white,
         appBar: _selectedMessage == null
             ? ChatAppbar(
+                key: const Key('chatAppBar'), // Key for ChatAppbar
                 participantNames: widget.participantNames,
               )
             : SelectedMessageAppbar(
+                key: const Key(
+                    'selectedMessageAppBar'), // Key for SelectedMessageAppbar
                 onMessageUnTap: () {
                   setState(() => _selectedMessage = null);
                 },
@@ -123,6 +125,7 @@ class _ChatDetailsState extends State<ChatDetails> {
           children: [
             Expanded(
               child: ChatDetailsBody(
+                key: const Key('chatDetailsBody'), // Key for ChatDetailsBody
                 onMessageTap: _onMessageTap,
                 onMessageSwipe: _onMessageSwipe,
                 selectedMessage: _selectedMessage,
@@ -130,6 +133,7 @@ class _ChatDetailsState extends State<ChatDetails> {
             ),
             if (_repliedMessage != null)
               Padding(
+                key: const Key('replyPreview'), // Key for ReplyPreview
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: ReplyPreview(
                   repliedMessage: _repliedMessage!,
@@ -138,12 +142,15 @@ class _ChatDetailsState extends State<ChatDetails> {
               ),
             _selectedMessage == null
                 ? BottomBar(
+                    key: const Key('bottomBar'), // Key for BottomBar
                     onSend: _onSend,
                     onSendAudio: _onSendAudio,
                     onEdit: _onEdit,
                     editedMessage: _editedMessage,
                   )
                 : SelectedMessageBottomBar(
+                    key: const Key(
+                        'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
                     onReply: () {
                       _onMessageSwipe(_selectedMessage!);
                       setState(() {
