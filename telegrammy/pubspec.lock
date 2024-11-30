@@ -732,26 +732,26 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_sound
-      sha256: "1f40b26b92907a433afe877c927cd48f5a2e4d0f7188e5d39eb5756008aa51ab"
+      sha256: f6e8694d86d39b52f34ff4317a941f5caba9a96a85564a015ebfd16191aad0b1
       url: "https://pub.dev"
     source: hosted
-    version: "9.6.0"
+    version: "9.17.0"
   flutter_sound_platform_interface:
     dependency: transitive
     description:
       name: flutter_sound_platform_interface
-      sha256: "2e218521d8187b9a4c65063ad9c79bfe88119531ff68047a2eaa6b027cb276bb"
+      sha256: "8a11edfd753c89f63c0f956f783ca5101c17214f3a6a8ee801ef0061e3983b30"
       url: "https://pub.dev"
     source: hosted
-    version: "9.6.0"
+    version: "9.17.0"
   flutter_sound_web:
     dependency: transitive
     description:
       name: flutter_sound_web
-      sha256: "5013a15e4e69a4bdc8badd729130eef43c3305e30ba8e6933f863436ce969932"
+      sha256: "9532dbc2460abcc09dad9d62ca06cbdb4161ddaa079d1f22b7bdedb7d4fb5816"
       url: "https://pub.dev"
     source: hosted
-    version: "9.6.0"
+    version: "9.17.0"
   flutter_staggered_grid_view:
     dependency: transitive
     description:
@@ -777,10 +777,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_web_auth
-      sha256: a69fa8f43b9e4d86ac72176bf747b735e7b977dd7cf215076d95b87cb05affdd
+      sha256: "95e4856e24fb6ac1678f5ff334743b63f782d839ab324543d29ccbd295176209"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.6.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -1035,7 +1035,7 @@ packages:
     source: hosted
     version: "1.0.4"
   js:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: js
       sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
@@ -1647,30 +1647,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
-  uni_links:
-    dependency: "direct main"
-    description:
-      name: uni_links
-      sha256: "051098acfc9e26a9fde03b487bef5d3d228ca8f67693480c6f33fd4fbb8e2b6e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.1"
-  uni_links_platform_interface:
-    dependency: transitive
-    description:
-      name: uni_links_platform_interface
-      sha256: "929cf1a71b59e3b7c2d8a2605a9cf7e0b125b13bc858e55083d88c62722d4507"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
-  uni_links_web:
-    dependency: transitive
-    description:
-      name: uni_links_web
-      sha256: "7539db908e25f67de2438e33cc1020b30ab94e66720b5677ba6763b25f6394df"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   universal_html:
     dependency: "direct main"
     description:
@@ -1936,5 +1912,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.5.1 <4.0.0"
+  dart: ">=3.5.3 <4.0.0"
   flutter: ">=3.24.3"
