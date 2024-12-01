@@ -3,11 +3,10 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
-import 'package:bloc/bloc.dart' as _i5;
+import 'package:bloc/bloc.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i3;
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart'
     as _i2;
 
@@ -24,6 +23,16 @@ import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/lo
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeLoginState_0 extends _i1.SmartFake implements _i2.LoginState {
+  _FakeLoginState_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [LoginCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -35,17 +44,17 @@ class MockLoginCubit extends _i1.Mock implements _i2.LoginCubit {
   @override
   _i2.LoginState get state => (super.noSuchMethod(
         Invocation.getter(#state),
-        returnValue: _i3.dummyValue<_i2.LoginState>(
+        returnValue: _FakeLoginState_0(
           this,
           Invocation.getter(#state),
         ),
       ) as _i2.LoginState);
 
   @override
-  _i4.Stream<_i2.LoginState> get stream => (super.noSuchMethod(
+  _i3.Stream<_i2.LoginState> get stream => (super.noSuchMethod(
         Invocation.getter(#stream),
-        returnValue: _i4.Stream<_i2.LoginState>.empty(),
-      ) as _i4.Stream<_i2.LoginState>);
+        returnValue: _i3.Stream<_i2.LoginState>.empty(),
+      ) as _i3.Stream<_i2.LoginState>);
 
   @override
   bool get isClosed => (super.noSuchMethod(
@@ -54,44 +63,44 @@ class MockLoginCubit extends _i1.Mock implements _i2.LoginCubit {
       ) as bool);
 
   @override
-  _i4.Future<void> signinWithGoogleCubit() => (super.noSuchMethod(
+  _i3.Future<void> signinWithGoogleCubit() => (super.noSuchMethod(
         Invocation.method(
           #signinWithGoogleCubit,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i4.Future<void> signInUser(dynamic userData) => (super.noSuchMethod(
+  _i3.Future<void> signInUser(dynamic userData) => (super.noSuchMethod(
         Invocation.method(
           #signInUser,
           [userData],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i4.Future<void> signinWithGithubCubit() => (super.noSuchMethod(
+  _i3.Future<void> signinWithGithubCubit() => (super.noSuchMethod(
         Invocation.method(
           #signinWithGithubCubit,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
-  _i4.Future<void> forgetPassword(dynamic email) => (super.noSuchMethod(
+  _i3.Future<void> forgetPassword(dynamic email) => (super.noSuchMethod(
         Invocation.method(
           #forgetPassword,
           [email],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 
   @override
   void emit(_i2.LoginState? state) => super.noSuchMethod(
@@ -103,7 +112,7 @@ class MockLoginCubit extends _i1.Mock implements _i2.LoginCubit {
       );
 
   @override
-  void onChange(_i5.Change<_i2.LoginState>? change) => super.noSuchMethod(
+  void onChange(_i4.Change<_i2.LoginState>? change) => super.noSuchMethod(
         Invocation.method(
           #onChange,
           [change],
@@ -144,12 +153,12 @@ class MockLoginCubit extends _i1.Mock implements _i2.LoginCubit {
       );
 
   @override
-  _i4.Future<void> close() => (super.noSuchMethod(
+  _i3.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 }

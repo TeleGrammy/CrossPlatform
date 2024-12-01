@@ -44,7 +44,7 @@ class ProfileApiService {
       await dio.patch(
         '$baseUrl2/privacy/settings/profile-visibility',
         options: Options(headers: {
-          'Authorization': 'Bearer$token',
+          'Authorization': 'Bearer $token',
           //  'Accept': 'application/json',
         }),
         data: profileVisibility.toJson(),
