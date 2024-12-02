@@ -26,6 +26,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
   @override
   void initState() {
     super.initState();
+    context.read<ProfileSettingsCubit>().loadBasicProfileInfo();
   }
 
   @override

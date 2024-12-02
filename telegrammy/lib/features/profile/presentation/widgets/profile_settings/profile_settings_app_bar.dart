@@ -21,6 +21,7 @@ class ProfileSettingsAppBar extends StatelessWidget
     return AppBar(
       key: const ValueKey('ProfileSettingsAppBar'),
       leading: IconButton(
+        key: const ValueKey('ProfileSettingsBackButton'),
         onPressed: () => backButtonOnPressed(),
         icon: Icon(Icons.arrow_back, color: Colors.white),
       ),

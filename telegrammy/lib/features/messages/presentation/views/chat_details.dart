@@ -14,48 +14,48 @@ class ChatDetails extends StatefulWidget {
       : super(key: key); // Key for ChatDetails widget
 
   @override
-  State<ChatDetails> createState() => _ChatDetailsState();
+  State<ChatDetails> createState() => ChatDetailsState();
 }
 
-class _ChatDetailsState extends State<ChatDetails> {
-  Message? _selectedMessage;
-  Message? _repliedMessage;
-  Message? _editedMessage;
+class ChatDetailsState extends State<ChatDetails> {
+  Message? selectedMessage;
+  Message? repliedMessage;
+  Message? editedMessage;
 
-  void _onMessageTap(Message message) {
+  void onMessageTap(Message message) {
     setState(() {
-      _selectedMessage = message;
+      selectedMessage = message;
     });
   }
 
-  void _onMessageSwipe(Message message) {
+  void onMessageSwipe(Message message) {
     setState(() {
-      _repliedMessage = message;
+      repliedMessage = message;
     });
   }
 
-  void _clearReply() {
+  void clearReply() {
     setState(() {
-      _repliedMessage = null;
-      _editedMessage = null;
+      repliedMessage = null;
+      editedMessage = null;
     });
   }
 
-  void _onSendAudio(Message message) {
+  void onSendAudio(Message message) {
     setState(() {
       messages.add(message);
     });
   }
 
-  void _onClickEdit() {
+  void onClickEdit() {
     setState(() {
-      _editedMessage = _selectedMessage;
-      _repliedMessage = _selectedMessage!.repliedTo;
-      _selectedMessage = null;
+      editedMessage = selectedMessage;
+      repliedMessage = selectedMessage!.repliedTo;
+      selectedMessage = null;
     });
   }
 
-  void _onClickDelete() {
+  void onClickDelete() {
     setState(() {
       messages.add(Message(
         text: "message has been deleted",
@@ -63,24 +63,24 @@ class _ChatDetailsState extends State<ChatDetails> {
         isSentByUser: true,
         repliedTo: null,
       ));
-      _clearReply();
+      clearReply();
     });
   }
 
-  void _onSend(String text) {
+  void onSend(String text) {
     if (text.trim().isNotEmpty) {
       setState(() {
         messages.add(Message(
           text: text,
           time: DateTime.now().toString(),
           isSentByUser: true,
-          repliedTo: _repliedMessage,
+          repliedTo: repliedMessage,
         ));
       });
     }
   }
 
-  void _onEdit(Message message, String editedString) {
+  void onEdit(Message message, String editedString) {
     if (editedString.trim().isNotEmpty) {
       final index = messages.indexOf(message);
       setState(() {
@@ -94,6 +94,13 @@ class _ChatDetailsState extends State<ChatDetails> {
     }
   }
 
+  void onReply() {
+    onMessageSwipe(selectedMessage!);
+    setState(() {
+      selectedMessage = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -101,13 +108,13 @@ class _ChatDetailsState extends State<ChatDetails> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           setState(() {
-            _selectedMessage = null;
+            selectedMessage = null;
           });
         }
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: _selectedMessage == null
+        appBar: selectedMessage == null
             ? ChatAppbar(
                 key: const Key('chatAppBar'), // Key for ChatAppbar
                 participantNames: widget.participantNames,
@@ -116,48 +123,44 @@ class _ChatDetailsState extends State<ChatDetails> {
                 key: const Key(
                     'selectedMessageAppBar'), // Key for SelectedMessageAppbar
                 onMessageUnTap: () {
-                  setState(() => _selectedMessage = null);
+                  setState(() => selectedMessage = null);
                 },
-                onClickEdit: _onClickEdit,
-                onClickDelete: _onClickDelete,
+                onClickEdit: onClickEdit,
+                onClickDelete: onClickDelete,
               ),
         body: Column(
           children: [
             Expanded(
               child: ChatDetailsBody(
                 key: const Key('chatDetailsBody'), // Key for ChatDetailsBody
-                onMessageTap: _onMessageTap,
-                onMessageSwipe: _onMessageSwipe,
-                selectedMessage: _selectedMessage,
+                onMessageTap: onMessageTap,
+                onMessageSwipe: onMessageSwipe,
+                selectedMessage: selectedMessage,
               ),
             ),
-            if (_repliedMessage != null)
+            if (repliedMessage != null)
               Padding(
                 key: const Key('replyPreview'), // Key for ReplyPreview
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: ReplyPreview(
-                  repliedMessage: _repliedMessage!,
-                  onCancel: _clearReply,
+                  repliedMessage: repliedMessage!,
+                  onCancel: clearReply,
                 ),
               ),
-            _selectedMessage == null
+            selectedMessage == null
                 ? BottomBar(
                     key: const Key('bottomBar'), // Key for BottomBar
-                    onSend: _onSend,
-                    onSendAudio: _onSendAudio,
-                    onEdit: _onEdit,
-                    editedMessage: _editedMessage,
+                    onSend: onSend,
+                    onSendAudio: onSendAudio,
+                    onEdit: onEdit,
+                    editedMessage: editedMessage,
                   )
                 : SelectedMessageBottomBar(
                     key: const Key(
                         'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
                     onReply: () {
-                      _onMessageSwipe(_selectedMessage!);
-                      setState(() {
-                        _selectedMessage = null;
-                      });
-                    },
-                  ),
+                      onReply();
+                    }),
           ],
         ),
       ),

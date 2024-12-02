@@ -14,14 +14,13 @@ import '../../../data/repos/profile_repo_implemention.dart';
 class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
   final ProfileRepo profileRepo = getit.get<ProfileRepoImplementation>();
 
-  ProfileSettingsCubit() : super(ProfileInitial()) {
-    loadBasicProfileInfo();
-  }
+  ProfileSettingsCubit() : super(ProfileInitial()) {}
 
   Future<void> loadBasicProfileInfo() async {
     emit(ProfileLoading());
     final Either<Failure, ProfileInfoResponse> result =
         await profileRepo.getProfileInfo();
+
     result.fold(
       (failure) => emit(
           ProfileError(errorMessage: failure.errorMessage)), // Emit error state
@@ -121,10 +120,8 @@ class ProfileSettingsCubit extends Cubit<ProfileSettingsState> {
       final pickedFile = await pickImage();
       if (pickedFile != null) {
         ProfileInfo profileInfo = (state as ProfileLoaded).profileInfo;
-        print('hello from cubit');
         final result = await profileRepo.updateProfilePicture(pickedFile);
         result.fold((failure) {
-          print('hello from cubit failure');
           emit(ProfileError(errorMessage: failure.errorMessage));
         }, (ProfilePictureResponse) {
           profileInfo.profilePic = ProfilePictureResponse.imageUrl;

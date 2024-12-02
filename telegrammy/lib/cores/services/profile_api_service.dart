@@ -71,7 +71,7 @@ Future<void> updateProfileVisibility(ProfileVisibility profileVisibility) async 
   Future<BlockedUsersResponse> getBlockedUsers() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
-    //  print('token:$token');
+      //  print('token:$token');
       final response = await dio.get(
         '$baseUrl2/privacy/settings/get-blocked-users',
         options: Options(headers: {
@@ -86,10 +86,10 @@ Future<void> updateProfileVisibility(ProfileVisibility profileVisibility) async 
     }
   }
 
-     Future<ContactsResponse> getContacts() async {
+  Future<ContactsResponse> getContacts() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
-    //  print('token:$token');
+      //  print('token:$token');
       final response = await dio.get(
         '$baseUrl2/privacy/settings/get-contacts',
         options: Options(headers: {
@@ -382,53 +382,21 @@ Future<void> updateReadReceiptsStatus(bool isEnabled) async {
     }
   }
 
-  // Future<ProfilePictureResponse> updateProfilePic(File pickedFile) async {
-  //   try {
-  //     String? token = await getit.get<TokenStorageService>().getToken();
-  //
-  //     final fileName = pickedFile.path.split('/').last;
-  //     final formData = FormData.fromMap({
-  //       "picture": await MultipartFile.fromFile(
-  //         pickedFile.path,
-  //         filename: fileName,
-  //       ),
-  //     });
-  //
-  //     final response = await dio.patch(
-  //       '$baseUrl2/user/profile/picture',
-  //       data: formData,
-  //       options: Options(
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           'Authorization': 'Bearer $token',
-  //         },
-  //         followRedirects: false,
-  //         validateStatus: (status) =>
-  //             status! < 500, // Accept responses with status < 500
-  //       ),
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       print("Profile picture updated successfully: ${response.data}");
-  //     } else {
-  //       print("Failed to update profile picture: ${response.data}");
-  //     }
-  //
-  //     return ProfilePictureResponse.fromJSON(response.data);
-  //   } on DioException catch (dioError) {
-  //     throw Exception('Error updating profile picture: ${dioError.message}');
-  //   }
-  // }
-
   Future<void> deleteProfilePicture() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
-      await dio.delete(
+      final response = await dio.delete(
         '$baseUrl2/user/profile/picture',
         options: Options(headers: {
           'Authorization': 'Bearer $token',
         }),
       );
+
+      if (response.statusCode == 200) {
+        print("Profile picture deleted successfully: ${response.data}");
+      } else {
+        print("Failed to delete profile picture: ${response.data}");
+      }
     } on DioException catch (dioError) {
       throw Exception('Error deleting profile picture: ${dioError.message}');
     }

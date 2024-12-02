@@ -26,6 +26,7 @@ class _ChangeUsernameViewState extends State<ChangeUsernameView> {
   @override
   void initState() {
     super.initState();
+    context.read<ProfileSettingsCubit>().loadBasicProfileInfo();
   }
 
   @override

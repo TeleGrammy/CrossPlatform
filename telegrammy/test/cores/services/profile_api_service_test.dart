@@ -222,7 +222,7 @@ test('should return failure when blocking status update fails', () async {
       'screenName': 'user123',
       'bio': 'cool bio',
       'status': 'active',
-      'picture': 'imageurl'
+      'picture': 'imageUrl'
     };
 
     final profileInfoResponse = ProfileInfoResponse.fromJson({

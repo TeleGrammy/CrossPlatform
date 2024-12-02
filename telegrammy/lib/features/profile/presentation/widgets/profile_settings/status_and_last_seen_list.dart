@@ -8,7 +8,10 @@ class StatusAndLastSeenList extends StatelessWidget {
   final String? status;
   final DateTime? lastSeen;
 
-  final List<String> _statusOptions = const ["active", "inactive", "banned"];
+  final List<String> _statusOptions = const [
+    "active",
+    "inactive"
+  ]; //, "banned"];
   @override
   Widget build(BuildContext context) {
     return SettingsBox(

@@ -26,6 +26,7 @@ class _ChangePhoneNumberViewState extends State<ChangePhoneNumberView> {
   @override
   void initState() {
     super.initState();
+    context.read<ProfileSettingsCubit>().loadBasicProfileInfo();
   }
 
   @override
