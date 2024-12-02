@@ -54,6 +54,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
           } else if (state is ProfileError) {
             return Center(child: Text(state.errorMessage));
           } else if (state is ProfileLoaded) {
+            print(state.profileInfo.profilePic);
             return SafeArea(
               child: Padding(
                   padding: const EdgeInsets.all(20.0),

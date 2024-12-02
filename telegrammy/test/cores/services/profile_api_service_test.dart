@@ -172,7 +172,7 @@ void main() {
       'screenName': 'user123',
       'bio': 'cool bio',
       'status': 'active',
-      'picture': 'imageurl'
+      'picture': 'imageUrl'
     };
 
     final profileInfoResponse = ProfileInfoResponse.fromJson({

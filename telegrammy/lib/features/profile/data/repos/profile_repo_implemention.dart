@@ -42,34 +42,36 @@ class ProfileRepoImplementation extends ProfileRepo {
     }
   }
 
-@override
-Future<Either<Failure, BlockedUsersResponse>> getBlockedUser() async {
-  try {
-    // print('salma');
-    // Call the API service to get blocked users
-    final blockedUsersResponse = await profileApiService.getBlockedUsers();
-    
-    return Right(blockedUsersResponse); // Successful response
-  } catch (error) {
-    // print('error');
-    // Handle the error and return a failure
-    return Left(ServerError(errorMessage: error.toString()));
+  @override
+  Future<Either<Failure, BlockedUsersResponse>> getBlockedUser() async {
+    try {
+      // print('salma');
+      // Call the API service to get blocked users
+      final blockedUsersResponse = await profileApiService.getBlockedUsers();
+
+      return Right(blockedUsersResponse); // Successful response
+    } catch (error) {
+      // print('error');
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
   }
-}
-@override
-Future<Either<Failure, ContactsResponse>> getContacts() async {
-  try {
-    // print('salma');
-    // Call the API service to get blocked users
-    final contactsResponse = await profileApiService.getContacts();
-    
-    return Right(contactsResponse); // Successful response
-  } catch (error) {
-    // print('error');
-    // Handle the error and return a failure
-    return Left(ServerError(errorMessage: error.toString()));
+
+  @override
+  Future<Either<Failure, ContactsResponse>> getContacts() async {
+    try {
+      // print('salma');
+      // Call the API service to get blocked users
+      final contactsResponse = await profileApiService.getContacts();
+
+      return Right(contactsResponse); // Successful response
+    } catch (error) {
+      // print('error');
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
   }
-}
+
 ///////////////////////////////////////////
   @override
   Future<Either<Failure, StoryResponse>> getUserStories() async {
@@ -173,12 +175,10 @@ Future<Either<Failure, ContactsResponse>> getContacts() async {
   Future<Either<Failure, ProfilePictureResponse>> updateProfilePicture(
       XFile pickedFile) async {
     try {
-      print('hello from repo');
       final profilePictureResponse =
           await profileApiService.updateProfilePic(pickedFile);
       return Right(profilePictureResponse);
     } catch (error) {
-      print('hello from repo failure');
       return Left(ServerError(errorMessage: error.toString()));
     }
   }
