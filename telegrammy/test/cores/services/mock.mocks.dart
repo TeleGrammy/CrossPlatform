@@ -3,23 +3,25 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i8;
+import 'dart:async' as _i9;
 
 import 'package:dio/dio.dart' as _i2;
-import 'package:image_picker/image_picker.dart' as _i10;
+import 'package:image_picker/image_picker.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:telegrammy/cores/services/profile_api_service.dart' as _i7;
-import 'package:telegrammy/cores/services/token_storage_service.dart' as _i11;
+import 'package:telegrammy/cores/services/profile_api_service.dart' as _i8;
+import 'package:telegrammy/cores/services/token_storage_service.dart' as _i12;
 import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart'
-    as _i3;
-import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart'
     as _i4;
-import 'package:telegrammy/features/profile/data/models/profile_info_model.dart'
-    as _i6;
-import 'package:telegrammy/features/profile/data/models/profile_visibility_model.dart'
-    as _i9;
-import 'package:telegrammy/features/profile/data/models/stories_model.dart'
+import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart'
     as _i5;
+import 'package:telegrammy/features/profile/data/models/profile_info_model.dart'
+    as _i7;
+import 'package:telegrammy/features/profile/data/models/profile_visibility_model.dart'
+    as _i10;
+import 'package:telegrammy/features/profile/data/models/settings_user_model.dart'
+    as _i3;
+import 'package:telegrammy/features/profile/data/models/stories_model.dart'
+    as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -44,9 +46,9 @@ class _FakeDio_0 extends _i1.SmartFake implements _i2.Dio {
         );
 }
 
-class _FakeBlockedUsersResponse_1 extends _i1.SmartFake
-    implements _i3.BlockedUsersResponse {
-  _FakeBlockedUsersResponse_1(
+class _FakeUserPrivacySettingsResponse_1 extends _i1.SmartFake
+    implements _i3.UserPrivacySettingsResponse {
+  _FakeUserPrivacySettingsResponse_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -55,9 +57,9 @@ class _FakeBlockedUsersResponse_1 extends _i1.SmartFake
         );
 }
 
-class _FakeContactsResponse_2 extends _i1.SmartFake
-    implements _i4.ContactsResponse {
-  _FakeContactsResponse_2(
+class _FakeBlockedUsersResponse_2 extends _i1.SmartFake
+    implements _i4.BlockedUsersResponse {
+  _FakeBlockedUsersResponse_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -66,8 +68,9 @@ class _FakeContactsResponse_2 extends _i1.SmartFake
         );
 }
 
-class _FakeStoryResponse_3 extends _i1.SmartFake implements _i5.StoryResponse {
-  _FakeStoryResponse_3(
+class _FakeContactsResponse_3 extends _i1.SmartFake
+    implements _i5.ContactsResponse {
+  _FakeContactsResponse_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -76,9 +79,8 @@ class _FakeStoryResponse_3 extends _i1.SmartFake implements _i5.StoryResponse {
         );
 }
 
-class _FakeProfileInfoResponse_4 extends _i1.SmartFake
-    implements _i6.ProfileInfoResponse {
-  _FakeProfileInfoResponse_4(
+class _FakeStoryResponse_4 extends _i1.SmartFake implements _i6.StoryResponse {
+  _FakeStoryResponse_4(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -87,9 +89,20 @@ class _FakeProfileInfoResponse_4 extends _i1.SmartFake
         );
 }
 
-class _FakeProfilePictureResponse_5 extends _i1.SmartFake
-    implements _i6.ProfilePictureResponse {
-  _FakeProfilePictureResponse_5(
+class _FakeProfileInfoResponse_5 extends _i1.SmartFake
+    implements _i7.ProfileInfoResponse {
+  _FakeProfileInfoResponse_5(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeProfilePictureResponse_6 extends _i1.SmartFake
+    implements _i7.ProfilePictureResponse {
+  _FakeProfilePictureResponse_6(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -101,7 +114,7 @@ class _FakeProfilePictureResponse_5 extends _i1.SmartFake
 /// A class which mocks [ProfileApiService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProfileApiService extends _i1.Mock implements _i7.ProfileApiService {
+class MockProfileApiService extends _i1.Mock implements _i8.ProfileApiService {
   MockProfileApiService() {
     _i1.throwOnMissingStub(this);
   }
@@ -116,247 +129,281 @@ class MockProfileApiService extends _i1.Mock implements _i7.ProfileApiService {
       ) as _i2.Dio);
 
   @override
-  _i8.Future<void> updateProfileVisibility(
-          _i9.ProfileVisibility? profileVisibility) =>
+  _i9.Future<_i3.UserPrivacySettingsResponse> getUserSettings() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getUserSettings,
+          [],
+        ),
+        returnValue: _i9.Future<_i3.UserPrivacySettingsResponse>.value(
+            _FakeUserPrivacySettingsResponse_1(
+          this,
+          Invocation.method(
+            #getUserSettings,
+            [],
+          ),
+        )),
+      ) as _i9.Future<_i3.UserPrivacySettingsResponse>);
+
+  @override
+  _i9.Future<void> updateProfileVisibility(
+          _i10.ProfileVisibility? profileVisibility) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateProfileVisibility,
           [profileVisibility],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<_i3.BlockedUsersResponse> getBlockedUsers() => (super.noSuchMethod(
+  _i9.Future<_i4.BlockedUsersResponse> getBlockedUsers() => (super.noSuchMethod(
         Invocation.method(
           #getBlockedUsers,
           [],
         ),
-        returnValue: _i8.Future<_i3.BlockedUsersResponse>.value(
-            _FakeBlockedUsersResponse_1(
+        returnValue: _i9.Future<_i4.BlockedUsersResponse>.value(
+            _FakeBlockedUsersResponse_2(
           this,
           Invocation.method(
             #getBlockedUsers,
             [],
           ),
         )),
-      ) as _i8.Future<_i3.BlockedUsersResponse>);
+      ) as _i9.Future<_i4.BlockedUsersResponse>);
 
   @override
-  _i8.Future<_i4.ContactsResponse> getContacts() => (super.noSuchMethod(
+  _i9.Future<_i5.ContactsResponse> getContacts() => (super.noSuchMethod(
         Invocation.method(
           #getContacts,
           [],
         ),
         returnValue:
-            _i8.Future<_i4.ContactsResponse>.value(_FakeContactsResponse_2(
+            _i9.Future<_i5.ContactsResponse>.value(_FakeContactsResponse_3(
           this,
           Invocation.method(
             #getContacts,
             [],
           ),
         )),
-      ) as _i8.Future<_i4.ContactsResponse>);
+      ) as _i9.Future<_i5.ContactsResponse>);
 
   @override
-  _i8.Future<_i5.StoryResponse> getUserStories() => (super.noSuchMethod(
+  _i9.Future<void> updateBlockingStatus(
+    String? action,
+    String? userId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateBlockingStatus,
+          [
+            action,
+            userId,
+          ],
+        ),
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
+
+  @override
+  _i9.Future<_i6.StoryResponse> getUserStories() => (super.noSuchMethod(
         Invocation.method(
           #getUserStories,
           [],
         ),
-        returnValue: _i8.Future<_i5.StoryResponse>.value(_FakeStoryResponse_3(
+        returnValue: _i9.Future<_i6.StoryResponse>.value(_FakeStoryResponse_4(
           this,
           Invocation.method(
             #getUserStories,
             [],
           ),
         )),
-      ) as _i8.Future<_i5.StoryResponse>);
+      ) as _i9.Future<_i6.StoryResponse>);
 
   @override
-  _i8.Future<void> createStory(_i5.StoryCreation? storyCreation) =>
+  _i9.Future<void> createStory(_i6.StoryCreation? storyCreation) =>
       (super.noSuchMethod(
         Invocation.method(
           #createStory,
           [storyCreation],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<void> deleteStory(String? storyId) => (super.noSuchMethod(
+  _i9.Future<void> deleteStory(String? storyId) => (super.noSuchMethod(
         Invocation.method(
           #deleteStory,
           [storyId],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<_i6.ProfileInfoResponse> getProfileInfo() => (super.noSuchMethod(
+  _i9.Future<_i7.ProfileInfoResponse> getProfileInfo() => (super.noSuchMethod(
         Invocation.method(
           #getProfileInfo,
           [],
         ),
-        returnValue: _i8.Future<_i6.ProfileInfoResponse>.value(
-            _FakeProfileInfoResponse_4(
+        returnValue: _i9.Future<_i7.ProfileInfoResponse>.value(
+            _FakeProfileInfoResponse_5(
           this,
           Invocation.method(
             #getProfileInfo,
             [],
           ),
         )),
-      ) as _i8.Future<_i6.ProfileInfoResponse>);
+      ) as _i9.Future<_i7.ProfileInfoResponse>);
 
   @override
-  _i8.Future<void> updateProfileInfo(_i6.ProfileInfo? profileInfo) =>
+  _i9.Future<void> updateProfileInfo(_i7.ProfileInfo? profileInfo) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateProfileInfo,
           [profileInfo],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<void> updateUserActivityStatus(String? status) =>
+  _i9.Future<void> updateUserActivityStatus(String? status) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateUserActivityStatus,
           [status],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<void> updateUserEmail(String? email) => (super.noSuchMethod(
+  _i9.Future<void> updateUserEmail(String? email) => (super.noSuchMethod(
         Invocation.method(
           #updateUserEmail,
           [email],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<void> updateUsername(String? username) => (super.noSuchMethod(
+  _i9.Future<void> updateUsername(String? username) => (super.noSuchMethod(
         Invocation.method(
           #updateUsername,
           [username],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<void> updateUserPhoneNumber(String? phoneNumber) =>
+  _i9.Future<void> updateUserPhoneNumber(String? phoneNumber) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateUserPhoneNumber,
           [phoneNumber],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<_i6.ProfilePictureResponse> updateProfilePic(
-          _i10.XFile? pickedFile) =>
+  _i9.Future<_i7.ProfilePictureResponse> updateProfilePic(
+          _i11.XFile? pickedFile) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateProfilePic,
           [pickedFile],
         ),
-        returnValue: _i8.Future<_i6.ProfilePictureResponse>.value(
-            _FakeProfilePictureResponse_5(
+        returnValue: _i9.Future<_i7.ProfilePictureResponse>.value(
+            _FakeProfilePictureResponse_6(
           this,
           Invocation.method(
             #updateProfilePic,
             [pickedFile],
           ),
         )),
-      ) as _i8.Future<_i6.ProfilePictureResponse>);
+      ) as _i9.Future<_i7.ProfilePictureResponse>);
 
   @override
-  _i8.Future<void> deleteProfilePicture() => (super.noSuchMethod(
+  _i9.Future<void> deleteProfilePicture() => (super.noSuchMethod(
         Invocation.method(
           #deleteProfilePicture,
           [],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 }
 
 /// A class which mocks [TokenStorageService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenStorageService extends _i1.Mock
-    implements _i11.TokenStorageService {
+    implements _i12.TokenStorageService {
   MockTokenStorageService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i8.Future<void> saveToken(String? token) => (super.noSuchMethod(
+  _i9.Future<void> saveToken(String? token) => (super.noSuchMethod(
         Invocation.method(
           #saveToken,
           [token],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<void> saveEmail(String? email) => (super.noSuchMethod(
+  _i9.Future<void> saveEmail(String? email) => (super.noSuchMethod(
         Invocation.method(
           #saveEmail,
           [email],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<String?> getToken() => (super.noSuchMethod(
+  _i9.Future<String?> getToken() => (super.noSuchMethod(
         Invocation.method(
           #getToken,
           [],
         ),
-        returnValue: _i8.Future<String?>.value(),
-      ) as _i8.Future<String?>);
+        returnValue: _i9.Future<String?>.value(),
+      ) as _i9.Future<String?>);
 
   @override
-  _i8.Future<String?> getEmail() => (super.noSuchMethod(
+  _i9.Future<String?> getEmail() => (super.noSuchMethod(
         Invocation.method(
           #getEmail,
           [],
         ),
-        returnValue: _i8.Future<String?>.value(),
-      ) as _i8.Future<String?>);
+        returnValue: _i9.Future<String?>.value(),
+      ) as _i9.Future<String?>);
 
   @override
-  _i8.Future<void> deleteToken() => (super.noSuchMethod(
+  _i9.Future<void> deleteToken() => (super.noSuchMethod(
         Invocation.method(
           #deleteToken,
           [],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 
   @override
-  _i8.Future<void> deleteEmail() => (super.noSuchMethod(
+  _i9.Future<void> deleteEmail() => (super.noSuchMethod(
         Invocation.method(
           #deleteEmail,
           [],
         ),
-        returnValue: _i8.Future<void>.value(),
-        returnValueForMissingStub: _i8.Future<void>.value(),
-      ) as _i8.Future<void>);
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
 }

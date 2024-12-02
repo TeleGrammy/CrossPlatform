@@ -107,6 +107,16 @@ class MockBlockedUsersCubit extends _i1.Mock implements _i4.BlockedUsersCubit {
       ) as _i5.Future<void>);
 
   @override
+  _i5.Future<void> unblockUser(String? userId) => (super.noSuchMethod(
+        Invocation.method(
+          #unblockUser,
+          [userId],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
   void emit(_i3.BlockedUsersState? state) => super.noSuchMethod(
         Invocation.method(
           #emit,

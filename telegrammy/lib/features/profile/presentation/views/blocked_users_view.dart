@@ -48,21 +48,33 @@ class _BlockingPageState extends State<BlockingPage> {
                           itemBuilder: (context, index) {
                             final user = blockedUsers[index];
                             return ListTile(
-                              tileColor: primaryColor, // Tile background color
-                              title: Text(
-                                user.userName,
-                                style: TextStyle(
-                                    color: tileInfoHintColor), // Text color
-                              ),
-                              trailing: IconButton(
-                                icon:
-                                    Icon(Icons.lock_open, color: Colors.green),
-                                onPressed: () {
-                                  // context.read<BlockedUsersCubit>().removeBlockedUser(user.id);
-                                  print('unblocked');
-                                },
-                              ),
-                            );
+  tileColor: primaryColor, // Tile background color
+  leading: CircleAvatar(
+    backgroundImage: AssetImage('assets/images/logo.png'), // Replace with the path to your image asset
+    radius: 20, // Adjust the radius for size
+  ),
+  title: Text(
+    user.userName,
+    style: TextStyle(
+      color: tileInfoHintColor, // Text color
+    ),
+  ),
+  trailing: IconButton(
+    icon: Icon(Icons.lock_open, color: Colors.green),
+    onPressed: () {
+      context.read<BlockedUsersCubit>().unblockUser(user.userId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${user.userName} has been unblocked.',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    },
+  ),
+);
                           },
                         )
                       : Center(

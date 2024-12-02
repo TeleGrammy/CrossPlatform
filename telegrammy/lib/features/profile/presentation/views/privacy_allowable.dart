@@ -8,7 +8,6 @@ import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/widgets/app_bar.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_state.dart';
-
 class PrivacyAllowablePage extends StatelessWidget {
   final String title;
   final String optionKey;
@@ -29,6 +28,7 @@ class PrivacyAllowablePage extends StatelessWidget {
           if (state is PrivacyUpdating) {
             return Center(child: CircularProgressIndicator());
           }
+
           // Handle loaded state
           if (state is PrivacyOptionsLoaded) {
             final profileVisibility = state.privacyOptions;
@@ -42,15 +42,16 @@ class PrivacyAllowablePage extends StatelessWidget {
               key: const ValueKey('PrivacyOptionsColumn'),
               children: [
                 SizedBox(height: 50),
-                buildPrivacyAllowableTile(context, 'Everybody',
-                    PrivacyOption.everyone, selectedOption),
-                buildPrivacyAllowableTile(context, 'My Contacts',
-                    PrivacyOption.contacts, selectedOption),
+                buildPrivacyAllowableTile(
+                    context, 'Everybody', PrivacyOption.everyone, selectedOption),
+                buildPrivacyAllowableTile(
+                    context, 'My Contacts', PrivacyOption.contacts, selectedOption),
                 buildPrivacyAllowableTile(
                     context, 'Nobody', PrivacyOption.nobody, selectedOption),
               ],
             );
           }
+
           // Handle error state
           if (state is PrivacyOptionsError) {
             return Center(child: Text(state.message));
@@ -63,8 +64,8 @@ class PrivacyAllowablePage extends StatelessWidget {
     );
   }
 
-  Widget buildPrivacyAllowableTile(BuildContext context, String title,
-      PrivacyOption value, String? selectedOption) {
+  Widget buildPrivacyAllowableTile(
+      BuildContext context, String title, PrivacyOption value, String? selectedOption) {
     return Container(
       color: appBarDarkMoodColor,
       child: RadioListTile<PrivacyOption>(
@@ -78,11 +79,8 @@ class PrivacyAllowablePage extends StatelessWidget {
         activeColor: Colors.blue,
         onChanged: (PrivacyOption? selectedValue) {
           if (selectedValue != null) {
-            print('iam hereeeeeeeeeeeeeeeeeeeeeeee');
-            context
-                .read<PrivacySettingsCubit>()
-                .updatePrivacyOption(optionKey, selectedValue);
-            // Navigator.pop(context);
+            // Update the privacy option via Cubit
+            context.read<PrivacySettingsCubit>().updatePrivacyOption(optionKey, selectedValue);
           }
         },
       ),
@@ -102,3 +100,4 @@ class PrivacyAllowablePage extends StatelessWidget {
     }
   }
 }
+

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart'; // Import GoRouter
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
-// import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_state.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
@@ -13,6 +12,7 @@ class PrivacyOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     // Fetch privacy settings when this widget is built
     context.read<PrivacySettingsCubit>().fetchPrivacySettings();
+    context.read<PrivacySettingsCubit>().fetchPrivacySettings();
 
     return BlocBuilder<PrivacySettingsCubit, PrivacyState>(
       builder: (context, state) {
@@ -20,33 +20,36 @@ class PrivacyOptions extends StatelessWidget {
         if (state is PrivacyInitial || state is PrivacyUpdating) {
           return Center(child: CircularProgressIndicator());
         }
+
         // Handle error state
         if (state is PrivacyOptionsError) {
           return Center(child: Text(state.message));
         }
+
         // Loaded state
         if (state is PrivacyOptionsLoaded) {
           return Column(
             key: const ValueKey('PrivacyOptions'),
             children: [
-              buildPrivacyTile(context, 'Last Seen & Online', 'lastSeen',
+              buildPrivacyTile(context, 'Last Seen & Online', 'lastSeen', 
                   state.privacyOptions.lastSeen),
-              buildPrivacyTile(context, 'Profile Photo', 'profilePicture',
+              buildPrivacyTile(context, 'Profile Photo', 'profilePicture', 
                   state.privacyOptions.profilePicture),
-              buildPrivacyTile(
-                  context, 'Stories', 'stories', state.privacyOptions.stories),
+              buildPrivacyTile(context, 'Stories', 'stories', 
+                  state.privacyOptions.stories),
             ],
           );
         }
+
         // Default fallback
-        return Center(child: Text('Unexpected state.'));
+        return Center(child: Text('loading'));
       },
     );
   }
 }
 
 Widget buildPrivacyTile(
-    BuildContext context, String title, String optionKey, String? optionValue) {
+    BuildContext context, String title, String optionKey, String optionValue) {
   return Container(
     color: primaryColor,
     child: ListTile(
@@ -66,12 +69,11 @@ Widget buildPrivacyTile(
   );
 }
 
-String _privacyOptionText(String? option) {
-  switch (option?.toLowerCase()) {
-    // Use lowercase for consistent matching
+String _privacyOptionText(String option) {
+  switch (option.toLowerCase()) {
     case 'everyone':
       return 'Everyone';
-    case 'my contacts':
+    case 'contacts':
       return 'My Contacts';
     case 'nobody':
       return 'Nobody';

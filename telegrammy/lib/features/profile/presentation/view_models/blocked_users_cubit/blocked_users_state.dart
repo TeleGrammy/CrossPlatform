@@ -23,6 +23,10 @@ final class BlockedUsersUpdated extends BlockedUsersState {
   BlockedUsersUpdated({required this.blockedUsers});
 }
 
+// final class BlockedUsersBlockAction extends BlockedUsersState {}
+
+final class BlockedUsersUnblockAction extends BlockedUsersState {}
+
 final class BlockedUsersError extends BlockedUsersState {
   final String message;
 
@@ -42,10 +46,9 @@ class ContactsLoaded extends ContactstoState {
   final List<ContactData> contacts;
 
   ContactsLoaded({required this.contacts});
-
-  // @override
-  // List<Object?> get props => [contacts];
 }
+
+final class BlockedUsersBlockAction extends ContactstoState {}
 
 final class ContactsError extends ContactstoState {
   final String message;

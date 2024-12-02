@@ -10,6 +10,7 @@ import 'package:telegrammy/features/profile/data/models/profile_info_model.dart'
 import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart';
 import 'package:telegrammy/features/profile/data/models/profile_visibility_model.dart';
 import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart';
+import 'package:telegrammy/features/profile/data/models/settings_user_model.dart';
 import 'package:telegrammy/features/profile/data/models/stories_model.dart';
 
 import 'dart:typed_data'; // For Uint8List
@@ -32,27 +33,40 @@ class ProfileApiService {
 //       throw Exception('Error fetching profile visibility: ${dioError.message}');
 //     }
 //   }
-
-  Future<void> updateProfileVisibility(
-      ProfileVisibility profileVisibility) async {
-    try {
-      // print(
-      //   profileVisibility.toJson()
-      // );
-      String? token = await getit.get<TokenStorageService>().getToken();
-      // print(token);
-      await dio.patch(
-        '$baseUrl2/privacy/settings/profile-visibility',
-        options: Options(headers: {
-          'Authorization': 'Bearer $token',
-          //  'Accept': 'application/json',
-        }),
-        data: profileVisibility.toJson(),
-      );
-    } on DioException catch (dioError) {
-      throw Exception('Error updating profile visibility: ${dioError.message}');
-    }
+Future<UserPrivacySettingsResponse> getUserSettings() async {
+  try {
+    // print('salma');
+    String? token = await getit.get<TokenStorageService>().getToken();
+    final response = await dio.get(
+      '$baseUrl2/privacy/settings',
+      options: Options(headers: {
+        'Authorization': 'Bearer $token',
+      }),
+    );
+    //  print(UserPrivacySettingsResponse.fromJson(response.data));
+    return UserPrivacySettingsResponse.fromJson(response.data);
+   
+  } on DioException catch (dioError) {
+    throw Exception('Error fetching user privacy settings: ${dioError.message}');
   }
+}
+Future<void> updateProfileVisibility(ProfileVisibility profileVisibility) async {
+  try {
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    await dio.patch(
+      '$baseUrl2/privacy/settings/profile-visibility',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+      data: profileVisibility.toJson(), // Using the toJson() method of ProfileVisibility
+    );
+  } on DioException catch (dioError) {
+    throw Exception('Error updating profile visibility: ${dioError.message}');
+  }
+}
 
   Future<BlockedUsersResponse> getBlockedUsers() async {
     try {
@@ -89,6 +103,44 @@ class ProfileApiService {
       throw Exception('Error fetching blocked users: ${dioError.message}');
     }
   }
+
+
+
+Future<void> updateBlockingStatus(String action, String userId) async {
+  final String url = "$baseUrl2/privacy/settings/blocking-status/$action"; // Append 'block' or 'unblock' to the URL
+
+  try {
+    // Retrieve the token
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    // Construct the request body
+    final Map<String, String> body = {"userId": userId};
+
+    // Make the PATCH request with Dio
+    final response = await dio.patch(
+      url,
+      data: body, // Pass the body directly
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      print('Successfully updated blocking status.');
+    } else {
+      print('Failed to update blocking status. Status Code: ${response.statusCode}');
+      print('Response: ${response.data}');
+    }
+  } on DioException catch (dioError) {
+    print('Error updating blocking status: ${dioError.message}');
+  } catch (e) {
+    print('An unexpected error occurred: $e');
+  }
+}
+
 
 
 ////////////////////////////////////////////////////////Stories

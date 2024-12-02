@@ -39,7 +39,10 @@ class _ContactsPageState extends State<ContactsPage> {
               ),
             );
           } else if (state is ContactsLoaded) {
-            final contacts = state.contacts;
+            // Filter out blocked contacts
+            final contacts = state.contacts
+                .where((contact) => contact.blockDetails.status == "not_blocked")
+                .toList();
 
             return Column(
               children: [
@@ -51,28 +54,34 @@ class _ContactsPageState extends State<ContactsPage> {
                           itemCount: contacts.length,
                           itemBuilder: (context, index) {
                             final contact = contacts[index];
+                            final isBlocked = contact.blockDetails.status == "not_blocked";
+
                             return ListTile(
-                              tileColor: primaryColor, // Tile background color
+                              tileColor: primaryColor, 
                               leading: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    'assets/images/logo.png'), // Use AssetImage for image assets
-                                radius: 20, // Size of the circular avatar
+                                backgroundImage: AssetImage('assets/images/logo.png'),
+                                radius: 20,
                               ),
                               title: Text(
                                 contact.contactId,
-                                style: TextStyle(
-                                    color: tileInfoHintColor), // Text color
+                                style: TextStyle(color: tileInfoHintColor), 
                               ),
                               trailing: IconButton(
-                                icon: Icon(Icons.block, color: Colors.red),
-                                onPressed: () {
-                                  // Uncomment and implement block user functionality
-                                  // context.read<ContactsCubit>().blockUser(contact.contactId);
-                                  // ScaffoldMessenger.of(context).showSnackBar(
-                                  //   SnackBar(
-                                  //     content: Text('${contact.userName} has been blocked.'),
-                                  //   ),
-                                  // );
+                                icon: Icon(
+                                  isBlocked ? Icons.lock : Icons.block,
+                                  color: isBlocked ? Colors.grey : Colors.red,
+                                ),
+                                onPressed: () async {
+                                  await context
+                                      .read<ContactstoCubit>()
+                                      .blockUser(contact.contactId);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          '${contact.contactId} has been ${isBlocked ? 'unblocked' : 'blocked'}.'),
+                                    ),
+                                  );
                                 },
                               ),
                             );
@@ -82,9 +91,7 @@ class _ContactsPageState extends State<ContactsPage> {
                           key: const ValueKey('NoContactsToBlockText'),
                           child: Text(
                             'No contacts available.',
-                            style: TextStyle(
-                                color:
-                                    tileInfoHintColor), // Text color for contrast
+                            style: TextStyle(color: tileInfoHintColor),
                           ),
                         ),
                 ),
