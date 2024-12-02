@@ -76,7 +76,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
         final isSelected = message == widget.selectedMessage;
 
         return GestureDetector(
-          key: Key('message_${message.id}'),
+          key: Key('message_${index}'),
           onHorizontalDragEnd: (details) {
             widget.onMessageSwipe(message);
           },
@@ -105,7 +105,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                     : MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    key: Key('message_container_${message.id}'),
+                    key: Key('message_container_${index}'),
                     onTap: () => widget.onMessageTap(message),
                     child: Container(
                       key: Key('message_bubble_${message.id}'),
@@ -157,6 +157,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                             AudioPlayerWidget(
                               key: Key('audio_player_${message.id}'),
                               audioUrl: message.audioUrl!,
+                              audioPlayer: AudioPlayer(),
                             )
                           else
                             Text(
