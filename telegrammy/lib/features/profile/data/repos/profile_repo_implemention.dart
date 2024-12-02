@@ -74,6 +74,20 @@ Future<Either<Failure, void>> updateBlockingStatus(String action, String userId)
     return Left(ServerError(errorMessage: error.toString()));
   }
 }
+@override
+Future<Either<Failure, void>> updateReadReceiptsStatus(bool isEnabled) async {
+  try {
+    // Call the API service to update the blocking status
+    await profileApiService.updateReadReceiptsStatus(isEnabled);
+
+    // Return success (void) as a Right value
+    return const Right(null);
+  } catch (error) {
+    // Handle the error and return a failure
+   
+    return Left(ServerError(errorMessage: error.toString()));
+  }
+}
 
 ///////////////////////////////////////////
   @override

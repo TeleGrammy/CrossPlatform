@@ -154,6 +154,9 @@ class AppRoutes {
       BlocProvider(
         create: (context) => BlockedUsersCubit(), // Initialize and load blocked users
       ),
+               BlocProvider(
+        create: (context) => ReadReceiptCubit(),
+      ),
           ],
           child: PrivacyView(),
         ),

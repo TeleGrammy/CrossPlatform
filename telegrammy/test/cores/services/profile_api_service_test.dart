@@ -5,6 +5,8 @@ import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart'
 
 import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart';
 import 'package:telegrammy/features/profile/data/models/profile_info_model.dart';
+import 'package:telegrammy/features/profile/data/models/profile_visibility_model.dart';
+import 'package:telegrammy/features/profile/data/models/settings_user_model.dart';
 import 'package:telegrammy/features/profile/data/models/stories_model.dart';
 
 // Import generated mocks
@@ -369,5 +371,118 @@ test('should return failure when blocking status update fails', () async {
     verify(mockProfileApiService.updateUserPhoneNumber(newPhoneNumber))
         .called(1);
   });
+
+
+
+  ///////////////////////////////////////////////////////////// read receipts
+test('should update read receipts status successfully', () async {
+  // Arrange: Mock the token retrieval from the TokenStorageService
+  when(mockTokenStorageService.getToken()).thenAnswer((_) async => 'mock_token');
+
+  // Create the mock response for the updateReadReceiptsStatus method (it doesn't return anything)
+  when(mockProfileApiService.updateReadReceiptsStatus(true)).thenAnswer((_) async => null);
+
+  // Act: Call the updateReadReceiptsStatus method with `true` to enable it
+  await mockProfileApiService.updateReadReceiptsStatus(true);
+
+  // Assert: Verify that the updateReadReceiptsStatus method was called with correct parameters
+  verify(mockProfileApiService.updateReadReceiptsStatus(true)).called(1);
+});
+
+test('should return failure when read receipts status update fails', () async {
+  // Arrange: Simulate an exception when calling the updateReadReceiptsStatus method
+  when(mockTokenStorageService.getToken()).thenAnswer((_) async => 'mock_token');
+  when(mockProfileApiService.updateReadReceiptsStatus(true))
+      .thenThrow(Exception('Error occurred'));
+
+  // Act: Call the updateReadReceiptsStatus function and handle the error
+  try {
+    await mockProfileApiService.updateReadReceiptsStatus(true);
+    fail('Expected an exception, but no exception was thrown');
+  } catch (e) {
+    // Assert: Verify that the exception message is as expected
+    expect(e.toString(), contains('Error occurred'));
+  }
+
+  // Verify that the updateReadReceiptsStatus method was called with the correct parameters
+  verify(mockProfileApiService.updateReadReceiptsStatus(true)).called(1);
+});
+
+test('should update read receipts status successfully when disabled', () async {
+  // Arrange: Mock the token retrieval from the TokenStorageService
+  when(mockTokenStorageService.getToken()).thenAnswer((_) async => 'mock_token');
+
+  // Create the mock response for the updateReadReceiptsStatus method (it doesn't return anything)
+  when(mockProfileApiService.updateReadReceiptsStatus(false)).thenAnswer((_) async => null);
+
+  // Act: Call the updateReadReceiptsStatus method with `false` to disable it
+  await mockProfileApiService.updateReadReceiptsStatus(false);
+
+  // Assert: Verify that the updateReadReceiptsStatus method was called with correct parameters
+  verify(mockProfileApiService.updateReadReceiptsStatus(false)).called(1);
+});
+/////////////////////////////////////////// profile visisbility
+test('updateProfileVisibility should update visibility successfully', () async {
+  // Arrange: Set the new profile visibility (for example, 'profilePicture', 'stories', 'lastSeen')
+  ProfileVisibility newProfileVisibility = ProfileVisibility(
+    profilePicture: 'private',
+    stories: 'friends_only',
+    lastSeen: 'hidden',
+  );
+
+  // Simulate the service call and mock the update method (void method)
+  when(mockProfileApiService.updateProfileVisibility(newProfileVisibility))
+      .thenAnswer((_) async => null); // No return value as it's a void function
+
+  // Act: Call the updateProfileVisibility method
+  await mockProfileApiService.updateProfileVisibility(newProfileVisibility);
+
+  // Assert: Verify that the method was called with correct parameters
+  verify(mockProfileApiService.updateProfileVisibility(newProfileVisibility)).called(1);
+});
+
+///////////////////////////
+group('getUserSettings', () {
+    test('should return user privacy settings successfully', () async {
+      // Arrange: Create mock UserPrivacySettings
+      final mockUserPrivacySettings = UserPrivacySettings(
+        profilePictureVisibility: 'private',
+        storiesVisibility: 'friends_only',
+        lastSeenVisibility: 'hidden',
+        readReceipts: true,
+        whoCanAddMe: 'everyone',
+      );
+
+      final mockResponse = UserPrivacySettingsResponse(
+        status: "success", // Mocked status
+        data: mockUserPrivacySettings,
+      );
+
+      // Simulate the behavior of getUserSettings
+      when(mockProfileApiService.getUserSettings())
+          .thenAnswer((_) async => mockResponse);
+
+      // Act: Call the method
+      final userSettingsResponse = await mockProfileApiService.getUserSettings();
+
+      // Assert: Verify the response
+      expect(userSettingsResponse.status, "success");
+      expect(userSettingsResponse.data.profilePictureVisibility, "private");
+      expect(userSettingsResponse.data.storiesVisibility, "friends_only");
+      expect(userSettingsResponse.data.lastSeenVisibility, "hidden");
+      expect(userSettingsResponse.data.readReceipts, true);
+      expect(userSettingsResponse.data.whoCanAddMe, "everyone");
+    });
+
+    test('should throw an exception when getUserSettings fails', () async {
+      // Arrange: Simulate an error from the API
+      when(mockProfileApiService.getUserSettings())
+          .thenThrow(Exception('Error fetching user settings'));
+
+      // Act & Assert: Verify the exception is thrown
+      expect(() async => await mockProfileApiService.getUserSettings(), throwsException);
+    });
+  });
+
 
 }

@@ -207,6 +207,17 @@ class MockProfileApiService extends _i1.Mock implements _i8.ProfileApiService {
       ) as _i9.Future<void>);
 
   @override
+  _i9.Future<void> updateReadReceiptsStatus(bool? isEnabled) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateReadReceiptsStatus,
+          [isEnabled],
+        ),
+        returnValue: _i9.Future<void>.value(),
+        returnValueForMissingStub: _i9.Future<void>.value(),
+      ) as _i9.Future<void>);
+
+  @override
   _i9.Future<_i6.StoryResponse> getUserStories() => (super.noSuchMethod(
         Invocation.method(
           #getUserStories,

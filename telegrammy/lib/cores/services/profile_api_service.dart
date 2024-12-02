@@ -141,6 +141,58 @@ Future<void> updateBlockingStatus(String action, String userId) async {
   }
 }
 
+Future<void> updateReadReceiptsStatus(bool isEnabled) async {
+  final String url = "$baseUrl2/privacy/settings/read-receipts"; // Endpoint for read receipts
+
+  try {
+    // Retrieve the token
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    // Ensure token is valid before proceeding
+    if (token == null) {
+      print('Error: Token is null');
+      return;
+    }
+
+    // Construct the request body with required fields
+    final Map<String, dynamic> body = {
+      "isEnabled": isEnabled,  
+      "enabled": isEnabled,   
+    };
+
+    // Make the PATCH request with Dio
+    final response = await dio.patch(
+      url,
+      data: body, // Pass the body directly
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    // Handle the response
+    if (response.statusCode == 201) {
+      print('Successfully updated read receipts status.');
+      print('Response: ${response.data}');
+    } else {
+      print('Failed to update read receipts status. Status Code: ${response.statusCode}');
+      print('Response: ${response.data}');
+      // Optionally, throw an error or handle as needed
+    }
+  } on DioException catch (dioError) {
+    // Handle Dio-specific errors (e.g., network errors, timeouts)
+    print('Error updating read receipts status: ${dioError.message}');
+    if (dioError.response != null) {
+      print('Error response: ${dioError.response}');
+    }
+  } catch (e) {
+    // Catch any other exceptions
+    print('An unexpected error occurred: $e');
+  }
+}
+
 
 
 ////////////////////////////////////////////////////////Stories

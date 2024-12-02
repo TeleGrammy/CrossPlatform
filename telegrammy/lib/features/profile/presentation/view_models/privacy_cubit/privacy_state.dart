@@ -8,7 +8,7 @@ enum PrivacyOption { everyone, contacts, nobody }
 @immutable
 abstract class PrivacyState {}
 
-final class PrivacyInitial extends PrivacyState {}
+
 
 final class PrivacyOptionsLoaded extends PrivacyState {
   final ProfileVisibility privacyOptions;
@@ -30,4 +30,32 @@ final class PrivacyOptionsError extends PrivacyState {
   final String message;
 
   PrivacyOptionsError({required this.message});
+}
+
+
+//////////////////////////
+// ReadReceiptState.dart
+@immutable
+abstract class ReadReceiptState {}
+
+final class ReadReceiptsLoading extends ReadReceiptState {}
+
+final class ReadReceiptsLoaded extends ReadReceiptState {
+  final bool isEnabled;
+
+  ReadReceiptsLoaded({required this.isEnabled});
+}
+
+final class ReadReceiptsUpdating extends ReadReceiptState {}
+
+final class ReadReceiptsUpdated extends ReadReceiptState {
+  final bool isEnabled;
+
+  ReadReceiptsUpdated({required this.isEnabled});
+}
+
+final class ReadReceiptsError extends ReadReceiptState {
+  final String message;
+
+  ReadReceiptsError({required this.message});
 }

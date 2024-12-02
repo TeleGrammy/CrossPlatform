@@ -7,85 +7,110 @@ import 'package:telegrammy/features/profile/presentation/view_models/privacy_cub
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_state.dart';
 import 'package:telegrammy/cores/routes/routes_name.dart';
 
-class PrivacyOptions extends StatelessWidget {
+class PrivacyOptions extends StatefulWidget {
+  @override
+  _PrivacyOptionsState createState() => _PrivacyOptionsState();
+}
+
+class _PrivacyOptionsState extends State<PrivacyOptions> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch privacy settings when the widget is initialized
+    context.read<PrivacySettingsCubit>().fetchPrivacySettings();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Fetch privacy settings when this widget is built
-    context.read<PrivacySettingsCubit>().fetchPrivacySettings();
-    context.read<PrivacySettingsCubit>().fetchPrivacySettings();
-
-    return BlocBuilder<PrivacySettingsCubit, PrivacyState>(
-      builder: (context, state) {
-        // Show loading indicator while fetching privacy options
-        if (state is PrivacyInitial || state is PrivacyUpdating) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        // Handle error state
+    return BlocListener<PrivacySettingsCubit, PrivacyState>(
+      listener: (context, state) {
         if (state is PrivacyOptionsError) {
-          return Center(child: Text(state.message));
-        }
-
-        // Loaded state
-        if (state is PrivacyOptionsLoaded) {
-          return Column(
-            key: const ValueKey('PrivacyOptions'),
-            children: [
-              buildPrivacyTile(context, 'Last Seen & Online', 'lastSeen', 
-                  state.privacyOptions.lastSeen),
-              buildPrivacyTile(context, 'Profile Photo', 'profilePicture', 
-                  state.privacyOptions.profilePicture),
-              buildPrivacyTile(context, 'Stories', 'stories', 
-                  state.privacyOptions.stories),
-            ],
+          // Show error as a Snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
           );
         }
 
-        // Default fallback
-        return Center(child: Text('loading'));
+        if (state is PrivacyUpdating) {
+          // Optional: Show a loading indicator or similar action
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Updating privacy settings...')),
+          );
+        }
       },
+      child: BlocBuilder<PrivacySettingsCubit, PrivacyState>(
+        builder: (context, state) {
+          // Show loading indicator while fetching privacy options
+          if (state is PrivacyLoading || state is PrivacyUpdating) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          // Handle error state
+          if (state is PrivacyOptionsError) {
+            return Center(child: Text('Failed to load privacy settings'));
+          }
+
+          // Loaded state
+          if (state is PrivacyOptionsLoaded) {
+            return Column(
+              key: const ValueKey('PrivacyOptions'),
+              children: [
+                buildPrivacyTile(context, 'Last Seen & Online', 'lastSeen',
+                    state.privacyOptions.lastSeen),
+                buildPrivacyTile(context, 'Profile Photo', 'profilePicture',
+                    state.privacyOptions.profilePicture),
+                buildPrivacyTile(context, 'Stories', 'stories',
+                    state.privacyOptions.stories),
+              ],
+            );
+          }
+
+          // Default fallback (optional)
+          return Center(child: Text('Unexpected state'));
+        },
+      ),
     );
   }
-}
 
-Widget buildPrivacyTile(
-    BuildContext context, String title, String optionKey, String optionValue) {
-  return Container(
-    color: primaryColor,
-    child: ListTile(
-      leading: Text(
-        title,
-        style: textStyle17.copyWith(fontWeight: FontWeight.w400),
+  Widget buildPrivacyTile(BuildContext context, String title, String optionKey,
+      String optionValue) {
+    return Container(
+      color: primaryColor,
+      child: ListTile(
+        leading: Text(
+          title,
+          style: textStyle17.copyWith(fontWeight: FontWeight.w400),
+        ),
+        trailing: Text(
+          _privacyOptionText(optionValue),
+          style: textStyle17.copyWith(
+              fontWeight: FontWeight.w400, color: tileInfoHintColor),
+        ),
+        onTap: () {
+          navigateToPrivacySettings(context, title, optionKey);
+        },
       ),
-      trailing: Text(
-        _privacyOptionText(optionValue),
-        style: textStyle17.copyWith(
-            fontWeight: FontWeight.w400, color: tileInfoHintColor),
-      ),
-      onTap: () {
-        navigateToPrivacySettings(context, title, optionKey);
-      },
-    ),
-  );
-}
-
-String _privacyOptionText(String option) {
-  switch (option.toLowerCase()) {
-    case 'everyone':
-      return 'Everyone';
-    case 'contacts':
-      return 'My Contacts';
-    case 'nobody':
-      return 'Nobody';
-    default:
-      return 'Unknown';
+    );
   }
-}
 
-void navigateToPrivacySettings(
-    BuildContext context, String title, String optionKey) {
-  context.goNamed(
-    RouteNames.privacyAllowablePage,
-    extra: {'title': title, 'optionKey': optionKey},
-  );
+  String _privacyOptionText(String option) {
+    switch (option.toLowerCase()) {
+      case 'everyone':
+        return 'Everyone';
+      case 'contacts':
+        return 'My Contacts';
+      case 'nobody':
+        return 'Nobody';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  void navigateToPrivacySettings(
+      BuildContext context, String title, String optionKey) {
+    context.goNamed(
+      RouteNames.privacyAllowablePage,
+      extra: {'title': title, 'optionKey': optionKey},
+    );
+  }
 }

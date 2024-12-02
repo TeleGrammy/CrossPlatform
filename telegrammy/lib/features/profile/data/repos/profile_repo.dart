@@ -31,4 +31,5 @@ Future<Either<Failure, void>> updateProfileInfo( ProfileInfo profileInfo);
   Future<Either<Failure, UserPrivacySettingsResponse>> getUserSettings() ;
   Future<Either<Failure, void>> updateBlockingStatus(String action, String userId);
   Future<Either<Failure, void>> updateProfileVisibility(ProfileVisibility profileVisibility);
+  Future<Either<Failure, void>> updateReadReceiptsStatus(bool isEnabled);
 }

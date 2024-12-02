@@ -10,7 +10,7 @@ import 'privacy_state.dart';
 class PrivacySettingsCubit extends Cubit<PrivacyState> {
   final ProfileRepo profileRepo = getit.get<ProfileRepoImplementation>();
 
-  PrivacySettingsCubit() : super(PrivacyInitial()) {
+  PrivacySettingsCubit() : super(PrivacyLoading()) {
     fetchPrivacySettings(); // Fetch privacy settings on initialization
   }
 
@@ -73,6 +73,7 @@ class PrivacySettingsCubit extends Cubit<PrivacyState> {
     }
   }
 
+
   // Helper method to map PrivacyOption to string values
   String _mapPrivacyOptionToString(PrivacyOption option) {
     switch (option) {
@@ -87,3 +88,57 @@ class PrivacySettingsCubit extends Cubit<PrivacyState> {
     }
   }
 }
+
+
+////////////////////////////////////////
+class ReadReceiptCubit extends Cubit<ReadReceiptState> {
+  final ProfileRepo profileRepo = getit.get<ProfileRepoImplementation>();
+
+  ReadReceiptCubit() : super(ReadReceiptsLoading()) {
+    fetchReadReceiptSetting(); // Fetch the read receipt setting when the cubit is initialized
+  }
+
+  // Fetch the current read receipt setting
+  Future<void> fetchReadReceiptSetting() async {
+    try {
+      emit(ReadReceiptsLoading()); // Emit loading state while fetching the data
+
+      final result = await profileRepo.getUserSettings();
+      result.fold(
+        (failure) => emit(ReadReceiptsError(message: failure.errorMessage)), // Emit error state if the request fails
+        (userSettings) {
+          final readReceiptSetting = _mapReadReceiptToSetting(userSettings);
+          emit(ReadReceiptsLoaded(isEnabled: readReceiptSetting)); // Emit loaded state with the current setting
+        },
+      );
+    } catch (e) {
+      emit(ReadReceiptsError(message: "Failed to load read receipt settings.")); // Emit error if an exception occurs
+    }
+  }
+
+  // Update the read receipt setting (enable or disable)
+  Future<void> updateReadReceiptSetting(bool enable) async {
+    try {
+      emit(ReadReceiptsUpdating()); // Emit updating state while updating the setting
+
+      final result = await profileRepo.updateReadReceiptsStatus(enable);
+      result.fold(
+        (failure) => emit(ReadReceiptsError(message: failure.errorMessage)), // Emit error state if the request fails
+        (success) {
+          emit(ReadReceiptsUpdated(isEnabled: enable)); // Emit updated state if the setting is updated successfully
+          
+          // Fetch the updated state immediately after the update
+          fetchReadReceiptSetting(); // This will ensure UI gets the most recent state
+        },
+      );
+    } catch (e) {
+      emit(ReadReceiptsError(message: "Failed to update read receipt settings.")); // Emit error if an exception occurs
+    }
+  }
+
+  // Helper method to map user settings to the read receipt state
+  bool _mapReadReceiptToSetting(UserPrivacySettingsResponse userSettings) {
+    return userSettings.data.readReceipts; // Assuming readReceipts is a boolean in the response
+  }
+}
+
