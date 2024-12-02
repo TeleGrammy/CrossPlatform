@@ -26,7 +26,7 @@ class ContactsScreen extends StatelessWidget {
       body: BlocBuilder<ContactsCubit, ContactsState>(
         builder: (context, state) {
           if (state is ContactsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(key: ValueKey('loading_contancts'),));
           } else if (state is ContactsSuccess) {
             final contacts = state.contacts;
             return ListView.builder(
@@ -47,9 +47,9 @@ class ContactsScreen extends StatelessWidget {
               },
             );
           } else if (state is ContactsFailture) {
-            return const Center(child: Text('Failed to load contacts'));
+            return const Center(key: ValueKey('Contacts_error'),child: Text('Failed to load contacts'));
           } else {
-            return const Center(child: Text('No contacts available'));
+            return const Center(key: ValueKey('Contacts_initial'),child: Text('No contacts available'));
           }
         },
       ),
