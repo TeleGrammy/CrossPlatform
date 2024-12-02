@@ -1,24 +1,25 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
+
 class AudioPlayerWidget extends StatefulWidget {
   final String audioUrl;
-
-  const AudioPlayerWidget({Key? key, required this.audioUrl}) : super(key: key);
+  final AudioPlayer audioPlayer;
+  const AudioPlayerWidget({Key? key, required this.audioUrl,required this.audioPlayer}) : super(key: key);
 
   @override
-  _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();
+  AudioPlayerWidgetState createState() => AudioPlayerWidgetState();
 }
 
-class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
+class AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   bool isPlaying = false;
 
-  void _togglePlayPause() async {
+
+  void togglePlayPause() async {
     if (isPlaying) {
-      await _audioPlayer.pause();
+      await widget.audioPlayer.pause();
     } else {
-      await _audioPlayer.play(UrlSource(widget.audioUrl));
+      await widget.audioPlayer.play(UrlSource(widget.audioUrl));
     }
     setState(() {
       isPlaying = !isPlaying;
@@ -34,7 +35,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
         IconButton(
           key: const Key('play_pause_button'),
           icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-          onPressed: _togglePlayPause,
+          onPressed: togglePlayPause,
         ),
         Text(
           isPlaying ? 'Playing...' : 'Paused',
@@ -46,7 +47,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    widget.audioPlayer.dispose();
     super.dispose();
   }
 }
