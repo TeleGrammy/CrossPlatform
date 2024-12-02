@@ -19,8 +19,8 @@ class ProfilePictureCircle extends StatelessWidget {
       alignment: Alignment.center,
       child: ClipOval(
         child: Container(
-          height: 1600.0,
-          width: 1600.0,
+          height: 160.0,
+          width: 160.0,
           decoration: BoxDecoration(
             color: primaryColor, // Set background color if image is null
           ),
@@ -29,23 +29,23 @@ class ProfilePictureCircle extends StatelessWidget {
               : Image.network(
                   imageUrl!, // Use NetworkImage URL here
                   fit: BoxFit.cover,
-                  // loadingBuilder: (context, child, loadingProgress) {
-                  //   if (loadingProgress == null) {
-                  //     return child; // The image has finished loading
-                  //   } else {
-                  //     return Center(
-                  //       child: CircularProgressIndicator(
-                  //         value: loadingProgress.expectedTotalBytes != null
-                  //             ? loadingProgress.cumulativeBytesLoaded /
-                  //                 (loadingProgress.expectedTotalBytes ?? 1)
-                  //             : null,
-                  //       ),
-                  //     );
-                  //   }
-                  // },
-                  // errorBuilder: (context, error, stackTrace) {
-                  //   return profilePicPlaceholderIcon; // Placeholder for error cases
-                  // },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child; // The image has finished loading
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
+                    }
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return profilePicPlaceholderIcon; // Placeholder for error cases
+                  },
                 ),
         ),
       ),
