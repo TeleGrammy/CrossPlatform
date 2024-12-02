@@ -198,9 +198,7 @@ void main() {
     verify(mockProfileApiService.getProfileInfo()).called(1);
   });
 
-  test(
-      'updateProfileInfo should update profile info and return ProfileInfoResponse',
-      () async {
+  test('updateProfileInfo should update profile info successfully', () async {
     final mockResponseData = {
       'username': 'test_user',
       'email': 'test@example.com',
@@ -238,7 +236,7 @@ void main() {
     verify(mockProfileApiService.updateProfileInfo(profileInfo)).called(1);
   });
 
-  test('updateUserActivityStatus should update user status and return success',
+  test('updateUserActivityStatus should update user status successfully',
       () async {
     String newStatus = "inactive";
 
@@ -258,5 +256,69 @@ void main() {
 
     // Verify calls
     verify(mockProfileApiService.updateUserActivityStatus(newStatus)).called(1);
+  });
+
+  test('updateUserEmail should update user email successfully', () async {
+    String newEmail = "user_123_user@gmail.com";
+
+    final mockResponse = {
+      'status': 'success',
+      'data': {
+        'user': {'email': newEmail}
+      }
+    };
+
+    when(mockProfileApiService.updateUserEmail(newEmail))
+        .thenAnswer((_) async => mockResponse);
+
+    expect(() async {
+      await mockProfileApiService.updateUserEmail(newEmail);
+    }, returnsNormally); // Ensure no error is thrown
+
+    // Verify calls
+    verify(mockProfileApiService.updateUserEmail(newEmail)).called(1);
+  });
+
+  test('updateUsername should update username successfully', () async {
+    String newUsername = "unique_username";
+
+    final mockResponse = {
+      'status': 'success',
+      'data': {
+        'user': {'username': newUsername}
+      }
+    };
+
+    when(mockProfileApiService.updateUsername(newUsername))
+        .thenAnswer((_) async => mockResponse);
+
+    expect(() async {
+      await mockProfileApiService.updateUsername(newUsername);
+    }, returnsNormally); // Ensure no error is thrown
+
+    // Verify calls
+    verify(mockProfileApiService.updateUsername(newUsername)).called(1);
+  });
+
+  test('updateUserPhoneNumber should update username successfully', () async {
+    String newPhoneNumber = "01001212132";
+
+    final mockResponse = {
+      'status': 'success',
+      'data': {
+        'user': {'phone': newPhoneNumber}
+      }
+    };
+
+    when(mockProfileApiService.updateUserPhoneNumber(newPhoneNumber))
+        .thenAnswer((_) async => mockResponse);
+
+    expect(() async {
+      await mockProfileApiService.updateUserPhoneNumber(newPhoneNumber);
+    }, returnsNormally); // Ensure no error is thrown
+
+    // Verify calls
+    verify(mockProfileApiService.updateUserPhoneNumber(newPhoneNumber))
+        .called(1);
   });
 }
