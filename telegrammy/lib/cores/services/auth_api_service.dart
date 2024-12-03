@@ -191,7 +191,7 @@ class ApiService {
   Future<void> forgetPassword(String email) async {
     try {
       final response = await dio.post(
-        'http://10.0.2.2:8080/api/v1/auth/forget-password', // Use 10.0.2.2 for emulator
+        'http://telegrammy.tech/api/v1/auth/forget-password', // Use 10.0.2.2 for emulator
         data: {
           'email': email,
         },

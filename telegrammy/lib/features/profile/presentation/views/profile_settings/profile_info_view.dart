@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
+import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_state.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
@@ -44,6 +46,14 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
               onPressed: () => context.goNamed(RouteNames
                   .editProfileInfo) //context.pushNamed(RouteNames.editProfileInfo),
               ),
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              color: Colors.white,
+              onPressed: () {
+                GetIt.instance.get<TokenStorageService>().deleteToken();
+                context.goNamed(RouteNames.login);
+              } //context.pushNamed(RouteNames.editProfileInfo),
+              )
         ],
       ),
       body: BlocBuilder<ProfileSettingsCubit, ProfileSettingsState>(
