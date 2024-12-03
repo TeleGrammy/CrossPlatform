@@ -35,76 +35,78 @@ class ForgotPasswordScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/icons/forgetPass.jpg',
-                key: const ValueKey('forgotPasswordImage'),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Forgot Password?',
-                key: const ValueKey('forgotPasswordTitle'),
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/icons/forgetPass.jpg',
+                  key: const ValueKey('forgotPasswordImage'),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Don't worry, it happens to the best of us.",
-                key: const ValueKey('forgotPasswordSubtitle'),
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(height: 30),
-              TextFormField(
-                key: const ValueKey('emailField'),
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 20),
+                Text(
+                  'Forgot Password?',
+                  key: const ValueKey('forgotPasswordTitle'),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  prefixIcon: const Icon(Icons.email),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                key: const ValueKey('continueButton'),
-                onPressed: () {
-                  String email = _emailController.text.trim();
-                  if (_isEmailValid(email)) {
-                    context.read<LoginCubit>().forgetPassword(email);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter a valid email address.'),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 8),
+                Text(
+                  "Don't worry, it happens to the best of us.",
+                  key: const ValueKey('forgotPasswordSubtitle'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                const SizedBox(height: 30),
+                TextFormField(
+                  key: const ValueKey('emailField'),
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: const Icon(Icons.email),
                   ),
-                  minimumSize: const Size(double.infinity, 50),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text('Continue'),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward),
-                  ],
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  key: const ValueKey('continueButton'),
+                  onPressed: () {
+                    String email = _emailController.text.trim();
+                    if (_isEmailValid(email)) {
+                      context.read<LoginCubit>().forgetPassword(email);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter a valid email address.'),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text('Continue'),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
