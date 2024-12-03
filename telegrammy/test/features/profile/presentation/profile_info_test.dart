@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:get_it/get_it.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/profile_api_service.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:telegrammy/features/profile/data/models/profile_info_model.dart';

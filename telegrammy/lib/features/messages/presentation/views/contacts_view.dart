@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/constants/app_colors.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ContactsScreen extends StatelessWidget {
-  const ContactsScreen({Key? key}) : super(key: key); // Add a key to the ContactsScreen widget
+  const ContactsScreen({Key? key})
+      : super(key: key); // Add a key to the ContactsScreen widget
 
   @override
   Widget build(BuildContext context) {
     context.read<ContactsCubit>().getContacts();
+
+    final List<String> addListOptions = [
+      'New Chat',
+      'New Group',
+      'New Channel'
+    ];
+    void onDropdownItemSelected(String value) {
+      print('Selected: $value');
+
+      if (value == 'New Group') {
+        context.goNamed(RouteNames.createGroup);
+      } else if (value == 'New Channel') {
+        context.goNamed(RouteNames.createChannel);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -20,13 +37,31 @@ class ContactsScreen extends StatelessWidget {
           },
           icon: Icon(Icons.person),
         ),
-        title: Text('Contacts'),
-        backgroundColor: Colors.blueAccent,
+        title: Text('Chats'),
+        backgroundColor: primaryColor,
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(
+                Icons.add_circle_rounded), // IconButton with dropdown
+            onSelected: onDropdownItemSelected,
+            itemBuilder: (BuildContext context) {
+              return addListOptions.map((String option) {
+                return PopupMenuItem<String>(
+                  value: option,
+                  child: Text(option),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<ContactsCubit, ContactsState>(
         builder: (context, state) {
           if (state is ContactsLoading) {
-            return const Center(child: CircularProgressIndicator(key: ValueKey('loading_contancts'),));
+            return const Center(
+                child: CircularProgressIndicator(
+              key: ValueKey('loading_contancts'),
+            ));
           } else if (state is ContactsSuccess) {
             final contacts = state.contacts;
             return ListView.builder(
@@ -38,7 +73,8 @@ class ContactsScreen extends StatelessWidget {
                     contact.participants.map((p) => p.user.username).join(', ');
 
                 return ContactItem(
-                  key: Key('contactItem_$index'), // Unique key for each ContactItem
+                  key: Key(
+                      'contactItem_$index'), // Unique key for each ContactItem
                   title: contact.isGroup
                       ? 'Group: $participantNames'
                       : participantNames,
@@ -47,9 +83,13 @@ class ContactsScreen extends StatelessWidget {
               },
             );
           } else if (state is ContactsFailture) {
-            return const Center(key: ValueKey('Contacts_error'),child: Text('Failed to load contacts'));
+            return const Center(
+                key: ValueKey('Contacts_error'),
+                child: Text('Failed to load contacts'));
           } else {
-            return const Center(key: ValueKey('Contacts_initial'),child: Text('No contacts available'));
+            return const Center(
+                key: ValueKey('Contacts_initial'),
+                child: Text('No contacts available'));
           }
         },
       ),

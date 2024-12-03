@@ -5,7 +5,7 @@ import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_state.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 
 class PrivacyOptions extends StatefulWidget {
   @override

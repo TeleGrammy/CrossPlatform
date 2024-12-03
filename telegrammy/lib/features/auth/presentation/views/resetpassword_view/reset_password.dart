@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
+
 class ForgotPasswordScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
 

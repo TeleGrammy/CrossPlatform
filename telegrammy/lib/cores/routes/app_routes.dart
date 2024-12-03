@@ -6,7 +6,7 @@ import 'package:telegrammy/cores/helpers/routes_helper.dart';
 import 'package:telegrammy/features/Home/presentation/views/home_view.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/views/login_view.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/signup_cubit/signup_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/views/account_verification_view/account_verification_view.dart';
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/reset_password.dart';
@@ -15,6 +15,7 @@ import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_v
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
 import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
+import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
@@ -116,11 +117,6 @@ class AppRoutes {
         ),
       ),
       GoRoute(
-        name: RouteNames.home,
-        path: '/home',
-        builder: (context, state) => HomeView(),
-      ),
-      GoRoute(
         name: RouteNames.resetPassword,
         path: '/reset-password',
         builder: (context, state) => BlocProvider(
@@ -149,44 +145,45 @@ class AppRoutes {
         builder: (context, state) => MultiBlocProvider(
           providers: [
             BlocProvider(
-        create: (context) => PrivacySettingsCubit(),
-      ),
-      BlocProvider(
-        create: (context) => BlockedUsersCubit(), // Initialize and load blocked users
-      ),
-               BlocProvider(
-        create: (context) => ReadReceiptCubit(),
-      ),
+              create: (context) => PrivacySettingsCubit(),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  BlockedUsersCubit(), // Initialize and load blocked users
+            ),
+            BlocProvider(
+              create: (context) => ReadReceiptCubit(),
+            ),
           ],
           child: PrivacyView(),
         ),
       ),
       GoRoute(
-  name: RouteNames.blockingView,
-  path: '/blocking_view',
-  builder: (context, state) => MultiBlocProvider(
-    providers: [
-      
-      BlocProvider(
-        create: (context) => BlockedUsersCubit(), // Initialize and load blocked users
+        name: RouteNames.blockingView,
+        path: '/blocking_view',
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  BlockedUsersCubit(), // Initialize and load blocked users
+            ),
+          ],
+          child: BlockingPage(),
+        ),
       ),
-    ],
-    child: BlockingPage(),
-  ),
-),
-GoRoute(
-  name: RouteNames.ContactsToBlockFromView,
-  path: '/contacts_view',
-  builder: (context, state) => MultiBlocProvider(
-    providers: [
-      
-      BlocProvider(
-        create: (context) =>ContactstoCubit(), // Initialize and load blocked users
+      GoRoute(
+        name: RouteNames.ContactsToBlockFromView,
+        path: '/contacts_view',
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  ContactstoCubit(), // Initialize and load blocked users
+            ),
+          ],
+          child: ContactsPage(),
+        ),
       ),
-    ],
-    child:  ContactsPage(),
-  ),
-),
       GoRoute(
         name: RouteNames.privacyAllowablePage,
         path: '/privacy-allowable',
@@ -284,7 +281,31 @@ GoRoute(
           create: (context) => ProfileSettingsCubit(),
           child: ChangePhoneNumberView(),
         ),
-      )
+      ),
+      GoRoute(
+        name: RouteNames.channel,
+        path: '/channel',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ChannelCubit(),
+          child: ChannelView(),
+        ),
+      ),
+      GoRoute(
+        name: RouteNames.createChannel,
+        path: '/create-channel',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ChannelCubit(),
+          child: CreateChannelView(),
+        ),
+      ),
+      GoRoute(
+        name: RouteNames.createGroup,
+        path: '/create-group',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ChannelCubit(),
+          child: CreateGroupView(),
+        ),
+      ),
     ],
   );
 }

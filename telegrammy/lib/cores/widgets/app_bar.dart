@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 
 class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -19,14 +19,13 @@ class GeneralAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         onPressed: () {
           print(titleBar);
-  // if (titleBar != 'Stories' && titleBar != 'Profile Photo' && titleBar != 'Last Seen & Online') {
-  // print('previous');
-  context.pop();
+          // if (titleBar != 'Stories' && titleBar != 'Profile Photo' && titleBar != 'Last Seen & Online') {
+          // print('previous');
+          context.pop();
 // } else {
 //   print('go');
 //   context.goNamed(RouteNames.profilePrivacyPage);
 // }
-
         },
         icon: Icon(Icons.arrow_back, color: Colors.white),
       ),

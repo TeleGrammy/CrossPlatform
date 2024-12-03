@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../cores/constants/app_colors.dart';
-import '../../../../../cores/routes/routes_name.dart';
+import '../../../../../cores/routes/route_names.dart';
 import '../../../../../cores/styles/styles.dart';
 
 class ProfileSettingsAppBar extends StatelessWidget

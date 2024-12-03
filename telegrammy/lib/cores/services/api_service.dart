@@ -258,7 +258,6 @@ class ApiService {
       //    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjIiLCJlbWFpbCI6Im1rMDAxNTI2NEBnbWFpbC5jb20iLCJwaG9uZSI6IjAxMDEwMTAxMDExMSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczMjkwMzMyNiwiZXhwIjoxNzMyOTA2OTI2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.5VPSWqkgIdW6KVRBPQP0yaUTezIm1yeXxz6NUooSvC0';
       String? token = await getit.get<TokenStorageService>().getToken();
       print(token);
-      print("HELLO??");
       // final response = await getit.get<Dio>().get(
       //       'http://10.0.2.2:8080/api/v1/chats/all-chats?page=1&limit=50',
       //       options: Options(
