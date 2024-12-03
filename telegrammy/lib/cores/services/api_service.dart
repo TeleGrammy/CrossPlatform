@@ -17,16 +17,12 @@ class ApiService {
 
   Future<Either<String, void>> signInWithGoogle() async {
     try {
-      final Uri url =
-          Uri.parse('http://backtest.telegrammy.tech:8080/api/v1/auth/google');
-      if (await canLaunchUrl(url)) {
-        await launchUrl(
-          url,
-          mode: LaunchMode.externalApplication, // Open in external browser
-        );
-      } else {
-        return left('Could not launch $url');
-      }
+      final Uri url = Uri.parse('http://telegrammy.tech/api/v1/auth/google');
+
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication, // Open in external browser
+      );
 
       return Right(null);
       // If successful, do nothing and return void
@@ -37,16 +33,11 @@ class ApiService {
 
   Future<Either<String, void>> signInWithGitHub() async {
     try {
-      final Uri url =
-          Uri.parse('http://backtest.telegrammy.tech:8080/api/v1/auth/github');
-      if (await canLaunchUrl(url)) {
-        await launchUrl(
-          url,
-          mode: LaunchMode.externalApplication, // Open in external browser
-        );
-      } else {
-        return left('Could not launch $url');
-      }
+      final Uri url = Uri.parse('http://telegrammy.tech/api/v1/auth/github');
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication, // Open in external browser
+      );
       return Right(null);
     } catch (error) {
       return left('Sign-in error: $error');

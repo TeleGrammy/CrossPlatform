@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/routes/app_routes.dart';
+
+import '../../../../cores/routes/route_names.dart';
 
 class ForwardToPage extends StatelessWidget {
   // Example list of contacts
@@ -15,7 +19,7 @@ class ForwardToPage extends StatelessWidget {
         leading: IconButton(
           key: const Key('backButton'), // Key for back button
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.goNamed(RouteNames.oneToOneMessaging),
         ),
         title: Text(
           'Forward To',
