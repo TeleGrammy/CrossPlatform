@@ -6,6 +6,7 @@ import 'package:telegrammy/cores/widgets/app_bar.dart';
 // import 'package:telegrammy/features/profile/presentation/widgets/security_options.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/privacy_options.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/read_recipt_widget.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/security_options.dart';
 
 class PrivacyView extends StatefulWidget {
@@ -15,12 +16,17 @@ class PrivacyView extends StatefulWidget {
 
 class _PrivacyViewState extends State<PrivacyView> {
   late PrivacySettingsCubit _cubit;
+  late ReadReceiptCubit _readReaceiptCubit;
 
   @override
   void initState() {
     super.initState();
     _cubit = PrivacySettingsCubit();
     _cubit.fetchPrivacySettings(); // Call to load privacy settings
+    // _cubit.fetchReadReceiptSetting();
+     _readReaceiptCubit = ReadReceiptCubit();
+    _readReaceiptCubit.fetchReadReceiptSetting(); // Call to load privacy settings
+    // _cubit.fetchReadReceiptSetting();
   }
 
   @override
@@ -46,6 +52,8 @@ class _PrivacyViewState extends State<PrivacyView> {
                 SecurityOptions(), // Uncomment if needed
                 SizedBox(height: 50),
                 PrivacyOptions(), // This will now receive updates from the cubit
+                SizedBox(height: 50),
+                ReadReceiptsOption(),
               ],
             ),
           ),

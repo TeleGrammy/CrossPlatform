@@ -35,6 +35,48 @@ class BlockedUsersCubit extends Cubit<BlockedUsersState> {
     );
   }
 
+  //   Future<void> blockUser(String userId) async {
+  //   emit(BlockedUsersUpdating());
+  //   final Either<Failure, void> response =
+  //       await profileRepo.updateBlockingStatus("block", userId);
+
+  //   response.fold(
+  //     (failure) => emit(BlockedUsersError(message: _mapFailureToMessage(failure))),
+  //     (_) async {
+  //       await loadBlockedUsers(); // Refresh blocked users list after action
+  //       emit(BlockedUsersBlockAction());
+  //     },
+  //   );
+  // }
+
+  // Unblock a user
+Future<void> unblockUser(String userId) async {
+  emit(BlockedUsersUpdating());
+  final Either<Failure, void> response =
+      await profileRepo.updateBlockingStatus('unblock', userId);
+
+  response.fold(
+    (failure) {
+      // Emit error state if unblocking fails
+      emit(BlockedUsersError(message: _mapFailureToMessage(failure)));
+    },
+    (_) async {
+      // Reload the blocked users list to reflect changes
+      final Either<Failure, BlockedUsersResponse> blockedUsersResponse =
+          await profileRepo.getBlockedUser();
+
+      blockedUsersResponse.fold(
+        (failure) {
+          emit(BlockedUsersError(message: _mapFailureToMessage(failure)));
+        },
+        (success) {
+          emit(BlockedUsersLoaded(blockedUsers: success.data));
+        },
+      );
+    },
+  );
+}
+
   // Utility to map Failure to a human-readable message
   String _mapFailureToMessage(Failure failure) {
     if (failure is ServerError) {
@@ -45,37 +87,45 @@ class BlockedUsersCubit extends Cubit<BlockedUsersState> {
   }
 }
 
-////////////////////////////////////////////
 class ContactstoCubit extends Cubit<ContactstoState> {
- final ProfileRepo profileRepo = getit.get<ProfileRepoImplementation>();
+  final ProfileRepo profileRepo = getit.get<ProfileRepoImplementation>();
 
-   ContactstoCubit() : super(ContactsInitial());
+  ContactstoCubit() : super(ContactsInitial());
 
   /// Load contacts from the repository
   Future<void> loadContacts() async {
-  emit(ContactsLoading());
-  final Either<Failure, ContactsResponse> response =
-      await profileRepo.getContacts();
+    emit(ContactsLoading());
+    final Either<Failure, ContactsResponse> response =
+        await profileRepo.getContacts();
 
-  response.fold(
-    (failure) => emit(ContactsError(message: _mapFailureToMessage(failure))),
-    (contactsResponse) =>
-        emit(ContactsLoaded(contacts: contactsResponse.contacts)),
-  );
-}
+    response.fold(
+      (failure) => emit(ContactsError(message: _mapFailureToMessage(failure))),
+      (contactsResponse) =>
+          emit(ContactsLoaded(contacts: contactsResponse.contacts)),
+    );
+  }
 
-  // /// Update contact details
-  // Future<void> updateContact(String contactId) async {
-  //   emit(ContactsLoading());
-  //   final Either<Failure, ContactsResponse> response =
-  //       await profileRepo.updateContact(contactId);
+  /// Block a user and reload the contacts
+  Future<void> blockUser(String userId) async {
+    try {
+      emit(ContactsLoading()); // Optional: Indicate loading when blocking
+      final Either<Failure, void> response =
+          await profileRepo.updateBlockingStatus("block", userId);
 
-  //   response.fold(
-  //     (failure) => emit(ContactsError(message: _mapFailureToMessage(failure))),
-  //     (contactsResponse) =>
-  //         emit(ContactsLoaded(contacts: [contactsResponse.data])),
-  //   );
-  // }
+      response.fold(
+        (failure) {
+          emit(ContactsError(message: _mapFailureToMessage(failure)));
+        },
+        (_) async {
+          // After successful block, reload the contacts and indicate the action
+          await loadContacts(); // Reload contacts after block action
+        },
+      );
+    } catch (e) {
+      emit(ContactsError(message: "An unexpected error occurred."));
+    }
+  }
+
   // Utility to map Failure to a human-readable message
   String _mapFailureToMessage(Failure failure) {
     if (failure is ServerError) {

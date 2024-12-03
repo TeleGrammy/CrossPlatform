@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart'; // Import this if you're using go_router
+import 'package:telegrammy/cores/routes/route_names.dart'; // Import this if you're using go_router
 
 class CheckEmailScreen extends StatefulWidget {
   @override

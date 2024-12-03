@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 
 class SelectedMessageBottomBar extends StatelessWidget {
   final void Function() onReply;

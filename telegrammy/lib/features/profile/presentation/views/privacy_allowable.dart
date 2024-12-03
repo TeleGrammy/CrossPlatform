@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 
@@ -23,66 +21,76 @@ class PrivacyAllowablePage extends StatelessWidget {
         key: const ValueKey('PrivacyAllowableAppBar'),
       ),
       backgroundColor: secondaryColor,
-      body: BlocBuilder<PrivacySettingsCubit, PrivacyState>(
-        builder: (context, state) {
-          // Show loading indicator while privacy options are being loaded
-          if (state is PrivacyUpdating) {
-            return Center(child: CircularProgressIndicator());
-          }
-          // Handle loaded state
-          if (state is PrivacyOptionsLoaded) {
-            final profileVisibility = state.privacyOptions;
-            final selectedOption = optionKey == 'profilePicture'
-                ? profileVisibility.profilePicture
-                : optionKey == 'stories'
-                    ? profileVisibility.stories
-                    : profileVisibility.lastSeen;
-
-            return Column(
-              key: const ValueKey('PrivacyOptionsColumn'),
-              children: [
-                SizedBox(height: 50),
-                buildPrivacyAllowableTile(context, 'Everybody',
-                    PrivacyOption.everyone, selectedOption),
-                buildPrivacyAllowableTile(context, 'My Contacts',
-                    PrivacyOption.contacts, selectedOption),
-                buildPrivacyAllowableTile(
-                    context, 'Nobody', PrivacyOption.nobody, selectedOption),
-              ],
+      body: BlocListener<PrivacySettingsCubit, PrivacyState>(
+        listener: (context, state) {
+          if (state is PrivacyOptionsError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
             );
           }
-          // Handle error state
-          if (state is PrivacyOptionsError) {
-            return Center(child: Text(state.message));
-          }
-
-          // Default fallback
-          return Center(child: Text('Unexpected state.'));
         },
+        child: BlocBuilder<PrivacySettingsCubit, PrivacyState>(
+          buildWhen: (previous, current) {
+            // Avoid unnecessary rebuilds
+            return current is PrivacyOptionsLoaded || current is PrivacyLoading;
+          },
+          builder: (context, state) {
+            if (state is PrivacyLoading) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            if (state is PrivacyOptionsLoaded) {
+              final selectedOption = _getSelectedOption(state);
+
+              return Column(
+                key: const ValueKey('PrivacyOptionsColumn'),
+                children: [
+                  const SizedBox(height: 50),
+                  buildPrivacyAllowableTile(
+                    context, 'Everybody', PrivacyOption.everyone, selectedOption),
+                  buildPrivacyAllowableTile(
+                    context, 'My Contacts', PrivacyOption.contacts, selectedOption),
+                  buildPrivacyAllowableTile(
+                    context, 'Nobody', PrivacyOption.nobody, selectedOption),
+                ],
+              );
+            }
+
+            return Center(child: Text('Failed to load privacy options.'));
+          },
+        ),
       ),
     );
   }
 
-  Widget buildPrivacyAllowableTile(BuildContext context, String title,
-      PrivacyOption value, String? selectedOption) {
+  String? _getSelectedOption(PrivacyState state) {
+    if (state is PrivacyOptionsLoaded) {
+      // Ensure we are correctly fetching the state for the selected option
+      if (optionKey == 'profilePicture') return state.privacyOptions.profilePicture;
+      if (optionKey == 'stories') return state.privacyOptions.stories;
+      if (optionKey == 'lastSeen') return state.privacyOptions.lastSeen;
+    }
+    return null; // Default fallback for unexpected state
+  }
+
+  Widget buildPrivacyAllowableTile(
+      BuildContext context, String title, PrivacyOption value, String? selectedOption) {
     return Container(
       color: appBarDarkMoodColor,
       child: RadioListTile<PrivacyOption>(
         title: Text(
           title,
           style: textStyle17.copyWith(
-              fontWeight: FontWeight.w400, color: Colors.white),
+            fontWeight: FontWeight.w400,
+            color: Colors.white,
+          ),
         ),
         value: value,
         groupValue: _getPrivacyOptionFromName(selectedOption),
         activeColor: Colors.blue,
         onChanged: (PrivacyOption? selectedValue) {
           if (selectedValue != null) {
-            print('iam hereeeeeeeeeeeeeeeeeeeeeeee');
-            context
-                .read<PrivacySettingsCubit>()
-                .updatePrivacyOption(optionKey, selectedValue);
-            // Navigator.pop(context);
+            context.read<PrivacySettingsCubit>().updatePrivacyOption(optionKey, selectedValue);
           }
         },
       ),

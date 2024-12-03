@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_state.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
@@ -54,6 +54,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
           } else if (state is ProfileError) {
             return Center(child: Text(state.errorMessage));
           } else if (state is ProfileLoaded) {
+            print(state.profileInfo.profilePic);
             return SafeArea(
               child: Padding(
                   padding: const EdgeInsets.all(20.0),

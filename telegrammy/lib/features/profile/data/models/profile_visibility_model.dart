@@ -1,7 +1,7 @@
 class ProfileVisibility {
-  String profilePicture;
-  String stories;
-  String lastSeen;
+  final String profilePicture;
+  final String stories;
+  final String lastSeen;
 
   ProfileVisibility({
     required this.profilePicture,
@@ -9,19 +9,12 @@ class ProfileVisibility {
     required this.lastSeen,
   });
 
-  Map<String, String> toJson() {
+  // Convert the model to JSON format
+  Map<String, dynamic> toJson() {
     return {
       'profilePicture': profilePicture,
       'stories': stories,
       'lastSeen': lastSeen,
     };
-  }
-
-  factory ProfileVisibility.fromJson(Map<String, dynamic> json) {
-    return ProfileVisibility(
-      profilePicture: json['profilePicture'],
-      stories: json['stories'],
-      lastSeen: json['lastSeen'],
-    );
   }
 }

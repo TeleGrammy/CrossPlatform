@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/routes/routes_name.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/widgets/app_bar.dart';
@@ -49,17 +49,33 @@ class _BlockingPageState extends State<BlockingPage> {
                             final user = blockedUsers[index];
                             return ListTile(
                               tileColor: primaryColor, // Tile background color
+                              leading: CircleAvatar(
+                                backgroundImage: AssetImage(
+                                    'assets/images/logo.png'), // Replace with the path to your image asset
+                                radius: 20, // Adjust the radius for size
+                              ),
                               title: Text(
                                 user.userName,
                                 style: TextStyle(
-                                    color: tileInfoHintColor), // Text color
+                                  color: tileInfoHintColor, // Text color
+                                ),
                               ),
                               trailing: IconButton(
                                 icon:
                                     Icon(Icons.lock_open, color: Colors.green),
                                 onPressed: () {
-                                  // context.read<BlockedUsersCubit>().removeBlockedUser(user.id);
-                                  print('unblocked');
+                                  context
+                                      .read<BlockedUsersCubit>()
+                                      .unblockUser(user.userId);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${user.userName} has been unblocked.',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
                                 },
                               ),
                             );

@@ -10,6 +10,7 @@ import 'package:telegrammy/features/profile/data/models/profile_info_model.dart'
 import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart';
 import 'package:telegrammy/features/profile/data/models/profile_visibility_model.dart';
 import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart';
+import 'package:telegrammy/features/profile/data/models/settings_user_model.dart';
 import 'package:telegrammy/features/profile/data/models/stories_model.dart';
 
 import 'dart:typed_data'; // For Uint8List
@@ -32,32 +33,45 @@ class ProfileApiService {
 //       throw Exception('Error fetching profile visibility: ${dioError.message}');
 //     }
 //   }
-
-  Future<void> updateProfileVisibility(
-      ProfileVisibility profileVisibility) async {
-    try {
-      // print(
-      //   profileVisibility.toJson()
-      // );
-      String? token = await getit.get<TokenStorageService>().getToken();
-      // print(token);
-      await dio.patch(
-        '$baseUrl2/privacy/settings/profile-visibility',
-        options: Options(headers: {
-          'Authorization': 'Bearer$token',
-          //  'Accept': 'application/json',
-        }),
-        data: profileVisibility.toJson(),
-      );
-    } on DioException catch (dioError) {
-      throw Exception('Error updating profile visibility: ${dioError.message}');
-    }
+Future<UserPrivacySettingsResponse> getUserSettings() async {
+  try {
+    // print('salma');
+    String? token = await getit.get<TokenStorageService>().getToken();
+    final response = await dio.get(
+      '$baseUrl2/privacy/settings',
+      options: Options(headers: {
+        'Authorization': 'Bearer $token',
+      }),
+    );
+    //  print(UserPrivacySettingsResponse.fromJson(response.data));
+    return UserPrivacySettingsResponse.fromJson(response.data);
+   
+  } on DioException catch (dioError) {
+    throw Exception('Error fetching user privacy settings: ${dioError.message}');
   }
+}
+Future<void> updateProfileVisibility(ProfileVisibility profileVisibility) async {
+  try {
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    await dio.patch(
+      '$baseUrl2/privacy/settings/profile-visibility',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+      data: profileVisibility.toJson(), // Using the toJson() method of ProfileVisibility
+    );
+  } on DioException catch (dioError) {
+    throw Exception('Error updating profile visibility: ${dioError.message}');
+  }
+}
 
   Future<BlockedUsersResponse> getBlockedUsers() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
-    //  print('token:$token');
+      //  print('token:$token');
       final response = await dio.get(
         '$baseUrl2/privacy/settings/get-blocked-users',
         options: Options(headers: {
@@ -72,10 +86,10 @@ class ProfileApiService {
     }
   }
 
-     Future<ContactsResponse> getContacts() async {
+  Future<ContactsResponse> getContacts() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
-    //  print('token:$token');
+      //  print('token:$token');
       final response = await dio.get(
         '$baseUrl2/privacy/settings/get-contacts',
         options: Options(headers: {
@@ -89,6 +103,96 @@ class ProfileApiService {
       throw Exception('Error fetching blocked users: ${dioError.message}');
     }
   }
+
+
+
+Future<void> updateBlockingStatus(String action, String userId) async {
+  final String url = "$baseUrl2/privacy/settings/blocking-status/$action"; // Append 'block' or 'unblock' to the URL
+
+  try {
+    // Retrieve the token
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    // Construct the request body
+    final Map<String, String> body = {"userId": userId};
+
+    // Make the PATCH request with Dio
+    final response = await dio.patch(
+      url,
+      data: body, // Pass the body directly
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      print('Successfully updated blocking status.');
+    } else {
+      print('Failed to update blocking status. Status Code: ${response.statusCode}');
+      print('Response: ${response.data}');
+    }
+  } on DioException catch (dioError) {
+    print('Error updating blocking status: ${dioError.message}');
+  } catch (e) {
+    print('An unexpected error occurred: $e');
+  }
+}
+
+Future<void> updateReadReceiptsStatus(bool isEnabled) async {
+  final String url = "$baseUrl2/privacy/settings/read-receipts"; // Endpoint for read receipts
+
+  try {
+    // Retrieve the token
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    // Ensure token is valid before proceeding
+    if (token == null) {
+      print('Error: Token is null');
+      return;
+    }
+
+    // Construct the request body with required fields
+    final Map<String, dynamic> body = {
+      "isEnabled": isEnabled,  
+      "enabled": isEnabled,   
+    };
+
+    // Make the PATCH request with Dio
+    final response = await dio.patch(
+      url,
+      data: body, // Pass the body directly
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    // Handle the response
+    if (response.statusCode == 201) {
+      print('Successfully updated read receipts status.');
+      print('Response: ${response.data}');
+    } else {
+      print('Failed to update read receipts status. Status Code: ${response.statusCode}');
+      print('Response: ${response.data}');
+      // Optionally, throw an error or handle as needed
+    }
+  } on DioException catch (dioError) {
+    // Handle Dio-specific errors (e.g., network errors, timeouts)
+    print('Error updating read receipts status: ${dioError.message}');
+    if (dioError.response != null) {
+      print('Error response: ${dioError.response}');
+    }
+  } catch (e) {
+    // Catch any other exceptions
+    print('An unexpected error occurred: $e');
+  }
+}
+
 
 
 ////////////////////////////////////////////////////////Stories
@@ -278,53 +382,21 @@ class ProfileApiService {
     }
   }
 
-  // Future<ProfilePictureResponse> updateProfilePic(File pickedFile) async {
-  //   try {
-  //     String? token = await getit.get<TokenStorageService>().getToken();
-  //
-  //     final fileName = pickedFile.path.split('/').last;
-  //     final formData = FormData.fromMap({
-  //       "picture": await MultipartFile.fromFile(
-  //         pickedFile.path,
-  //         filename: fileName,
-  //       ),
-  //     });
-  //
-  //     final response = await dio.patch(
-  //       '$baseUrl2/user/profile/picture',
-  //       data: formData,
-  //       options: Options(
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           'Authorization': 'Bearer $token',
-  //         },
-  //         followRedirects: false,
-  //         validateStatus: (status) =>
-  //             status! < 500, // Accept responses with status < 500
-  //       ),
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       print("Profile picture updated successfully: ${response.data}");
-  //     } else {
-  //       print("Failed to update profile picture: ${response.data}");
-  //     }
-  //
-  //     return ProfilePictureResponse.fromJSON(response.data);
-  //   } on DioException catch (dioError) {
-  //     throw Exception('Error updating profile picture: ${dioError.message}');
-  //   }
-  // }
-
   Future<void> deleteProfilePicture() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
-      await dio.delete(
+      final response = await dio.delete(
         '$baseUrl2/user/profile/picture',
         options: Options(headers: {
           'Authorization': 'Bearer $token',
         }),
       );
+
+      if (response.statusCode == 200) {
+        print("Profile picture deleted successfully: ${response.data}");
+      } else {
+        print("Failed to delete profile picture: ${response.data}");
+      }
     } on DioException catch (dioError) {
       throw Exception('Error deleting profile picture: ${dioError.message}');
     }
