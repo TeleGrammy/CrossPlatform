@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
+import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
-class ContactsScreen extends StatelessWidget {
-  const ContactsScreen({Key? key})
-      : super(key: key); // Add a key to the ContactsScreen widget
+class ChatsScreen extends StatelessWidget {
+  const ChatsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,7 @@ class ContactsScreen extends StatelessWidget {
       'New Group',
       'New Channel'
     ];
+
     void onDropdownItemSelected(String value) {
       print('Selected: $value');
 
@@ -41,8 +42,7 @@ class ContactsScreen extends StatelessWidget {
         backgroundColor: primaryColor,
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(
-                Icons.add_circle_rounded), // IconButton with dropdown
+            icon: const Icon(Icons.add_circle_rounded),
             onSelected: onDropdownItemSelected,
             itemBuilder: (BuildContext context) {
               return addListOptions.map((String option) {
@@ -60,25 +60,40 @@ class ContactsScreen extends StatelessWidget {
           if (state is ContactsLoading) {
             return const Center(
                 child: CircularProgressIndicator(
-              key: ValueKey('loading_contancts'),
+              key: ValueKey('loading_contacts'),
             ));
           } else if (state is ContactsSuccess) {
-            final contacts = state.contacts;
-            return ListView.builder(
-              key: const Key('contactsList'), // Add a key to the ListView
-              itemCount: contacts.length,
-              itemBuilder: (context, index) {
-                final contact = contacts[index];
-                final participantNames =
-                    contact.participants.map((p) => p.user.username).join(', ');
+            final chats = state.chats;
+            // final userId=result['userId'];
+            // final userId = state.userId; // Current user's ID
 
-                return ContactItem(
-                  key: Key(
-                      'contactItem_$index'), // Unique key for each ContactItem
-                  title: contact.isGroup
-                      ? 'Group: $participantNames'
-                      : participantNames,
-                  subtitle: 'Created At: ${contact.createdAt}',
+            return ListView.builder(
+              key: const Key('contactsList'),
+              itemCount: chats.length,
+              itemBuilder: (context, index) {
+                final chat = chats[index];
+
+                // Get the participant whose ID is not equal to the current user's ID
+                // final participant = chat.participants.firstWhere(
+                //   (p) => p.userId['_id'] != userId,
+                // );
+
+                final name = 'Unknown';
+                final photo = 'default.jpg';
+                final draftMessage = '';
+                final id='';
+                final lastSeen='';
+                // final name = participant.userId['screenName'] ?? 'Unknown';
+                // final photo = participant.userId['picture'] ?? 'default.jpg';
+                // final draftMessage = participant['draft_message'] ?? '';
+
+                return ContactPreview(
+                  key: Key('contactItem_$index'),
+                  id:id,
+                  name: name,
+                  photo: photo,
+                  draftMessage: draftMessage,
+                  lastSeen:lastSeen
                 );
               },
             );
@@ -93,38 +108,6 @@ class ContactsScreen extends StatelessWidget {
           }
         },
       ),
-    );
-  }
-}
-
-class ContactItem extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const ContactItem({
-    Key? key, // Add key to the ContactItem widget
-    required this.title,
-    required this.subtitle,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      key: Key('contactItemTile_$title'), // Key for the ListTile
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: const TextStyle(fontSize: 14, color: Colors.grey),
-      ),
-      onTap: () {
-        context.goNamed(
-          RouteNames.oneToOneMessaging,
-          extra: title, // Pass participant names as extra
-        );
-      },
     );
   }
 }

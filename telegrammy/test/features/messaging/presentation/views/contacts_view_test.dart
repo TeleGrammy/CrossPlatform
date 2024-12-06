@@ -6,7 +6,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
-import 'package:telegrammy/features/messages/presentation/views/contacts_view.dart';
+import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:mocktail/mocktail.dart' as mocktail;
 
 import 'contacts_view_test.mocks.dart';

@@ -37,7 +37,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
       appBar: ProfileSettingsAppBar(
         title: 'Profile Info',
         backButtonOnPressed: () {
-          context.goNamed(RouteNames.contacts);
+          context.goNamed(RouteNames.chats);
         },
         actions: [
           IconButton(

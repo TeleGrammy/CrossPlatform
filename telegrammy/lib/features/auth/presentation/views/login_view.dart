@@ -17,7 +17,7 @@ class LoginView extends StatelessWidget {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         if (state is LoginSucess) {
-          context.goNamed(RouteNames.contacts);
+          context.goNamed(RouteNames.chats);
         } else if (state is LoginError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),

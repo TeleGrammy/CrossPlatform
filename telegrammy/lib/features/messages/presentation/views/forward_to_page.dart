@@ -19,7 +19,7 @@ class ForwardToPage extends StatelessWidget {
         leading: IconButton(
           key: const Key('backButton'), // Key for back button
           icon: Icon(Icons.arrow_back),
-          onPressed: () => context.goNamed(RouteNames.oneToOneMessaging),
+          onPressed: () => context.goNamed(RouteNames.chatdetails),
         ),
         title: Text(
           'Forward To',

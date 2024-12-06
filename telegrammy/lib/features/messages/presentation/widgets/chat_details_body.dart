@@ -134,10 +134,10 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                           if (message.repliedTo != null)
                             GestureDetector(
                               key: Key('replied_message_${message.id}'),
-                              onTap: () =>
-                                  _scrollToMessage(message.repliedTo!),
+                              onTap: () => _scrollToMessage(message.repliedTo!),
                               child: Container(
-                                key: Key('replied_message_container_${message.id}'),
+                                key: Key(
+                                    'replied_message_container_${message.id}'),
                                 padding: const EdgeInsets.all(8.0),
                                 margin: const EdgeInsets.only(bottom: 8.0),
                                 decoration: BoxDecoration(
@@ -153,21 +153,21 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                                 ),
                               ),
                             ),
-                          if (message.audioUrl != null)
-                            AudioPlayerWidget(
-                              key: Key('audio_player_${message.id}'),
-                              audioUrl: message.audioUrl!,
-                              audioPlayer: AudioPlayer(),
-                            )
-                          else
-                            Text(
-                              message.text,
-                              key: Key('message_text_${message.id}'),
-                              style: const TextStyle(
-                                color: Colors.black87,
-                                fontSize: 16.0,
-                              ),
+                          // if (message.audioUrl != null)
+                          //   AudioPlayerWidget(
+                          //     key: Key('audio_player_${message.id}'),
+                          //     audioUrl: message.audioUrl!,
+                          //     audioPlayer: AudioPlayer(),
+                          //   )
+                          // else
+                          Text(
+                            message.text,
+                            key: Key('message_text_${message.id}'),
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16.0,
                             ),
+                          ),
                           const SizedBox(height: 4.0),
                           Text(
                             'Sent at ${message.time}',

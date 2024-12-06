@@ -171,8 +171,8 @@ class ApiService {
           .post('$baseUrl/auth/login', data: userLoginData);
 
       setTokenInLocalStorage(response);
-      print(response);
-      print(userLoginData);
+      // print(response);
+      // print(userLoginData);
 
       return const Right(null);
     } on DioException catch (DioException) {
@@ -248,7 +248,7 @@ class ApiService {
       //const String token =
       //    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjIiLCJlbWFpbCI6Im1rMDAxNTI2NEBnbWFpbC5jb20iLCJwaG9uZSI6IjAxMDEwMTAxMDExMSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczMjkwMzMyNiwiZXhwIjoxNzMyOTA2OTI2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.5VPSWqkgIdW6KVRBPQP0yaUTezIm1yeXxz6NUooSvC0';
       String? token = await getit.get<TokenStorageService>().getToken();
-      print(token);
+      // print(token);
       // final response = await getit.get<Dio>().get(
       //       'http://10.0.2.2:8080/api/v1/chats/all-chats?page=1&limit=50',
       //       options: Options(
@@ -265,9 +265,10 @@ class ApiService {
               },
             ),
           );
-      print(response);
+      // print(response);
       if (response.statusCode == 200) {
         final List<dynamic> chats = response.data['chats'];
+        // final String userId = response.data['userId'];
         return chats.map((chat) => Contact.fromJson(chat)).toList();
       } else {
         throw Exception('Failed to fetch contacts');

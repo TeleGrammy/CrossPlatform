@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/bottom_bar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_appbar.dart';
@@ -8,9 +10,11 @@ import 'package:telegrammy/features/messages/presentation/widgets/selected_messa
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatDetails extends StatefulWidget {
-  final String participantNames;
-
-  const ChatDetails({Key? key, required this.participantNames})
+  final String name;
+  final String id;
+  final String photo;
+  final String lastSeen;
+  const ChatDetails({Key? key, required this.name,required this.id,required this.photo,required this.lastSeen})
       : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -21,6 +25,13 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? selectedMessage;
   Message? repliedMessage;
   Message? editedMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    getit.get<SocketService>().connect();
+    // socketService.connect();
+  }
 
   void onMessageTap(Message message) {
     setState(() {
@@ -69,6 +80,8 @@ class ChatDetailsState extends State<ChatDetails> {
 
   void onSend(String text) {
     if (text.trim().isNotEmpty) {
+          getit.get<SocketService>().sendMessage('event','data');
+      // socketService.sendMessage('event', "data");
       setState(() {
         messages.add(Message(
           text: text,
@@ -117,7 +130,9 @@ class ChatDetailsState extends State<ChatDetails> {
         appBar: selectedMessage == null
             ? ChatAppbar(
                 key: const Key('chatAppBar'), // Key for ChatAppbar
-                participantNames: widget.participantNames,
+                name: widget.name,
+                photo:widget.photo,
+                lastSeen:widget.lastSeen
               )
             : SelectedMessageAppbar(
                 key: const Key(
@@ -155,12 +170,13 @@ class ChatDetailsState extends State<ChatDetails> {
                     onEdit: onEdit,
                     editedMessage: editedMessage,
                   )
-                : SelectedMessageBottomBar(
-                    key: const Key(
-                        'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
-                    onReply: () {
-                      onReply();
-                    }),
+            :
+            SelectedMessageBottomBar(
+                key: const Key(
+                    'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
+                onReply: () {
+                  onReply();
+                }),
           ],
         ),
       ),

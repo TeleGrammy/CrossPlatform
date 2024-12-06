@@ -5,7 +5,7 @@ import 'package:telegrammy/features/messages/data/repos/messages_repo.dart';
 
 class MessagesRepoImplementaion extends MessagesRepo {
   @override
-  Future<List<Contact>> getContacts({int page = 1}) async {
+  Future<List<Contact>> getChats({int page = 1}) async {
     return await getit.get<ApiService>().fetchChats();
   }
 }

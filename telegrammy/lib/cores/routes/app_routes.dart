@@ -19,7 +19,7 @@ import 'package:telegrammy/features/groups/presentation/views/create_group/creat
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
-import 'package:telegrammy/features/messages/presentation/views/contacts_view.dart';
+import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
@@ -70,18 +70,18 @@ class AppRoutes {
     routes: [
       GoRoute(
         name: RouteNames.signUp,
-        path: '/',
+        path: '/signup',
         builder: (context, state) => BlocProvider(
           create: (context) => SignUpCubit(),
           child: const SignUpView(),
         ),
       ),
       GoRoute(
-        name: RouteNames.contacts,
-        path: '/contacts',
+        name: RouteNames.chats,
+        path: '/chats',
         builder: (context, state) => BlocProvider(
           create: (context) => ContactsCubit(),
-          child: ContactsScreen(),
+          child: ChatsScreen(),
         ),
       ),
       GoRoute(
@@ -90,12 +90,15 @@ class AppRoutes {
         builder: (context, state) => ForwardToPage(),
       ),
       GoRoute(
-        name: RouteNames.oneToOneMessaging,
-        path: '/oneToOneMessaging',
+        name: RouteNames.chatdetails,
+        path: '/chatdetails',
         builder: (context, state) {
-          final participantNames =
-              state.extra as String? ?? 'Unknown Participants';
-          return ChatDetails(participantNames: participantNames);
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          String name = extras[0];
+          String id = extras[1];
+          String photo = extras[2];
+          String lastSeen = extras[3];
+          return ChatDetails(name: name, id: id,photo:photo,lastSeen:lastSeen);
         },
       ),
       GoRoute(
@@ -110,7 +113,7 @@ class AppRoutes {
       ),
       GoRoute(
         name: RouteNames.login,
-        path: '/login',
+        path: '/',
         builder: (context, state) => BlocProvider(
           create: (context) => LoginCubit(),
           child: LoginView(),
