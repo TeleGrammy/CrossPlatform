@@ -1,3 +1,7 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 class Story {
   final String id;
   final String content;
@@ -72,26 +76,31 @@ class StoryResponse {
     );
   }
 }
+
+// StoryCreation Class
+// StoryCreation Class
 class StoryCreation {
   final String content;
-  final String? media;
+  final Uint8List? media; // Accept media as raw binary (image bytes)
 
   StoryCreation({
     required this.content,
     this.media,
   });
-
-  // Convert Story instance to JSON for POST request (only content and media if not null)
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'content': content,
-    };
-
-    if (media != null) {
-      data['media'] = media;
-    }
-
-    return data;
+  
+  // Prepare multipart data payload
+  FormData toFormData() {
+    print(media);
+ final formData = FormData.fromMap({
+         "content":content, 
+        "story": MultipartFile.fromBytes(
+          media!,
+          filename: 'story_img.jpeg',
+          contentType: MediaType("image", "jpeg"), // Adjust based on file type
+        ),
+      });
+    print('outside');
+    return formData;
   }
 }
 

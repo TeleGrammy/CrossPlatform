@@ -213,26 +213,50 @@ Future<void> updateReadReceiptsStatus(bool isEnabled) async {
     }
   }
 
-  // Create a new story
-  Future<void> createStory(StoryCreation storyCreation) async {
-    try {
-      String? token = await getit.get<TokenStorageService>().getToken();
-      // Send POST request to create a new story
-      print(token);
-      await dio.post(
-        '$baseUrl2/user/stories',
-        options: Options(headers: {
-          'Authorization': 'Bearer $token',
-        }),
-        data:
-            storyCreation.toJson(), // Only send content and media for creation
-      );
-      print("Story created successfully.");
-    } on DioException catch (dioError) {
-      throw Exception('Error creating story: ${dioError.message}');
+Future<void> createStory(StoryCreation storyCreation) async {
+  try {
+    final String? token = await getit.get<TokenStorageService>().getToken();
+    if (token == null) {
+      print("Error: No token found.");
+      return;
     }
-  }
 
+    final dio = Dio();
+    final formData = storyCreation.toFormData();
+    
+    // Debug: Print token and formData content
+    print('Token: $token');
+    print('FormData: $formData');
+    
+    final response = await dio.post(
+      '$baseUrl2/user/stories',
+      options: Options(
+        headers: {
+          "Content-Type": "multipart/form-data",
+          'Authorization': 'Bearer $token',
+        },
+      ),
+      data: formData,
+    );
+
+    // Debug: Print the response
+    print('Response status: ${response.statusCode}');
+    print('Response data: ${response.data}');
+    
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print("Story created successfully.");
+    } else {
+      print('Unexpected server response: ${response.statusCode}');
+    }
+  } on DioException catch (dioError) {
+    // Handle errors from Dio
+    print('Error during request: ${dioError.message}');
+    if (dioError.response != null) {
+      print('Server Response: ${dioError.response?.data}');
+    }
+    throw Exception('Error creating story: ${dioError.message}');
+  }
+}
   Future<void> deleteStory(String storyId) async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
@@ -355,7 +379,7 @@ Future<void> updateReadReceiptsStatus(bool isEnabled) async {
           contentType: MediaType("image", "jpeg"), // Adjust based on file type
         ),
       });
-
+     
       final response = await dio.patch(
         '$baseUrl2/user/profile/picture',
         data: formData,
