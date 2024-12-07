@@ -4,32 +4,32 @@ import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 
-class PrivacyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String titleBar; // Add a final field for the title
- final ValueKey<String> key;
-  // Constructor to accept the title
-  PrivacyAppBar({required this.titleBar, required this.key});
+class AdminboardAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String titleBar;
+  final ValueKey<String> key;
+  // final String nextRoutename;
+
+  AdminboardAppBar({required this.titleBar, required this.key});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        key: key,
+      key: key,
       leading: IconButton(
         onPressed: () {
-         print(titleBar);
+          print(titleBar);
           // if (titleBar != 'Stories' && titleBar != 'Profile Photo' && titleBar != 'Last Seen & Online') {
           // print('previous');
-          if(titleBar!='Privacy & Security')
-           context.goNamed(RouteNames.profilePrivacyPage);
+          if(titleBar!='Registered Users')
+           context.goNamed(RouteNames.adminDashboardPage);
  else
-  
-  context.goNamed(RouteNames.profileInfo);
+  // print('go');
+  context.goNamed(RouteNames.profilePrivacyPage);
 
-    
         },
-        icon: Icon(Icons.arrow_back, color: Colors.white),
+        icon: Icon(Icons.arrow_back, color: Colors.white)
       ),
-    centerTitle: true,
+      centerTitle: true,
       title: Text(
         titleBar,
         style: textStyle17.copyWith(fontWeight: FontWeight.w600),

@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/helpers/routes_helper.dart';
 import 'package:telegrammy/features/Home/presentation/views/home_view.dart';
+import 'package:telegrammy/features/admin_dashboard/data/models/registered_users_model.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_user_view.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_users_view.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/views/login_view.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
@@ -76,6 +79,24 @@ class AppRoutes {
           child: const SignUpView(),
         ),
       ),
+      //       GoRoute(
+      //   name: RouteNames.adminDashboardPage,
+      //   path: '/',
+      //   builder: (context, state) => BlocProvider(
+      //     create: (context) => ReadReceiptCubit(),
+      //     child:  RegisteredUsersView(),
+      //   ),
+      // ),
+GoRoute(
+  name: RouteNames.singleRegeisterUserPage,
+  path: '/singleRegeisterUserPage',
+  builder: (context, state) {
+    // Retrieve the user from the 'extra' parameter
+    final RegisteredUsersData user = state.extra as RegisteredUsersData;
+
+    return UserDetailView(user: user); // Pass the user to the view
+  },
+),
       GoRoute(
         name: RouteNames.contacts,
         path: '/contacts',
