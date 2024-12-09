@@ -16,9 +16,11 @@ import 'package:telegrammy/features/channels/presentation/view_models/channel_cu
 import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
+import 'package:telegrammy/features/messages/presentation/views/chat_wrapper.dart';
 import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
@@ -90,15 +92,19 @@ class AppRoutes {
         builder: (context, state) => ForwardToPage(),
       ),
       GoRoute(
-        name: RouteNames.chatdetails,
-        path: '/chatdetails',
+        name: RouteNames.chatWrapper,
+        path: '/chatWrapper',
         builder: (context, state) {
           final List<dynamic> extras = state.extra as List<dynamic>;
           String name = extras[0];
           String id = extras[1];
           String photo = extras[2];
           String lastSeen = extras[3];
-          return ChatDetails(name: name, id: id,photo:photo,lastSeen:lastSeen);
+          return BlocProvider(
+            create: (context) => MessagesCubit(),
+            child: ChatWrapper(
+                name: name, id: id, photo: photo, lastSeen: lastSeen),
+          );
         },
       ),
       GoRoute(

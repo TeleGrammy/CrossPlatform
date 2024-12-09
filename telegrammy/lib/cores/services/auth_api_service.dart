@@ -169,9 +169,9 @@ class ApiService {
       final response = await getit
           .get<Dio>()
           .post('$baseUrl/auth/login', data: userLoginData);
-
+      print(response);
       setTokenInLocalStorage(response);
-      // print(response);
+      print(response);
       // print(userLoginData);
 
       return const Right(null);

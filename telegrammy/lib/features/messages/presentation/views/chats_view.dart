@@ -81,20 +81,20 @@ class ChatsScreen extends StatelessWidget {
                 final name = 'Unknown';
                 final photo = 'default.jpg';
                 final draftMessage = '';
-                final id='';
-                final lastSeen='';
+                final String id = chat.id;
+                final lastSeen = '';
+                print(id);
                 // final name = participant.userId['screenName'] ?? 'Unknown';
                 // final photo = participant.userId['picture'] ?? 'default.jpg';
                 // final draftMessage = participant['draft_message'] ?? '';
 
                 return ContactPreview(
-                  key: Key('contactItem_$index'),
-                  id:id,
-                  name: name,
-                  photo: photo,
-                  draftMessage: draftMessage,
-                  lastSeen:lastSeen
-                );
+                    key: Key('contactItem_$index'),
+                    id: id,
+                    name: name,
+                    photo: photo,
+                    draftMessage: draftMessage,
+                    lastSeen: lastSeen);
               },
             );
           } else if (state is ContactsFailture) {

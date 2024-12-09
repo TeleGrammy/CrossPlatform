@@ -38,7 +38,7 @@ class ContactPreview extends StatelessWidget {
       ),
       onTap: () {
         context.goNamed(
-          RouteNames.chatdetails,
+          RouteNames.chatWrapper,
           extra: [name, id, userPhoto, lastSeen],
         );
       },
