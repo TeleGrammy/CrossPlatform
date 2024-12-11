@@ -1,7 +1,6 @@
-import 'package:audioplayers/audioplayers.dart'; // Add this package for audio playback
 import 'package:flutter/material.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/audio_player_widget.dart';
+import 'package:telegrammy/features/messages/presentation/widgets/message_attachment.dart';
 
 class ChatDetailsBody extends StatefulWidget {
   final void Function(Message message) onMessageTap;
@@ -153,13 +152,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                                 ),
                               ),
                             ),
-                          // if (message.audioUrl != null)
-                          //   AudioPlayerWidget(
-                          //     key: Key('audio_player_${message.id}'),
-                          //     audioUrl: message.audioUrl!,
-                          //     audioPlayer: AudioPlayer(),
-                          //   )
-                          // else
+                          MessageAttachmentWidget(message: message),
                           Text(
                             message.text,
                             key: Key('message_text_${message.id}'),

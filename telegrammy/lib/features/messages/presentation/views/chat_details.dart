@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/bottom_bar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_appbar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_details_body.dart';
@@ -14,7 +17,12 @@ class ChatDetails extends StatefulWidget {
   final String id;
   final String photo;
   final String lastSeen;
-  const ChatDetails({Key? key, required this.name,required this.id,required this.photo,required this.lastSeen})
+  const ChatDetails(
+      {Key? key,
+      required this.name,
+      required this.id,
+      required this.photo,
+      required this.lastSeen})
       : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -52,10 +60,19 @@ class ChatDetailsState extends State<ChatDetails> {
     });
   }
 
-  void onSendAudio(Message message) {
-    setState(() {
-      messages.add(message);
-    });
+  Future<void> onSendAudio(String filePath) async {
+    dynamic data = await context.read<MessagesCubit>().sendAudio(filePath);
+    if (data != null) {
+      setState(() {
+        messages.add(Message(
+            isSentByUser: true,
+            messageType: 'audio',
+            text: '',
+            time: DateTime.now().toString(),
+            attachmentKey: data['mediaKey'],
+            attachmentUrl: data['signedUrl']));
+      });
+    }
   }
 
   void onClickEdit() {
@@ -73,21 +90,30 @@ class ChatDetailsState extends State<ChatDetails> {
         time: DateTime.now().toString(),
         isSentByUser: true,
         repliedTo: null,
+        messageType: '',
       ));
       clearReply();
     });
   }
 
-  void onSend(String text) {
-    if (text.trim().isNotEmpty) {
-          getit.get<SocketService>().sendMessage('event','data');
-      // socketService.sendMessage('event', "data");
+  void onSend(String text, XFile? media) async {
+    if (text.trim().isNotEmpty || media != null) {
+      getit.get<SocketService>().sendMessage('event', 'data');
+
+      dynamic fileData;
+      if (media != null) {
+        fileData = await context.read<MessagesCubit>().sendMedia(media);
+      }
+
       setState(() {
         messages.add(Message(
           text: text,
           time: DateTime.now().toString(),
           isSentByUser: true,
           repliedTo: repliedMessage,
+          attachmentKey: fileData['mediaKey'],
+          attachmentUrl: fileData['signedUrl'],
+          messageType: (fileData != null) ? 'image' : 'text',
         ));
       });
     }
@@ -102,6 +128,7 @@ class ChatDetailsState extends State<ChatDetails> {
           time: DateTime.now().toString(),
           isSentByUser: true,
           repliedTo: message.repliedTo,
+          messageType: message.messageType,
         );
       });
     }
@@ -131,9 +158,8 @@ class ChatDetailsState extends State<ChatDetails> {
             ? ChatAppbar(
                 key: const Key('chatAppBar'), // Key for ChatAppbar
                 name: widget.name,
-                photo:widget.photo,
-                lastSeen:widget.lastSeen
-              )
+                photo: widget.photo,
+                lastSeen: widget.lastSeen)
             : SelectedMessageAppbar(
                 key: const Key(
                     'selectedMessageAppBar'), // Key for SelectedMessageAppbar
@@ -170,13 +196,12 @@ class ChatDetailsState extends State<ChatDetails> {
                     onEdit: onEdit,
                     editedMessage: editedMessage,
                   )
-            :
-            SelectedMessageBottomBar(
-                key: const Key(
-                    'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
-                onReply: () {
-                  onReply();
-                }),
+                : SelectedMessageBottomBar(
+                    key: const Key(
+                        'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
+                    onReply: () {
+                      onReply();
+                    }),
           ],
         ),
       ),

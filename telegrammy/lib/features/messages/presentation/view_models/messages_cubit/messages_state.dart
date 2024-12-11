@@ -12,4 +12,12 @@ final class MessagesSuccess extends MessagesState {
   MessagesSuccess({required this.chatdata});
 }
 
-final class Messagesfailture extends MessagesState {}
+final class Messagesfailture extends MessagesState {
+  final String errorMessage;
+  Messagesfailture({required this.errorMessage});
+}
+
+final class SendingMediaSuccess extends MessagesState {
+  final dynamic mediaUrl;
+  SendingMediaSuccess({required this.mediaUrl});
+}

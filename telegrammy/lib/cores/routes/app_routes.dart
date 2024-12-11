@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/helpers/routes_helper.dart';
 import 'package:telegrammy/features/Home/presentation/views/home_view.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 import 'package:telegrammy/features/auth/presentation/views/login_view.dart';
@@ -16,9 +13,9 @@ import 'package:telegrammy/features/channels/presentation/view_models/channel_cu
 import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
-import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
@@ -31,16 +28,13 @@ import 'package:telegrammy/features/profile/presentation/views/profile_privacy_v
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_email.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_phone_number.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_username.dart';
-import 'package:telegrammy/features/profile/presentation/views/profile_settings/story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/stories_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/story_cubit/story_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/user_story_view.dart';
-
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/profile_info_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/edit_profile_info_view.dart';
 
-import '../../features/profile/presentation/views/profile_settings/stories_page.dart';
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
@@ -98,7 +92,11 @@ class AppRoutes {
           String id = extras[1];
           String photo = extras[2];
           String lastSeen = extras[3];
-          return ChatDetails(name: name, id: id,photo:photo,lastSeen:lastSeen);
+          return BlocProvider(
+            create: (context) => MessagesCubit(),
+            child: ChatDetails(
+                name: name, id: id, photo: photo, lastSeen: lastSeen),
+          );
         },
       ),
       GoRoute(
@@ -137,7 +135,7 @@ class AppRoutes {
         path: '/social-auth-loading',
         builder: (context, state) {
           // Extract the accessToken from the query parameters
-          final accessToken = state.uri.queryParameters['accessToken'];
+          // final accessToken = state.uri.queryParameters['accessToken'];
           // print(accessToken);
           return HomeView();
         },
