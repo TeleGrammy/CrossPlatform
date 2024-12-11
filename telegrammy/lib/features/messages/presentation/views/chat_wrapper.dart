@@ -20,12 +20,14 @@ class ChatWrapper extends StatefulWidget {
   final String id;
   final String photo;
   final String lastSeen;
+  final Message? forwardedMessage;
   const ChatWrapper({
     Key? key,
     required this.name,
     required this.id,
     required this.photo,
     required this.lastSeen,
+    this.forwardedMessage
   }) : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -66,6 +68,7 @@ class ChatWrapperState extends State<ChatWrapper> {
             photo: widget.photo,
             lastSeen: widget.lastSeen,
             messages: messages,
+            forwardedMessage:widget.forwardedMessage,
           );
         } else {
           return Center(

@@ -37,7 +37,18 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
     messages = List.from(widget.messages);
 
     getit.get<SocketService>().receiveMessage('message:sent', (data) {
+      // Check if replyOn is not null
+      if (data['replyOn'] != null) {
+        // Find the message by its ID and replace replyOn with the message object
+        int index = messages.indexWhere((m) => m.id == data['replyOn']);
+        if (index != -1) {
+          data['replyOn'] = messages[index].toJson();
+        }
+      }
+
+      // Create the Message object
       Message message = Message.fromJson(data);
+
       setState(() {
         messages.add(message);
         _scrollToBottom(); // Automatically scroll to the bottom
@@ -45,36 +56,37 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
     });
 
     getit.get<SocketService>().receiveEditedMessage('message:updated', (data) {
-      // Map<String, dynamic> message = data['message'];
-      // print(message);
-      // setState(() {
-      //   // Find and update the message if it exists
-      //   final index = messages.indexWhere((m) => m.id == message['_id']);
-      //   if (index != -1) {
-      //     messages[index] = Message(
-      //       id: message['_id'],
-      //       sender: message['sender'],
-      //       messageType: message['messageType'],
-      //       isForwarded: message['isForwarded'],
-      //       isEdited: message['isEdited'],
-      //       mentions: message['mentions'],
-      //       status: message['status'],
-      //       content: message['content'],
-      //       mediaUrl: message['mediaUrl'],
-      //       mediaKey: message['mediaKey'],
-      //       timestamp: message['timestamp'],
-      //       replyOn: message['replyOn'],
-      //     );
-      //   }
-      // });
+      if (data['replyOn'] != null) {
+        // Find the message by its ID and replace replyOn with the message object
+        int index = messages.indexWhere((m) => m.id == data['replyOn']);
+        if (index != -1) {
+          data['replyOn'] = messages[index].toJson();
+        }
+      }
+
+      Message message = Message.fromJson(data);
+      int index = messages.indexWhere((m) => m.id == message.id);
+
+      setState(() {
+        messages[index].content = message.content;
+      });
     });
 
     getit.get<SocketService>().receiveDeletedMessage('message:deleted', (data) {
-      // Map<String, dynamic> message = data['message'];
-      // print(message);
-      // setState(() {
-      //   messages.removeWhere((m) => m.id == message['_id']);
-      // });
+      if (data['replyOn'] != null) {
+        // Find the message by its ID and replace replyOn with the message object
+        int index = messages.indexWhere((m) => m.id == data['replyOn']);
+        if (index != -1) {
+          data['replyOn'] = messages[index].toJson();
+        }
+      }
+
+      Message message = Message.fromJson(data);
+      int index = messages.indexWhere((m) => m.id == message.id);
+
+      setState(() {
+        messages[index].content = "message has been deleted";
+      });
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());

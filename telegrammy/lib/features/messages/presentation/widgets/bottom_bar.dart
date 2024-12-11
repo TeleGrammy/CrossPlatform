@@ -4,6 +4,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/data/models/media.dart';
+import 'package:telegrammy/features/messages/data/repos/messages_repo_implementaion.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/emoji_picker.dart';
 
@@ -13,12 +15,15 @@ class BottomBar extends StatefulWidget {
   // final void Function(Message) onSendAudio;
   final Message? editedMessage;
   final String chatId;
-
+  final Message? repliedMessage;
+  final Function() clearReply;
   const BottomBar(
       {super.key,
       // required this.onSend,
       // required this.onEdit,
       // required this.onSendAudio,
+      required this.clearReply,
+      this.repliedMessage,
       this.editedMessage,
       required this.chatId});
 
@@ -74,30 +79,42 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   Future<void> _startRecording() async {
-    final filePath = 'audio_${DateTime.now().millisecondsSinceEpoch}.aac';
+    
+    final _recorderePath = 'audio_${DateTime.now().millisecondsSinceEpoch}.aac';
     setState(() {
       _isRecording = true;
-      _recordPath = filePath;
     });
-    await _recorder.startRecorder(toFile: filePath);
+    await _recorder.startRecorder(toFile: _recorderePath);
   }
 
-  void onSendAudio(String text) {
-    if (text.trim().isNotEmpty) {
-      getit.get<SocketService>().sendMessage(
-        'message:send',
-        {'content': text, 'chatId': widget.chatId, 'messageType': 'text'},
-      );
-    }
+  Future<Media> uploadAudio() async {
+    return await getit
+        .get<MessagesRepoImplementaion>()
+        .uploadMedia(_recordPath);
+  }
+
+  Future<void> onSendAudio() async {
+    Media media = await uploadAudio();
+    print(media.mediaKey);
+    print(media.mediaUrl);
+    getit.get<SocketService>().sendMessage(
+      'message:send',
+      {
+        'mediaUrl': media.mediaUrl,
+        'chatId': widget.chatId,
+        'messageType': 'audio',
+        'mediaKey': media.mediaKey
+      },
+    );
   }
 
   Future<void> _stopRecording() async {
-    final path = await _recorder.stopRecorder();
+    await _recorder.stopRecorder();
     setState(() {
       _isRecording = false;
     });
-    if (path != null) {
-      onSendAudio(path);
+    if (_recordPath != null) {
+      await onSendAudio();
     }
   }
 
@@ -127,16 +144,22 @@ class _BottomBarState extends State<BottomBar> {
 
   void onSendText(String text) {
     if (widget.editedMessage != null) {
-      // getit.get<SocketService>().editMessage('message:update',
-      //     {'messageId': widget.editedMessage!.id, 'content': text});
+      getit.get<SocketService>().editMessage('message:update',
+          {'messageId': widget.editedMessage!.id, 'content': text});
     } else {
       if (text.trim().isNotEmpty) {
         getit.get<SocketService>().sendMessage(
           'message:send',
-          {'content': text, 'chatId': widget.chatId, 'messageType': 'text'},
+          {
+            'content': text,
+            'chatId': widget.chatId,
+            'messageType': 'text',
+            'replyOn': widget.repliedMessage?.id ?? null
+          },
         );
       }
     }
+    widget.clearReply();
   }
 
   @override

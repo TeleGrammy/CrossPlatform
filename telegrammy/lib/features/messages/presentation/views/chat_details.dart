@@ -20,13 +20,15 @@ class ChatDetails extends StatefulWidget {
   final String photo;
   final String lastSeen;
   final List<Message> messages;
+  final Message? forwardedMessage;
   const ChatDetails(
       {Key? key,
       required this.name,
       required this.id,
       required this.photo,
       required this.lastSeen,
-      required this.messages})
+      required this.messages,
+      this.forwardedMessage})
       : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -44,35 +46,21 @@ class ChatDetailsState extends State<ChatDetails> {
     // loadChatData();
 
     getit.get<SocketService>().connect();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.forwardedMessage != null) {
+        getit.get<SocketService>().sendMessage(
+          'message:send',
+          {
+            'messageId': widget.forwardedMessage!.id,
+            'chatId': widget.id,
+            'isForwarded': true
+          },
+        );
+      }
+    });
 
     // socketService.connect();
   }
-
-// void loadChatData(BuildContext context, String chatId) {
-//   final messagesCubit = context.read<MessagesCubit>();
-
-//   // Call the Cubit's function to fetch messages
-//   messagesCubit.fetchMessages(chatId: chatId);
-
-//   // Listen for state changes
-//   messagesCubit.stream.listen((state) {
-//     if (state is MessagesSuccess) {
-//       // Extract data from the state and update variables
-//       state.chatData.then((data) {
-//         participants = data['participants'] as List<Participant>;
-//         messages = data['messages'] as List<Message>;
-
-//         // Optionally trigger a UI update
-//         setState(() {});
-//       });
-//     } else if (state is MessagesFailure) {
-//       // Handle failure (e.g., show a SnackBar)
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Failed to load chat data')),
-//       );
-//     }
-//   });
-// }
 
   void onMessageTap(Message message) {
     setState(() {
@@ -89,7 +77,6 @@ class ChatDetailsState extends State<ChatDetails> {
   void clearReply() {
     setState(() {
       repliedMessage = null;
-      editedMessage = null;
     });
   }
 
@@ -112,6 +99,9 @@ class ChatDetailsState extends State<ChatDetails> {
       'message:delete',
       {'messageId': selectedMessage!.id},
     );
+    setState(() {
+      selectedMessage = null;
+    });
     // setState(() {
     //   messages.add(Message(
     //     text: "message has been deleted",
@@ -218,7 +208,9 @@ class ChatDetailsState extends State<ChatDetails> {
                     // onSend: onSend,
                     // onSendAudio: onSendAudio,
                     // onEdit: onEdit,
+                    clearReply: clearReply,
                     editedMessage: editedMessage,
+                    repliedMessage: repliedMessage,
                     chatId: widget.id,
                   )
                 : SelectedMessageBottomBar(
@@ -226,7 +218,9 @@ class ChatDetailsState extends State<ChatDetails> {
                         'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
                     onReply: () {
                       onReply();
-                    }),
+                    },
+                    selectedMessage: selectedMessage!,
+                  ),
           ],
         ),
       ),

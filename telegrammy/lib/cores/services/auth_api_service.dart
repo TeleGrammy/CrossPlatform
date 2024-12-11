@@ -243,7 +243,7 @@ class ApiService {
   //   }
   // }
 
-  Future<List<Contact>> fetchChats() async {
+  Future<List<Chat>> fetchChats() async {
     try {
       //const String token =
       //    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjIiLCJlbWFpbCI6Im1rMDAxNTI2NEBnbWFpbC5jb20iLCJwaG9uZSI6IjAxMDEwMTAxMDExMSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczMjkwMzMyNiwiZXhwIjoxNzMyOTA2OTI2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.5VPSWqkgIdW6KVRBPQP0yaUTezIm1yeXxz6NUooSvC0';
@@ -269,7 +269,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> chats = response.data['chats'];
         // final String userId = response.data['userId'];
-        return chats.map((chat) => Contact.fromJson(chat)).toList();
+        return chats.map((chat) => Chat.fromJson(chat)).toList();
       } else {
         throw Exception('Failed to fetch contacts');
       }

@@ -130,14 +130,14 @@ class Message {
   final String sender;
   final String messageType;
   final List<Mention>? mentions;
-  final String content;
+  String content;
   final String timestamp;
   final Message? replyOn; // Nullable to handle null values
   final bool isForwarded;
   final bool isEdited;
   final String status;
-  final String mediaUrl;
-  final String mediaKey;
+   String? mediaUrl;
+   String? mediaKey;
 
   Message({
     required this.id,
@@ -150,9 +150,25 @@ class Message {
     required this.isForwarded,
     required this.isEdited,
     required this.status,
-    required this.mediaUrl,
-    required this.mediaKey,
+     this.mediaUrl,
+     this.mediaKey,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'senderId': sender,
+      'messageType': messageType,
+      'mentions': mentions?.map((mention) => mention.toJson()).toList(),
+      'content': content,
+      'timestamp': timestamp,
+      'replyOn': replyOn?.toJson(), // Convert nested message to JSON
+      'isForwarded': isForwarded,
+      'isEdited': isEdited,
+      'status': status,
+      'mediaUrl': mediaUrl,
+      'mediaKey': mediaKey,
+    };
+  }
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
@@ -166,7 +182,9 @@ class Message {
           .toList(),
       content: json['content'],
       timestamp: json['timestamp'],
-      replyOn: json['replyOn'], // May be null
+      replyOn: json['replyOn'] != null
+          ? Message.fromJson(json['replyOn'])
+          : null, // May be null
       isForwarded: json['isForwarded'],
       isEdited: json['isEdited'],
       status: json['status'],
@@ -201,5 +219,12 @@ class Mention {
       id: json['_id'],
       username: json['username'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'username': username,
+    };
   }
 }

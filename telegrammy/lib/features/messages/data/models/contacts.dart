@@ -1,37 +1,127 @@
-class Contact {
-  final String id;
-  final List<Participant> participants;
-  final bool isGroup;
-  final bool isChannel;
-  final String createdAt;
+import 'dart:convert';
 
-  Contact({
+class Chat {
+  final String id;
+  final String name;
+  final String email;
+  final String? photo;
+  final String status;
+  final DateTime lastSeen;
+  final DateTime joinedAt;
+  final String role;
+  final LastMessage? lastMessage;
+  final String draftMessage;
+
+  Chat({
     required this.id,
-    required this.participants,
-    required this.isGroup,
-    required this.isChannel,
-    required this.createdAt,
+    required this.name,
+    required this.email,
+    this.photo,
+    required this.status,
+    required this.lastSeen,
+    required this.joinedAt,
+    required this.role,
+    this.lastMessage,
+    required this.draftMessage,
   });
 
-  factory Contact.fromJson(Map<String, dynamic> json) {
-    return Contact(
+  factory Chat.fromJson(Map<String, dynamic> json) {
+    return Chat(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      photo: json['photo'],
+      status: json['status'],
+      lastSeen: DateTime.parse(json['lastSeen']),
+      joinedAt: DateTime.parse(json['joinedAt']),
+      role: json['role'],
+      lastMessage: json['lastMessage'] != null
+          ? LastMessage.fromJson(json['lastMessage'])
+          : null,
+      draftMessage: json['draftMessage'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'photo': photo,
+      'status': status,
+      'lastSeen': lastSeen.toIso8601String(),
+      'joinedAt': joinedAt.toIso8601String(),
+      'role': role,
+      'lastMessage': lastMessage?.toJson(),
+      'draftMessage': draftMessage,
+    };
+  }
+}
+
+class LastMessage {
+  final String id;
+  final Sender senderId;
+  final String messageType;
+  final String status;
+  final String content;
+  final String mediaUrl;
+  final DateTime timestamp;
+
+  LastMessage({
+    required this.id,
+    required this.senderId,
+    required this.messageType,
+    required this.status,
+    required this.content,
+    required this.mediaUrl,
+    required this.timestamp,
+  });
+
+  factory LastMessage.fromJson(Map<String, dynamic> json) {
+    return LastMessage(
       id: json['_id'],
-      participants: (json['participants'] as List)
-          .map((participant) => Participant.fromJson(participant))
-          .toList(),
-      isGroup: json['isGroup'],
-      isChannel: json['isChannel'],
-      createdAt: json['createdAt'],
+      senderId: Sender.fromJson(json['senderId']),
+      messageType: json['messageType'],
+      status: json['status'],
+      content: json['content'],
+      mediaUrl: json['mediaUrl'] ?? '',
+      timestamp: DateTime.parse(json['timestamp']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'participants': participants.map((p) => p.toJson()).toList(),
-      'isGroup': isGroup,
-      'isChannel': isChannel,
-      'createdAt': createdAt,
+      'senderId': senderId.toJson(),
+      'messageType': messageType,
+      'status': status,
+      'content': content,
+      'mediaUrl': mediaUrl,
+      'timestamp': timestamp.toIso8601String(),
+    };
+  }
+}
+
+class Sender {
+  final String id;
+  final String username;
+
+  Sender({
+    required this.id,
+    required this.username,
+  });
+
+  factory Sender.fromJson(Map<String, dynamic> json) {
+    return Sender(
+      id: json['_id'],
+      username: json['username'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'username': username,
     };
   }
 }

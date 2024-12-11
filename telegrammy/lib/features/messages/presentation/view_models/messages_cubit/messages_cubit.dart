@@ -26,4 +26,5 @@ class MessagesCubit extends Cubit<MessagesState> {
           error: e.toString())); // Handle any unexpected errors
     }
   }
+  
 }

@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatsScreen extends StatelessWidget {
-  const ChatsScreen({Key? key}) : super(key: key);
+  final Message? forwardMessage;
+  const ChatsScreen({Key? key, this.forwardMessage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +80,15 @@ class ChatsScreen extends StatelessWidget {
                 //   (p) => p.userId['_id'] != userId,
                 // );
 
-                final name = 'Unknown';
-                final photo = 'default.jpg';
-                final draftMessage = '';
+                final name = chat.name;
+                final photo = chat.photo ?? 'default.jpg';
+                // final draftMessage = '';
+                final lastMessage = chat.lastMessage?.content ?? '';
                 final String id = chat.id;
-                final lastSeen = '';
-                print(id);
+                final lastMessageTime =
+                    chat.lastMessage?.timestamp.toString() ?? '';
+                final lastSeen = chat.lastSeen.toString();
+                // print(id);
                 // final name = participant.userId['screenName'] ?? 'Unknown';
                 // final photo = participant.userId['picture'] ?? 'default.jpg';
                 // final draftMessage = participant['draft_message'] ?? '';
@@ -93,8 +98,10 @@ class ChatsScreen extends StatelessWidget {
                     id: id,
                     name: name,
                     photo: photo,
-                    draftMessage: draftMessage,
-                    lastSeen: lastSeen);
+                    lastMessage: lastMessage,
+                    lastMessageTime: lastMessageTime,
+                    lastSeen: lastSeen,
+                    forwardMessage: forwardMessage);
               },
             );
           } else if (state is ContactsFailture) {
