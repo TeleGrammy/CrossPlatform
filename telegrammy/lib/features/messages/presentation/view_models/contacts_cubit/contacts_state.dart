@@ -8,9 +8,9 @@ class ContactsInitial extends ContactsState {}
 class ContactsLoading extends ContactsState {}
 
 class ContactsSuccess extends ContactsState {
-  List<Contact> contacts;
+  List<Chat> chats;
 
-  ContactsSuccess({required this.contacts});
+  ContactsSuccess({required this.chats});
 }
 
 class ContactsFailture extends ContactsState {}

@@ -20,10 +20,10 @@ class ChannelView extends StatefulWidget {
 class _ChannelViewState extends State<ChannelView> {
   ScrollController scrollController = ScrollController();
 
-  Post? _selectedPost;
+  Post? _selectedPost; 
   Post? _repliedPost;
   Post? _editedPost;
-
+  bool isPinned=false;
   void _onPostTap(Post Post) {
     setState(() {
       _selectedPost = Post;
@@ -66,6 +66,13 @@ class _ChannelViewState extends State<ChannelView> {
   void _onClickDelete() {
     setState(() {});
   }
+void onClickPin() {
+    setState(() {});
+    print('post pinned');
+  }
+  void onClickUnpin() {
+      print('post unpinned');
+  }
 
   @override
   void initState() {
@@ -90,6 +97,11 @@ class _ChannelViewState extends State<ChannelView> {
                           },
                           onClickEdit: _onClickEdit,
                           onClickDelete:_onClickDelete,
+                          onClickPin:onClickPin,
+                          onClickUnpin:onClickUnpin,
+
+                     isPinned: isPinned,
+
                         )
                       : AppBar(
                           leading: Icon(Icons.arrow_back),
@@ -113,6 +125,7 @@ class _ChannelViewState extends State<ChannelView> {
                         ),
               body: Column(
                 children: [
+                    
                   Expanded(
                     child: PostsBody(
                       posts: state.channel.posts,

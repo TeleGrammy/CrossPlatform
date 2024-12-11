@@ -16,7 +16,7 @@ class ChatData {
 
 class Chat {
   final String id;
-  final List<Participant> participants;
+  final List<Participantt> participants;
   final bool isGroup;
   final bool isChannel;
   final String createdAt;
@@ -35,7 +35,7 @@ class Chat {
     return Chat(
       id: json['_id'],
       participants: (json['participants'] as List)
-          .map((participant) => Participant.fromJson(participant))
+          .map((participant) => Participantt.fromJson(participant))
           .toList(),
       isGroup: json['isGroup'],
       isChannel: json['isChannel'],
@@ -45,19 +45,19 @@ class Chat {
   }
 }
 
-class Participant {
+class Participantt {
   final User user;
   final String joinedAt;
   final String draftMessage;
 
-  Participant({
+  Participantt({
     required this.user,
     required this.joinedAt,
     required this.draftMessage,
   });
 
-  factory Participant.fromJson(Map<String, dynamic> json) {
-    return Participant(
+  factory Participantt.fromJson(Map<String, dynamic> json) {
+    return Participantt(
       user: User.fromJson(json['userId']),
       joinedAt: json['joinedAt'],
       draftMessage: json['draft_message'],
@@ -127,11 +127,17 @@ class Messages {
 
 class Message {
   final String id;
-  final Sender sender;
+  final String sender;
   final String messageType;
-  final List<Mention> mentions;
-  final String content;
+  final List<Mention>? mentions;
+  String content;
   final String timestamp;
+  final Message? replyOn; // Nullable to handle null values
+  final bool isForwarded;
+  final bool isEdited;
+  final String status;
+   String? mediaUrl;
+   String? mediaKey;
 
   Message({
     required this.id,
@@ -140,18 +146,50 @@ class Message {
     required this.mentions,
     required this.content,
     required this.timestamp,
+    this.replyOn,
+    required this.isForwarded,
+    required this.isEdited,
+    required this.status,
+     this.mediaUrl,
+     this.mediaKey,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'senderId': sender,
+      'messageType': messageType,
+      'mentions': mentions?.map((mention) => mention.toJson()).toList(),
+      'content': content,
+      'timestamp': timestamp,
+      'replyOn': replyOn?.toJson(), // Convert nested message to JSON
+      'isForwarded': isForwarded,
+      'isEdited': isEdited,
+      'status': status,
+      'mediaUrl': mediaUrl,
+      'mediaKey': mediaKey,
+    };
+  }
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       id: json['_id'],
-      sender: Sender.fromJson(json['senderId']),
+      sender: json['senderId'] is Map<String, dynamic>
+          ? json['senderId']['_id']
+          : json['senderId'],
       messageType: json['messageType'],
       mentions: (json['mentions'] as List)
           .map((mention) => Mention.fromJson(mention))
           .toList(),
       content: json['content'],
       timestamp: json['timestamp'],
+      replyOn: json['replyOn'] != null
+          ? Message.fromJson(json['replyOn'])
+          : null, // May be null
+      isForwarded: json['isForwarded'],
+      isEdited: json['isEdited'],
+      status: json['status'],
+      mediaUrl: json['mediaUrl'],
+      mediaKey: json['mediaKey'],
     );
   }
 }
@@ -181,5 +219,12 @@ class Mention {
       id: json['_id'],
       username: json['username'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'username': username,
+    };
   }
 }

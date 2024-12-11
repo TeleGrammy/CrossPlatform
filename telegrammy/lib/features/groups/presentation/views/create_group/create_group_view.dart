@@ -13,7 +13,7 @@ class CreateGroupView extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           key: const ValueKey('CreateGroupBackButton'),
-          onPressed: () => context.goNamed(RouteNames.contacts),
+          onPressed: () => context.goNamed(RouteNames.chats),
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         title: Text('Create Group'),

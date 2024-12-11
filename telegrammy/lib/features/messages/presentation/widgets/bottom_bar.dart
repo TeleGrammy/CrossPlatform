@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/data/models/media.dart';
+import 'package:telegrammy/features/messages/data/repos/messages_repo_implementaion.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/emoji_picker.dart';
 
 class BottomBar extends StatefulWidget {
-  final void Function(String) onSend;
-  final void Function(Message, String) onEdit;
-  final void Function(Message) onSendAudio;
+  // final void Function(String) onSend;
+  // final void Function(Message, String) onEdit;
+  // final void Function(Message) onSendAudio;
   final Message? editedMessage;
-
-  const BottomBar({
-    super.key,
-    required this.onSend,
-    required this.onEdit,
-    required this.onSendAudio,
-    this.editedMessage,
-  });
+  final String chatId;
+  final Message? repliedMessage;
+  final Function() clearReply;
+  const BottomBar(
+      {super.key,
+      // required this.onSend,
+      // required this.onEdit,
+      // required this.onSendAudio,
+      required this.clearReply,
+      this.repliedMessage,
+      this.editedMessage,
+      required this.chatId});
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -53,7 +62,7 @@ class _BottomBarState extends State<BottomBar> {
 
   void _initializeMessage() {
     if (widget.editedMessage != null) {
-      _messageController.text = widget.editedMessage!.text;
+      _messageController.text = widget.editedMessage!.content;
       _isTyping = true;
     } else {
       _messageController.clear();
@@ -70,26 +79,42 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   Future<void> _startRecording() async {
-    final filePath = 'audio_${DateTime.now().millisecondsSinceEpoch}.aac';
+    
+    final _recorderePath = 'audio_${DateTime.now().millisecondsSinceEpoch}.aac';
     setState(() {
       _isRecording = true;
-      _recordPath = filePath;
     });
-    await _recorder.startRecorder(toFile: filePath);
+    await _recorder.startRecorder(toFile: _recorderePath);
+  }
+
+  Future<Media> uploadAudio() async {
+    return await getit
+        .get<MessagesRepoImplementaion>()
+        .uploadMedia(_recordPath);
+  }
+
+  Future<void> onSendAudio() async {
+    Media media = await uploadAudio();
+    print(media.mediaKey);
+    print(media.mediaUrl);
+    getit.get<SocketService>().sendMessage(
+      'message:send',
+      {
+        'mediaUrl': media.mediaUrl,
+        'chatId': widget.chatId,
+        'messageType': 'audio',
+        'mediaKey': media.mediaKey
+      },
+    );
   }
 
   Future<void> _stopRecording() async {
-    final path = await _recorder.stopRecorder();
+    await _recorder.stopRecorder();
     setState(() {
       _isRecording = false;
     });
-    if (path != null) {
-      widget.onSendAudio(Message(
-        text: 'Voice note',
-        time: DateTime.now().toString(),
-        isSentByUser: true,
-        repliedTo: null,
-      ));
+    if (_recordPath != null) {
+      await onSendAudio();
     }
   }
 
@@ -115,6 +140,26 @@ class _BottomBarState extends State<BottomBar> {
         );
       },
     );
+  }
+
+  void onSendText(String text) {
+    if (widget.editedMessage != null) {
+      getit.get<SocketService>().editMessage('message:update',
+          {'messageId': widget.editedMessage!.id, 'content': text});
+    } else {
+      if (text.trim().isNotEmpty) {
+        getit.get<SocketService>().sendMessage(
+          'message:send',
+          {
+            'content': text,
+            'chatId': widget.chatId,
+            'messageType': 'text',
+            'replyOn': widget.repliedMessage?.id ?? null
+          },
+        );
+      }
+    }
+    widget.clearReply();
   }
 
   @override
@@ -179,7 +224,7 @@ class _BottomBarState extends State<BottomBar> {
             if (_isRecording) {
               await _stopRecording();
             } else if (_isTyping) {
-              widget.onSend(_messageController.text.trim());
+              onSendText(_messageController.text.trim());
               setState(() {
                 _messageController.clear();
               });

@@ -53,7 +53,7 @@ Future<UserPrivacySettingsResponse> getUserSettings() async {
 Future<void> updateProfileVisibility(ProfileVisibility profileVisibility) async {
   try {
     String? token = await getit.get<TokenStorageService>().getToken();
-
+    print(token); 
     await dio.patch(
       '$baseUrl2/privacy/settings/profile-visibility',
       options: Options(

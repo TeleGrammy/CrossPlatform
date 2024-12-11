@@ -19,10 +19,13 @@ import 'package:telegrammy/features/channels/presentation/view_models/channel_cu
 import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
-import 'package:telegrammy/features/messages/presentation/views/contacts_view.dart';
+import 'package:telegrammy/features/messages/presentation/views/chat_wrapper.dart';
+import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
@@ -73,7 +76,7 @@ class AppRoutes {
     routes: [
       GoRoute(
         name: RouteNames.signUp,
-        path: '/',
+        path: '/signup',
         builder: (context, state) => BlocProvider(
           create: (context) => SignUpCubit(),
           child: const SignUpView(),
@@ -97,26 +100,53 @@ GoRoute(
     return UserDetailView(user: user); // Pass the user to the view
   },
 ),
+      // GoRoute(
+      //   name: RouteNames.chats,
+      //   path: '/chats',
+      //   builder: (context, state) => BlocProvider(
+      //     create: (context) => ContactsCubit(),
+      //     child: ChatsScreen(),
+      //   ),
+      // ),
       GoRoute(
-        name: RouteNames.contacts,
-        path: '/contacts',
-        builder: (context, state) => BlocProvider(
-          create: (context) => ContactsCubit(),
-          child: ContactsScreen(),
-        ),
-      ),
-      GoRoute(
-        name: RouteNames.forwardToPage,
-        path: '/forwardToPage',
-        builder: (context, state) => ForwardToPage(),
-      ),
-      GoRoute(
-        name: RouteNames.oneToOneMessaging,
-        path: '/oneToOneMessaging',
+        name: RouteNames.chats,
+        path: '/chats',
         builder: (context, state) {
-          final participantNames =
-              state.extra as String? ?? 'Unknown Participants';
-          return ChatDetails(participantNames: participantNames);
+          final List<dynamic>? extras =
+              state.extra as List<dynamic>?; // Safely cast extra
+          final Message? forwardedMessage =
+              (extras != null && extras.isNotEmpty)
+                  ? extras[0] as Message
+                  : null;
+
+          return BlocProvider(
+            create: (context) => ContactsCubit(),
+            child: ChatsScreen(forwardMessage: forwardedMessage),
+          );
+        },
+      ),
+      GoRoute(
+        name: RouteNames.chatWrapper,
+        path: '/chatWrapper',
+        builder: (context, state) {
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          String name = extras[0];
+          String id = extras[1];
+          String photo = extras[2];
+          String lastSeen = extras[3];
+          Message? forwardMessage;
+          if (extras.length == 5) forwardMessage = extras[4];
+
+          return BlocProvider(
+            create: (context) => MessagesCubit(),
+            child: ChatWrapper(
+              name: name,
+              id: id,
+              photo: photo,
+              lastSeen: lastSeen,
+              forwardedMessage: forwardMessage,
+            ),
+          );
         },
       ),
       GoRoute(
@@ -131,7 +161,7 @@ GoRoute(
       ),
       GoRoute(
         name: RouteNames.login,
-        path: '/login',
+        path: '/',
         builder: (context, state) => BlocProvider(
           create: (context) => LoginCubit(),
           child: LoginView(),

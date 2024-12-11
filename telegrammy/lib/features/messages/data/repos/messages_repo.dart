@@ -1,5 +1,8 @@
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
+import 'package:telegrammy/features/messages/data/models/media.dart';
 
 abstract class MessagesRepo {
-  Future<List<Contact>> getContacts({int page=1});
+  Future<List<Chat>> getChats({int page=1});
+    Future<Map<String, dynamic>> getMessages({required String chatId});
+   Future<Media>uploadMedia(audioPath);
 }

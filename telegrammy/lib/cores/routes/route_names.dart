@@ -12,7 +12,7 @@ class RouteNames {
   static String userStoryPage = 'userStoryPage';
   static String createStoryPage = 'createStoryPage';
   static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
-  static String oneToOneMessaging = 'oneToOneMessaging';
+  static String chatWrapper = 'chatWrapper';
   static String forwardToPage = 'forwardToPage';
   static String profileInfo = 'profileInfo';
   static String editProfileInfo = 'editProfileInfo';
@@ -21,7 +21,7 @@ class RouteNames {
   static String changeUsername = 'changeUsername';
   static String changeEmail = 'changeEmail';
   static String changePhoneNumber = 'changePhoneNumber';
-  static String contacts = 'contacts';
+  static String chats = 'chats';
   static String blockingView = 'blockingView';
   static String ContactsToBlockFromView = 'contactsToBlockFromView';
   static String createGroup = 'createGroup';

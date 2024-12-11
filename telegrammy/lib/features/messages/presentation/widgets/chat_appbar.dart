@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
 
 import '../../../../cores/routes/route_names.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final String participantNames;
+  final String name;
+  final String photo;
+  final String lastSeen;
 
-  const ChatAppbar({required this.participantNames, super.key});
+  const ChatAppbar(
+      {required this.name,
+      super.key,
+      required this.photo,
+      required this.lastSeen});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -55,27 +63,30 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         key: const Key('back_button'),
         icon: Icon(Icons.arrow_back),
-        onPressed: () => context.goNamed(RouteNames.contacts),
+        onPressed: () {
+          getit.get<SocketService>().disconnect();
+          context.goNamed(RouteNames.chats);
+        },
       ),
       title: Row(
         key: const Key('appbar_title_row'),
         children: [
           CircleAvatar(
             key: const Key('profile_picture'),
-            backgroundImage: const AssetImage('assets/images/logo.png'),
+            backgroundImage: AssetImage(photo),
             radius: 20,
           ),
           const SizedBox(width: 10),
           Column(
             key: const Key('participant_info_column'),
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'person name',
+                name,
                 key: Key('participant_name'),
               ),
               Text(
-                'Last seen: 10 minutes ago',
+                lastSeen,
                 key: Key('last_seen_info'),
                 style: TextStyle(fontSize: 12),
               ),
