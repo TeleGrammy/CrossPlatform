@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 
 class ContactPreview extends StatelessWidget {
   final String name;
   final String photo;
-  final String draftMessage;
+  final String lastMessage;
   final String id;
+  final String lastMessageTime;
   final String lastSeen;
+  final Message? forwardMessage;
 
   const ContactPreview(
       {Key? key,
       required this.id,
       required this.name,
       required this.photo,
-      required this.draftMessage,
-      required this.lastSeen})
+      required this.lastMessage,
+      required this.lastMessageTime,
+      required this.lastSeen,
+      this.forwardMessage
+      })
       : super(key: key);
 
   @override
@@ -33,13 +41,20 @@ class ContactPreview extends StatelessWidget {
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
-        draftMessage.isNotEmpty ? draftMessage : 'No draft message',
+        lastMessage.isNotEmpty ? lastMessage : '',
         style: const TextStyle(fontSize: 14, color: Colors.grey),
       ),
       onTap: () {
+        if(forwardMessage!=null){
+          getit.get<SocketService>().sendMessage('message:send',           {
+            'content': forwardMessage!.content,
+            'chatId': id,
+            'messageType': 'text'
+          },);
+        }
         context.goNamed(
-          RouteNames.chatdetails,
-          extra: [name, id, userPhoto, lastSeen],
+          RouteNames.chatWrapper,
+          extra: [name, id, userPhoto, lastSeen,],
         );
       },
     );

@@ -74,7 +74,8 @@ dependencies:
   audioplayers: ^6.1.0
   giphy_get: ^3.5.6
   socket_io_client: ^2.0.0
-
+  path_provider: ^2.1.5
+  mic_stream: ^0.7.1+2
 dev_dependencies:
   flutter_test:
     sdk: flutter

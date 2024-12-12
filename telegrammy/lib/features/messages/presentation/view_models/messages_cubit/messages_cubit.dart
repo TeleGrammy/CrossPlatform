@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
-import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/features/messages/data/repos/messages_repo_implementaion.dart';
 
 part 'messages_state.dart';
@@ -19,7 +19,7 @@ class MessagesCubit extends Cubit<MessagesState> {
     var result = await messagesRepo.sendMedia(mediaFile);
     result.fold((failre) {
       print('Cubit:error sending media file');
-      emit(Messagesfailture(errorMessage: failre.errorMessage));
+      emit(Messagesfailture(error: failre.errorMessage));
     }, (data) {
       emit(SendingMediaSuccess(mediaUrl: data));
       fileData = data;
@@ -33,11 +33,29 @@ class MessagesCubit extends Cubit<MessagesState> {
     var result = await messagesRepo.sendAudio(filePath);
     result.fold((failre) {
       print('Cubit:error sending media file');
-      emit(Messagesfailture(errorMessage: failre.errorMessage));
+      emit(Messagesfailture(error: failre.errorMessage));
     }, (data) {
       emit(SendingMediaSuccess(mediaUrl: data));
       audioData = data;
     });
     return audioData;
+  }
+
+  Future<void> fetchMessages({required String chatId}) async {
+    emit(MessagesLoading()); // Emit loading state
+
+    try {
+      final result = await getit
+          .get<MessagesRepoImplementaion>()
+          .getMessages(chatId: chatId);
+      if (result.containsKey('error')) {
+        emit(Messagesfailture(error: result['error'])); // Emit failure state
+      } else {
+        emit(MessagesSuccess(chatData: result)); // Emit success state with data
+      }
+    } catch (e) {
+      emit(Messagesfailture(
+          error: e.toString())); // Handle any unexpected errors
+    }
   }
 }

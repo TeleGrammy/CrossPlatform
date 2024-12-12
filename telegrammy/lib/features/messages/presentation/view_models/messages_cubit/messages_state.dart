@@ -8,13 +8,13 @@ final class MessagesInitial extends MessagesState {}
 final class MessagesLoading extends MessagesState {}
 
 final class MessagesSuccess extends MessagesState {
-  final ChatData chatdata;
-  MessagesSuccess({required this.chatdata});
+  final Map<String, dynamic> chatData;
+  MessagesSuccess({required this.chatData});
 }
 
 final class Messagesfailture extends MessagesState {
-  final String errorMessage;
-  Messagesfailture({required this.errorMessage});
+  final String error;
+  Messagesfailture({required this.error});
 }
 
 final class SendingMediaSuccess extends MessagesState {

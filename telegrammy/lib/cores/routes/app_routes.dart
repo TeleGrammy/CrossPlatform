@@ -14,10 +14,10 @@ import 'package:telegrammy/features/channels/presentation/views/channel_view/cha
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
-import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/presentation/views/chat_wrapper.dart';
 import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
-import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/blocked_users_view.dart';
@@ -34,7 +34,6 @@ import 'package:telegrammy/features/profile/presentation/view_models/story_cubit
 import 'package:telegrammy/features/profile/presentation/views/user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/profile_info_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/edit_profile_info_view.dart';
-
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
@@ -70,32 +69,52 @@ class AppRoutes {
           child: const SignUpView(),
         ),
       ),
+      // GoRoute(
+      //   name: RouteNames.chats,
+      //   path: '/chats',
+      //   builder: (context, state) => BlocProvider(
+      //     create: (context) => ContactsCubit(),
+      //     child: ChatsScreen(),
+      //   ),
+      // ),
       GoRoute(
         name: RouteNames.chats,
         path: '/chats',
-        builder: (context, state) => BlocProvider(
-          create: (context) => ContactsCubit(),
-          child: ChatsScreen(),
-        ),
+        builder: (context, state) {
+          final List<dynamic>? extras =
+              state.extra as List<dynamic>?; // Safely cast extra
+          final Message? forwardedMessage =
+              (extras != null && extras.isNotEmpty)
+                  ? extras[0] as Message
+                  : null;
+
+          return BlocProvider(
+            create: (context) => ContactsCubit(),
+            child: ChatsScreen(forwardMessage: forwardedMessage),
+          );
+        },
       ),
       GoRoute(
-        name: RouteNames.forwardToPage,
-        path: '/forwardToPage',
-        builder: (context, state) => ForwardToPage(),
-      ),
-      GoRoute(
-        name: RouteNames.chatdetails,
-        path: '/chatdetails',
+        name: RouteNames.chatWrapper,
+        path: '/chatWrapper',
         builder: (context, state) {
           final List<dynamic> extras = state.extra as List<dynamic>;
           String name = extras[0];
           String id = extras[1];
           String photo = extras[2];
           String lastSeen = extras[3];
+          Message? forwardMessage;
+          if (extras.length == 5) forwardMessage = extras[4];
+
           return BlocProvider(
             create: (context) => MessagesCubit(),
-            child: ChatDetails(
-                name: name, id: id, photo: photo, lastSeen: lastSeen),
+            child: ChatWrapper(
+              name: name,
+              id: id,
+              photo: photo,
+              lastSeen: lastSeen,
+              forwardedMessage: forwardMessage,
+            ),
           );
         },
       ),
