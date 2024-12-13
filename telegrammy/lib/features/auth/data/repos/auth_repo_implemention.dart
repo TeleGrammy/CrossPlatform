@@ -2,7 +2,7 @@
 // - To provide the actual logic for fetching book data and converting API responses into model objects.
 // - Handles errors gracefully, returning either data or failure based on API response.
 import 'package:dartz/dartz.dart';
-import 'package:telegrammy/cores/errors/Failture.dart';
+import 'package:telegrammy/cores/errors/Failure.dart';
 import 'package:telegrammy/cores/services/auth_api_service.dart';
 import 'package:telegrammy/features/auth/data/repos/auth_repo.dart';
 

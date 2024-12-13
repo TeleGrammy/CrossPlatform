@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:telegrammy/cores/errors/Failture.dart';
+import 'package:telegrammy/cores/errors/Failure.dart';
 import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart';
 import 'package:telegrammy/features/profile/data/repos/profile_repo.dart';
 import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart';
@@ -19,8 +19,10 @@ class BlockedUsersCubit extends Cubit<BlockedUsersState> {
         await profileRepo.getBlockedUser();
 
     response.fold(
-      (failure) => emit(BlockedUsersError(message: _mapFailureToMessage(failure))),
-      (blockedUsersResponse) => emit(BlockedUsersLoaded(blockedUsers: blockedUsersResponse.data)),
+      (failure) =>
+          emit(BlockedUsersError(message: _mapFailureToMessage(failure))),
+      (blockedUsersResponse) =>
+          emit(BlockedUsersLoaded(blockedUsers: blockedUsersResponse.data)),
     );
   }
 
@@ -30,8 +32,10 @@ class BlockedUsersCubit extends Cubit<BlockedUsersState> {
         await profileRepo.getBlockedUser();
 
     response.fold(
-      (failure) => emit(BlockedUsersError(message: _mapFailureToMessage(failure))),
-      (blockedUsersResponse) => emit(BlockedUsersUpdated(blockedUsers: blockedUsersResponse.data)),
+      (failure) =>
+          emit(BlockedUsersError(message: _mapFailureToMessage(failure))),
+      (blockedUsersResponse) =>
+          emit(BlockedUsersUpdated(blockedUsers: blockedUsersResponse.data)),
     );
   }
 
@@ -50,32 +54,32 @@ class BlockedUsersCubit extends Cubit<BlockedUsersState> {
   // }
 
   // Unblock a user
-Future<void> unblockUser(String userId) async {
-  emit(BlockedUsersUpdating());
-  final Either<Failure, void> response =
-      await profileRepo.updateBlockingStatus('unblock', userId);
+  Future<void> unblockUser(String userId) async {
+    emit(BlockedUsersUpdating());
+    final Either<Failure, void> response =
+        await profileRepo.updateBlockingStatus('unblock', userId);
 
-  response.fold(
-    (failure) {
-      // Emit error state if unblocking fails
-      emit(BlockedUsersError(message: _mapFailureToMessage(failure)));
-    },
-    (_) async {
-      // Reload the blocked users list to reflect changes
-      final Either<Failure, BlockedUsersResponse> blockedUsersResponse =
-          await profileRepo.getBlockedUser();
+    response.fold(
+      (failure) {
+        // Emit error state if unblocking fails
+        emit(BlockedUsersError(message: _mapFailureToMessage(failure)));
+      },
+      (_) async {
+        // Reload the blocked users list to reflect changes
+        final Either<Failure, BlockedUsersResponse> blockedUsersResponse =
+            await profileRepo.getBlockedUser();
 
-      blockedUsersResponse.fold(
-        (failure) {
-          emit(BlockedUsersError(message: _mapFailureToMessage(failure)));
-        },
-        (success) {
-          emit(BlockedUsersLoaded(blockedUsers: success.data));
-        },
-      );
-    },
-  );
-}
+        blockedUsersResponse.fold(
+          (failure) {
+            emit(BlockedUsersError(message: _mapFailureToMessage(failure)));
+          },
+          (success) {
+            emit(BlockedUsersLoaded(blockedUsers: success.data));
+          },
+        );
+      },
+    );
+  }
 
   // Utility to map Failure to a human-readable message
   String _mapFailureToMessage(Failure failure) {
@@ -135,4 +139,3 @@ class ContactstoCubit extends Cubit<ContactstoState> {
     }
   }
 }
-

@@ -15,6 +15,7 @@ import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_v
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
 import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
+import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
@@ -98,7 +99,8 @@ class AppRoutes {
           String id = extras[1];
           String photo = extras[2];
           String lastSeen = extras[3];
-          return ChatDetails(name: name, id: id,photo:photo,lastSeen:lastSeen);
+          return ChatDetails(
+              name: name, id: id, photo: photo, lastSeen: lastSeen);
         },
       ),
       GoRoute(
@@ -305,7 +307,7 @@ class AppRoutes {
         name: RouteNames.createGroup,
         path: '/create-group',
         builder: (context, state) => BlocProvider(
-          create: (context) => ChannelCubit(),
+          create: (context) => GroupCubit(),
           child: CreateGroupView(),
         ),
       ),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:telegrammy/cores/errors/Failture.dart';
+import 'package:telegrammy/cores/errors/Failure.dart';
 import 'package:telegrammy/cores/services/auth_api_service.dart';
 import 'package:telegrammy/features/auth/data/repos/auth_repo_implemention.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/signup_cubit/signup_cubit.dart';

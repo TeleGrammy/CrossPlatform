@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:telegrammy/cores/models/group_model.dart';
+import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
+import 'package:telegrammy/features/groups/presentation/widgets/create_group_form.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 
 import '../../../../../cores/constants/app_colors.dart';
 import '../../../../../cores/routes/route_names.dart';
 
 class CreateGroupView extends StatelessWidget {
-  const CreateGroupView({super.key});
+  CreateGroupView({super.key});
+
+  final formKey = GlobalKey<FormState>();
+  final groupNameController = TextEditingController();
+  final groupDescriptionController = TextEditingController();
+  final adminController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +30,27 @@ class CreateGroupView extends StatelessWidget {
         backgroundColor: primaryColor,
         centerTitle: true,
       ),
-      body: Container(),
+      body: Container(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                BlocProvider(
+                  create: (context) => GroupCubit(),
+                  child: CreateGroupForm(
+                      formKey: formKey,
+                      groupNameController: groupNameController,
+                      groupDescriptionController: groupDescriptionController,
+                      onSubmit: (Group) {
+                        context.read<ContactsCubit>();
+                      }),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

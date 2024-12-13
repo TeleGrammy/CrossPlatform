@@ -41,12 +41,14 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
         },
         actions: [
           IconButton(
+              key: const ValueKey('editProfileInfoButton'),
               icon: Icon(Icons.edit),
               color: Colors.white,
               onPressed: () => context.goNamed(RouteNames
                   .editProfileInfo) //context.pushNamed(RouteNames.editProfileInfo),
               ),
           IconButton(
+              key: const ValueKey('LogoutButton'),
               icon: Icon(Icons.exit_to_app),
               color: Colors.white,
               onPressed: () {

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 
 class ProfilePictureCircle extends StatelessWidget {
-  const ProfilePictureCircle({super.key, this.imageUrl});
+  ProfilePictureCircle({super.key, this.imageUrl});
 
   final String? imageUrl;
   final profilePicPlaceholderIcon = const Icon(
