@@ -1,9 +1,10 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MediaPickerMenu extends StatefulWidget {
-  final Function(XFile) onSelectMedia;
+  final Function(dynamic) onSelectMedia;
   const MediaPickerMenu({required this.onSelectMedia});
 
   @override
@@ -39,12 +40,14 @@ class _MediaPickerMenuState extends State<MediaPickerMenu> {
     }
   }
 
-  // Function to pick multiple files
   Future<void> _pickMultipleFiles() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
     if (result != null) {
-      // widget.onSelectMedia(result.files!);
+      for (var file in result.files) {
+        widget.onSelectMedia(file);
+      }
+
       setState(() {
         _multipleFiles = result.files;
       });
@@ -70,32 +73,27 @@ class _MediaPickerMenuState extends State<MediaPickerMenu> {
       icon: Icon(Icons.attach_file, color: Colors.black),
       itemBuilder: (BuildContext context) {
         return [
-          PopupMenuItem(
-            value: 'camera',
-            child: ListTile(
-              leading: Icon(Icons.camera_alt, color: Colors.brown),
-              title: Text('camera'),
+          if (!kIsWeb)
+            PopupMenuItem(
+              value: 'camera',
+              child: ListTile(
+                leading: Icon(Icons.camera_alt, color: Colors.brown),
+                title: Text('camera'),
+              ),
             ),
-          ),
-          PopupMenuItem(
-            value: 'image',
-            child: ListTile(
-              leading: Icon(Icons.image, color: Colors.blue),
-              title: Text('Image'),
+          if (!kIsWeb)
+            PopupMenuItem(
+              value: 'image',
+              child: ListTile(
+                leading: Icon(Icons.image, color: Colors.blue),
+                title: Text('Image'),
+              ),
             ),
-          ),
           PopupMenuItem(
             value: 'file',
             child: ListTile(
               leading: Icon(Icons.insert_drive_file, color: Colors.green),
               title: Text('File'),
-            ),
-          ),
-          PopupMenuItem(
-            value: 'sticker',
-            child: ListTile(
-              leading: Icon(Icons.sticky_note_2, color: Colors.yellow),
-              title: Text('Sticker'),
             ),
           ),
         ];

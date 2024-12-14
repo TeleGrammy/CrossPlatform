@@ -10,7 +10,6 @@ class ContactsCubit extends Cubit<ContactsState> {
   ContactsCubit() : super(ContactsInitial());
 
   Future<void> getContacts() async {
-    print("inside get Chats ---------------------------------->");
     emit(ContactsLoading());
 
     try {

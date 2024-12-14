@@ -13,24 +13,22 @@ class MessagesCubit extends Cubit<MessagesState> {
 
   void getChatData() {}
 
-  Future<dynamic> sendMedia(XFile mediaFile) async {
+  Future<dynamic> uploadMedia(dynamic mediaFile) async {
     dynamic fileData;
-    emit(MessagesLoading());
-    var result = await messagesRepo.sendMedia(mediaFile);
+    var result = await messagesRepo.uploadMedia(mediaFile);
     result.fold((failre) {
-      print('Cubit:error sending media file');
+      print('Cubit:error sending media file ${failre.errorMessage}');
       emit(Messagesfailture(error: failre.errorMessage));
     }, (data) {
-      emit(SendingMediaSuccess(mediaUrl: data));
       fileData = data;
     });
     return fileData;
   }
 
-  Future<dynamic> sendAudio(String filePath) async {
+  Future<dynamic> uploadAudio(String filePath) async {
     dynamic audioData;
     emit(MessagesLoading());
-    var result = await messagesRepo.sendAudio(filePath);
+    var result = await messagesRepo.uploadAudio(filePath);
     result.fold((failre) {
       print('Cubit:error sending media file');
       emit(Messagesfailture(error: failre.errorMessage));

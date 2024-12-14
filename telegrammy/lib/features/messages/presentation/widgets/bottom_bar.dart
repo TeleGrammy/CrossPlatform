@@ -1,4 +1,6 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -6,7 +8,7 @@ import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/media.dart';
-import 'package:telegrammy/features/messages/data/repos/messages_repo_implementaion.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/emoji_picker.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/media_picker.dart';
 
@@ -33,7 +35,7 @@ class _BottomBarState extends State<BottomBar> {
   bool _isTyping = false;
   bool _isRecording = false;
   String? _recordPath;
-  XFile? mediaMessage;
+  dynamic mediaMessage;
 
   @override
   void initState() {
@@ -67,10 +69,10 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   Future<void> _initializeRecorder() async {
-    if (await Permission.microphone.request().isDenied ||
-        await Permission.storage.request().isDenied) {
-      print("Permission denied!");
-    }
+    // if (await Permission.microphone.request().isDenied ||
+    //     await Permission.storage.request().isDenied) {
+    //   print("Permission denied!");
+    // }
     final status = await Permission.microphone.request();
     if (!status.isGranted) {
       throw Exception('Microphone permission not granted');
@@ -79,7 +81,6 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   Future<void> _startRecording() async {
-    
     final _recorderePath = 'audio_${DateTime.now().millisecondsSinceEpoch}.aac';
     setState(() {
       _isRecording = true;
@@ -87,25 +88,25 @@ class _BottomBarState extends State<BottomBar> {
     await _recorder.startRecorder(toFile: _recorderePath);
   }
 
-  Future<Media> uploadAudio() async {
-    return await getit
-        .get<MessagesRepoImplementaion>()
-        .uploadMedia(_recordPath);
+  Future<void> uploadAudio() async {
+    // return await getit
+    //     .get<MessagesRepoImplementaion>()
+    //     .uploadMedia(_recordPath);
   }
 
   Future<void> onSendAudio() async {
-    Media media = await uploadAudio();
-    print(media.mediaKey);
-    print(media.mediaUrl);
-    getit.get<SocketService>().sendMessage(
-      'message:send',
-      {
-        'mediaUrl': media.mediaUrl,
-        'chatId': widget.chatId,
-        'messageType': 'audio',
-        'mediaKey': media.mediaKey
-      },
-    );
+    // Media media = await uploadAudio();
+    // print(media.mediaKey);
+    // print(media.mediaUrl);
+    // getit.get<SocketService>().sendMessage(
+    //   'message:send',
+    //   {
+    //     'mediaUrl': media.mediaUrl,
+    //     'chatId': widget.chatId,
+    //     'messageType': 'audio',
+    //     'mediaKey': media.mediaKey
+    //   },
+    // );
   }
 
   Future<void> _stopRecording() async {
@@ -129,12 +130,12 @@ class _BottomBarState extends State<BottomBar> {
             });
             Navigator.pop(context); // Close the picker
           },
-          onStickerSelected: (stickerPath) {
-            print('Selected Sticker: $stickerPath');
+          onStickerSelected: (stickerUrl) {
+            onSendStickerGIFs(stickerUrl);
             Navigator.pop(context); // Close the picker
           },
-          onGifSelected: (gifPath) {
-            print('Selected GIF: $gifPath');
+          onGifSelected: (gifUrl) {
+            onSendStickerGIFs(gifUrl);
             Navigator.pop(context); // Close the picker
           },
         );
@@ -142,19 +143,50 @@ class _BottomBarState extends State<BottomBar> {
     );
   }
 
-  void onSendText(String text) {
+  Future<void> onSendStickerGIFs(String url) async {
+    getit.get<SocketService>().sendMessage(
+      'message:send',
+      {
+        'content': '',
+        'chatId': widget.chatId,
+        'messageType': 'sticker',
+        'replyOn': widget.repliedMessage?.id ?? null,
+        'mediaUrl': url,
+      },
+    );
+    widget.clearReply();
+  }
+
+  Future<void> onSendText(String text, dynamic mediaFile) async {
+    String messageType = 'text';
+    String? mediaUrl;
+    String? mediaKey;
+
+    if (mediaFile != null) {
+      print(mediaFile.name);
+      dynamic data = await context.read<MessagesCubit>().uploadMedia(mediaFile);
+      mediaKey = data['mediaKey'];
+      mediaUrl = data['signedUrl'];
+      messageType = data['fileType'];
+      print(mediaKey);
+      print(mediaUrl);
+      print(messageType);
+    }
+
     if (widget.editedMessage != null) {
       getit.get<SocketService>().editMessage('message:update',
           {'messageId': widget.editedMessage!.id, 'content': text});
     } else {
-      if (text.trim().isNotEmpty) {
+      if (text.trim().isNotEmpty || mediaFile != null) {
         getit.get<SocketService>().sendMessage(
           'message:send',
           {
             'content': text,
             'chatId': widget.chatId,
-            'messageType': 'text',
-            'replyOn': widget.repliedMessage?.id ?? null
+            'messageType': messageType,
+            'replyOn': widget.repliedMessage?.id ?? null,
+            'mediaUrl': mediaUrl,
+            'mediaKey': mediaKey,
           },
         );
       }
@@ -206,9 +238,9 @@ class _BottomBarState extends State<BottomBar> {
                 },
               ),
             MediaPickerMenu(
-              onSelectMedia: (XFile media) {
+              onSelectMedia: (dynamic attachment) {
                 setState(() {
-                  mediaMessage = media;
+                  mediaMessage = attachment;
                 });
               },
             ),
@@ -254,7 +286,8 @@ class _BottomBarState extends State<BottomBar> {
                 if (_isRecording) {
                   await _stopRecording();
                 } else if (_isTyping || mediaMessage != null) {
-                  onSendText(_messageController.text.trim());
+                  await onSendText(
+                      _messageController.text.trim(), mediaMessage);
                   setState(() {
                     _messageController.clear();
                     mediaMessage = null;

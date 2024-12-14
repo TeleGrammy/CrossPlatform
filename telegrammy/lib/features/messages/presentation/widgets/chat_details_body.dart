@@ -175,7 +175,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                               ),
                             ),
                           ),
-                        // MessageAttachmentWidget(message: message),
+                        MessageAttachmentWidget(message: message),
                         Text(
                           message.content,
                           key: Key('message_text_${message.id}'),
@@ -209,5 +209,11 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 }

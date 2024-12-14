@@ -157,6 +157,9 @@ class ApiService {
     await getit
         .get<FlutterSecureStorage>()
         .write(key: 'accessToken', value: response.data['data']['accessToken']);
+    await getit
+        .get<TokenStorageService>()
+        .saveToken(response.data['data']['accessToken']);
     print(response.data['data']['accessToken']);
   }
 

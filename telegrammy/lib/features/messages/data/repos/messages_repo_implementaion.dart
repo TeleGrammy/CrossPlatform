@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dartz/dartz.dart';
 import 'package:telegrammy/cores/errors/Failture.dart';
@@ -8,20 +9,43 @@ import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/data/models/media.dart';
 import 'package:telegrammy/features/messages/data/repos/messages_repo.dart';
+import 'package:mime/mime.dart';
+import 'package:universal_html/html.dart';
 
 class MessagesRepoImplementaion extends MessagesRepo {
   MessagingApiService apiService = MessagingApiService();
 
   @override
   Future<List<Chat>> getChats({int page = 1}) async {
-    print("inside get contacts-----------------------");
     return await getit.get<ApiService>().fetchChats();
   }
 
   @override
-  Future<Either<Failure, dynamic>> sendMedia(XFile mediaFile) async {
+  Future<Either<Failure, dynamic>> uploadMedia(dynamic mediaFile) async {
     try {
-      dynamic data = await apiService.sendMedia(mediaFile);
+      String? fileType;
+      if (!kIsWeb) {
+        fileType = lookupMimeType(mediaFile.path);
+      } else {
+        fileType = lookupMimeType('', headerBytes: mediaFile.bytes);
+      }
+
+      if (fileType == null) {
+        fileType = 'file';
+      } else if (fileType.contains('image')) {
+        fileType = 'image';
+      } else if (fileType.contains('video')) {
+        fileType = 'video';
+      } else {
+        fileType = 'file';
+      }
+
+      dynamic data;
+      if (fileType == 'image' || fileType == 'video') {
+        data = await apiService.uploadMedia(mediaFile, fileType);
+      } else {
+        data = await apiService.uploadFile(mediaFile);
+      }
       return Right(data);
     } catch (error) {
       return Left(ServerError(errorMessage: error.toString()));
@@ -29,9 +53,9 @@ class MessagesRepoImplementaion extends MessagesRepo {
   }
 
   @override
-  Future<Either<Failure, dynamic>> sendAudio(String filePath) async {
+  Future<Either<Failure, dynamic>> uploadAudio(String filePath) async {
     try {
-      dynamic data = await apiService.sendAudio(filePath);
+      dynamic data = await apiService.uploadAudio(filePath);
       return Right(data);
     } catch (error) {
       return Left(ServerError(errorMessage: error.toString()));
@@ -50,11 +74,5 @@ class MessagesRepoImplementaion extends MessagesRepo {
         return data;
       },
     );
-  }
-
-  @override
-  Future<Media> uploadMedia(audioPath) {
-    // TODO: implement uploadMedia
-    throw UnimplementedError();
   }
 }

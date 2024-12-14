@@ -1,6 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 
@@ -9,23 +7,15 @@ class SocketService {
 
   void connect() {
     // String? token = await getit.get<TokenStorageService>().getToken();
-    socket = IO.io("http://localhost:8080", <String, dynamic>{
+    socket = IO.io("http://10.0.2.2:8080", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
       'query': {
         'token':
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjMyIiwiZW1haWwiOiJtazAwMTUyNjRAZ21haWwuY29tIiwicGhvbmUiOiIwMTE1MDEzNDU4OSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczNDAyMzE5MywiZXhwIjoxNzM0MDI2NzkzLCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.lcQXmE6hABulT1zCCXfF-BJ-0JWpBI6hKwJegYWzXA4',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjMyIiwiZW1haWwiOiJtazAwMTUyNjRAZ21haWwuY29tIiwicGhvbmUiOiIwMTE1MDEzNDU4OSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczNDE0NDA3MywiZXhwIjoxNzM0MTQ3NjczLCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.iwYJeM6mHZwd0HaXZsKdCEDdiWbSCCH7qid5tFGPDfw',
       }
     });
     socket.connect();
-    // print(token);
-    // socket = await IO.io('ip server',
-    //     OptionBuilder()
-    //         .setTransports(['websocket']).build());
-    // socket.onConnect((_) => print('connect'));
-    // socket.onConnect((_) {
-    //   print('connect');
-    // });
     socket.onConnectError((data) => print('error : ' + data.toString()));
 
     socket.onConnect((_) {
