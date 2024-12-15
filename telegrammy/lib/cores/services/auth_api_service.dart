@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -159,6 +157,9 @@ class ApiService {
     await getit
         .get<FlutterSecureStorage>()
         .write(key: 'accessToken', value: response.data['data']['accessToken']);
+    await getit
+        .get<TokenStorageService>()
+        .saveToken(response.data['data']['accessToken']);
     print(response.data['data']['accessToken']);
   }
 
@@ -169,9 +170,9 @@ class ApiService {
       final response = await getit
           .get<Dio>()
           .post('$baseUrl/auth/login', data: userLoginData);
-
+      print(response);
       setTokenInLocalStorage(response);
-      // print(response);
+      print(response);
       // print(userLoginData);
 
       return const Right(null);
@@ -243,7 +244,7 @@ class ApiService {
   //   }
   // }
 
-  Future<List<Contact>> fetchChats() async {
+  Future<List<Chat>> fetchChats() async {
     try {
       //const String token =
       //    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjIiLCJlbWFpbCI6Im1rMDAxNTI2NEBnbWFpbC5jb20iLCJwaG9uZSI6IjAxMDEwMTAxMDExMSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczMjkwMzMyNiwiZXhwIjoxNzMyOTA2OTI2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.5VPSWqkgIdW6KVRBPQP0yaUTezIm1yeXxz6NUooSvC0';
@@ -269,7 +270,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> chats = response.data['chats'];
         // final String userId = response.data['userId'];
-        return chats.map((chat) => Contact.fromJson(chat)).toList();
+        return chats.map((chat) => Chat.fromJson(chat)).toList();
       } else {
         throw Exception('Failed to fetch contacts');
       }

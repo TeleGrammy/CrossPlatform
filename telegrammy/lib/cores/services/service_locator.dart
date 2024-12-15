@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/auth_api_service.dart';
+import 'package:telegrammy/cores/services/messages_api_service.dart';
 import 'package:telegrammy/cores/services/profile_api_service.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
@@ -14,6 +15,7 @@ final getit = GetIt.instance;
 
 void setupServiceLocator() {
   getit.registerSingleton<ApiService>(ApiService(dio: Dio()));
+  getit.registerSingleton<MessagesApiService>(MessagesApiService(dio: Dio()));
   getit.registerSingleton<ProfileApiService>(ProfileApiService(dio: Dio()));
   getit.registerSingleton<ProfileRepoImplementation>(ProfileRepoImplementation(
       profileApiService: getit.get<ProfileApiService>()));

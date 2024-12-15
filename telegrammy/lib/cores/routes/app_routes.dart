@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/helpers/routes_helper.dart';
@@ -17,11 +15,11 @@ import 'package:telegrammy/features/channels/presentation/views/channel_view/cha
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
-import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
+import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
-import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/presentation/views/chat_wrapper.dart';
 import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
-import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/blocked_users_view.dart';
@@ -32,42 +30,38 @@ import 'package:telegrammy/features/profile/presentation/views/profile_privacy_v
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_email.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_phone_number.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_username.dart';
-import 'package:telegrammy/features/profile/presentation/views/profile_settings/story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/stories_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/privacy_allowable.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/story_cubit/story_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/user_story_view.dart';
-
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/profile_info_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/edit_profile_info_view.dart';
 
-import '../../features/profile/presentation/views/profile_settings/stories_page.dart';
-
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
-    // redirect: (context, state) async {
-    //   RoutesHelper helper = RoutesHelper();
-    //   final bool isLoggedin = await helper.isLoggedIn();
-    //   final bool issignedUp = await helper.isSignedUp();
-    //
-    //   // If the user has logged in and tries to access sign-up or login, send them to the home page
-    //   if (isLoggedin && state.uri.toString() == '/') {
-    //     return '/contacts'; //redirect to the app main screen
-    //   }
-    //
-    //   // If the user has signedup but not verified send them to the verification page
-    //   if (!isLoggedin && issignedUp) {
-    //     return '/email-verification';
-    //   }
-    //
-    //   // If the user is not authenticated and tries to access home, send them to the login/signup page
-    //   if (!isLoggedin && !issignedUp) {
-    //     return '/'; // Redirect to sign-up or login
-    //   }
-    //
-    //   // Return null to indicate no redirection needed
-    //   return null;
-    // },
+    redirect: (context, state) {
+      // RoutesHelper helper = RoutesHelper();
+      // final bool isLoggedin = await helper.isLoggedIn();
+      // final bool issignedUp = await helper.isSignedUp();
+
+      // // If the user has logged in and tries to access sign-up or login, send them to the home page
+      // if (isLoggedin && state.uri.toString() == '/') {
+      //   return '/contacts'; //redirect to the app main screen
+      // }
+
+      // // If the user has signedup but not verified send them to the verification page
+      // if (!isLoggedin && issignedUp) {
+      //   return '/email-verification';
+      // }
+
+      // // If the user is not authenticated and tries to access home, send them to the login/signup page
+      // if (!isLoggedin) {
+      //   return '/'; // Redirect to sign-up or login
+      // }
+
+      // // Return null to indicate no redirection needed
+      // return null;
+    },
     routes: [
       GoRoute(
         name: RouteNames.signUp,
@@ -77,30 +71,53 @@ class AppRoutes {
           child: const SignUpView(),
         ),
       ),
+      // GoRoute(
+      //   name: RouteNames.chats,
+      //   path: '/chats',
+      //   builder: (context, state) => BlocProvider(
+      //     create: (context) => ContactsCubit(),
+      //     child: ChatsScreen(),
+      //   ),
+      // ),
       GoRoute(
         name: RouteNames.chats,
         path: '/chats',
-        builder: (context, state) => BlocProvider(
-          create: (context) => ContactsCubit(),
-          child: ChatsScreen(),
-        ),
+        builder: (context, state) {
+          final List<dynamic>? extras =
+              state.extra as List<dynamic>?; // Safely cast extra
+          final Message? forwardedMessage =
+              (extras != null && extras.isNotEmpty)
+                  ? extras[0] as Message
+                  : null;
+
+          return BlocProvider(
+            create: (context) => ContactsCubit(),
+            child: ChatsScreen(forwardMessage: forwardedMessage),
+          );
+        },
       ),
       GoRoute(
-        name: RouteNames.forwardToPage,
-        path: '/forwardToPage',
-        builder: (context, state) => ForwardToPage(),
-      ),
-      GoRoute(
-        name: RouteNames.chatdetails,
-        path: '/chatdetails',
+        name: RouteNames.chatWrapper,
+        path: '/chatWrapper',
         builder: (context, state) {
           final List<dynamic> extras = state.extra as List<dynamic>;
           String name = extras[0];
           String id = extras[1];
           String photo = extras[2];
           String lastSeen = extras[3];
-          return ChatDetails(
-              name: name, id: id, photo: photo, lastSeen: lastSeen);
+          Message? forwardMessage;
+          if (extras.length == 5) forwardMessage = extras[4];
+
+          return BlocProvider(
+            create: (context) => MessagesCubit(),
+            child: ChatWrapper(
+              name: name,
+              id: id,
+              photo: photo,
+              lastSeen: lastSeen,
+              forwardedMessage: forwardMessage,
+            ),
+          );
         },
       ),
       GoRoute(
@@ -139,7 +156,7 @@ class AppRoutes {
         path: '/social-auth-loading',
         builder: (context, state) {
           // Extract the accessToken from the query parameters
-          final accessToken = state.uri.queryParameters['accessToken'];
+          // final accessToken = state.uri.queryParameters['accessToken'];
           // print(accessToken);
           return HomeView();
         },

@@ -13,8 +13,7 @@
 // }
 
 import 'package:dartz/dartz.dart';
-import 'package:telegrammy/cores/errors/Failure.dart';
-import 'package:telegrammy/cores/models/user_model.dart';
+import 'package:telegrammy/cores/errors/Failture.dart';
 
 abstract class AuthRepo {
   Future<Either<String, void>> signInWithGoogle();

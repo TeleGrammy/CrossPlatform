@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 
 class ReplyPreview extends StatelessWidget {
@@ -26,7 +27,7 @@ class ReplyPreview extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              repliedMessage.text,
+              repliedMessage.content,
               key: Key('reply_preview_text_${repliedMessage.id}'),
               style: const TextStyle(fontSize: 14, color: Colors.black54),
               overflow: TextOverflow.ellipsis,

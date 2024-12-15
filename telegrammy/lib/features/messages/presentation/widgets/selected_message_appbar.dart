@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
 
 class SelectedMessageAppbar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -12,6 +14,23 @@ class SelectedMessageAppbar extends StatelessWidget
     required this.onClickEdit,
     required this.onClickDelete,
   });
+
+  // void onEditMessage(String text) {
+  //   if (text.trim().isNotEmpty) {
+  //     getit.get<SocketService>().sendMessage(
+  //       'message:send',
+  //       {'content': text, 'chatId': widget.chatId, 'messageType': 'text'},
+  //     );
+  //   }
+  // }
+  // void onDeleteMessage(String text) {
+  //   if (text.trim().isNotEmpty) {
+  //     getit.get<SocketService>().sendMessage(
+  //       'message:send',
+  //       {'content': text, 'chatId': widget.chatId, 'messageType': 'text'},
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
-import 'package:telegrammy/features/messages/presentation/data/messages.dart';
+import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/bottom_bar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_appbar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_details_body.dart';
@@ -14,7 +15,16 @@ class ChatDetails extends StatefulWidget {
   final String id;
   final String photo;
   final String lastSeen;
-  const ChatDetails({Key? key, required this.name,required this.id,required this.photo,required this.lastSeen})
+  final List<Message> messages;
+  final Message? forwardedMessage;
+  const ChatDetails(
+      {Key? key,
+      required this.name,
+      required this.id,
+      required this.photo,
+      required this.lastSeen,
+      required this.messages,
+      this.forwardedMessage})
       : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -25,11 +35,26 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? selectedMessage;
   Message? repliedMessage;
   Message? editedMessage;
-
+  late List<Participant> participants;
   @override
   void initState() {
     super.initState();
+    // loadChatData();
+
     getit.get<SocketService>().connect();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.forwardedMessage != null) {
+        getit.get<SocketService>().sendMessage(
+          'message:send',
+          {
+            'messageId': widget.forwardedMessage!.id,
+            'chatId': widget.id,
+            'isForwarded': true
+          },
+        );
+      }
+    });
+
     // socketService.connect();
   }
 
@@ -48,63 +73,31 @@ class ChatDetailsState extends State<ChatDetails> {
   void clearReply() {
     setState(() {
       repliedMessage = null;
-      editedMessage = null;
     });
   }
 
-  void onSendAudio(Message message) {
-    setState(() {
-      messages.add(message);
-    });
-  }
+  // void onSendAudio(Message message) {
+  //   setState(() {
+  //     messages.add(message);
+  //   });
+  // }
 
   void onClickEdit() {
     setState(() {
       editedMessage = selectedMessage;
-      repliedMessage = selectedMessage!.repliedTo;
+      repliedMessage = selectedMessage!.replyOn;
       selectedMessage = null;
     });
   }
 
   void onClickDelete() {
+    getit.get<SocketService>().deleteMessage(
+      'message:delete',
+      {'messageId': selectedMessage!.id},
+    );
     setState(() {
-      messages.add(Message(
-        text: "message has been deleted",
-        time: DateTime.now().toString(),
-        isSentByUser: true,
-        repliedTo: null,
-      ));
-      clearReply();
+      selectedMessage = null;
     });
-  }
-
-  void onSend(String text) {
-    if (text.trim().isNotEmpty) {
-          getit.get<SocketService>().sendMessage('event','data');
-      // socketService.sendMessage('event', "data");
-      setState(() {
-        messages.add(Message(
-          text: text,
-          time: DateTime.now().toString(),
-          isSentByUser: true,
-          repliedTo: repliedMessage,
-        ));
-      });
-    }
-  }
-
-  void onEdit(Message message, String editedString) {
-    if (editedString.trim().isNotEmpty) {
-      final index = messages.indexOf(message);
-      setState(() {
-        messages[index] = Message(
-          text: editedString,
-          time: DateTime.now().toString(),
-          isSentByUser: true,
-          repliedTo: message.repliedTo,
-        );
-      });
-    }
   }
 
   void onReply() {
@@ -131,9 +124,8 @@ class ChatDetailsState extends State<ChatDetails> {
             ? ChatAppbar(
                 key: const Key('chatAppBar'), // Key for ChatAppbar
                 name: widget.name,
-                photo:widget.photo,
-                lastSeen:widget.lastSeen
-              )
+                photo: widget.photo,
+                lastSeen: widget.lastSeen)
             : SelectedMessageAppbar(
                 key: const Key(
                     'selectedMessageAppBar'), // Key for SelectedMessageAppbar
@@ -147,11 +139,12 @@ class ChatDetailsState extends State<ChatDetails> {
           children: [
             Expanded(
               child: ChatDetailsBody(
-                key: const Key('chatDetailsBody'), // Key for ChatDetailsBody
-                onMessageTap: onMessageTap,
-                onMessageSwipe: onMessageSwipe,
-                selectedMessage: selectedMessage,
-              ),
+                  key: const Key('chatDetailsBody'),
+                  messages: widget.messages,
+                  onMessageTap: onMessageTap,
+                  onMessageSwipe: onMessageSwipe,
+                  selectedMessage: selectedMessage,
+                  userId: widget.id),
             ),
             if (repliedMessage != null)
               Padding(
@@ -165,18 +158,22 @@ class ChatDetailsState extends State<ChatDetails> {
             selectedMessage == null
                 ? BottomBar(
                     key: const Key('bottomBar'), // Key for BottomBar
-                    onSend: onSend,
-                    onSendAudio: onSendAudio,
-                    onEdit: onEdit,
+                    // onSend: onSend,
+                    // onSendAudio: onSendAudio,
+                    // onEdit: onEdit,
+                    clearReply: clearReply,
                     editedMessage: editedMessage,
+                    repliedMessage: repliedMessage,
+                    chatId: widget.id,
                   )
-            :
-            SelectedMessageBottomBar(
-                key: const Key(
-                    'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
-                onReply: () {
-                  onReply();
-                }),
+                : SelectedMessageBottomBar(
+                    key: const Key(
+                        'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
+                    onReply: () {
+                      onReply();
+                    },
+                    selectedMessage: selectedMessage!,
+                  ),
           ],
         ),
       ),
