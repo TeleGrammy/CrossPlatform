@@ -51,3 +51,38 @@ Future<void> updateStory(StoryCreation story) async {
     );
   }
 }
+
+
+//////////////////////////
+class OthersStoriesCubit extends Cubit<OthersStoryState> {
+  final ProfileRepo profileRepo = getit.get<ProfileRepoImplementation>();
+
+  OthersStoriesCubit() : super(OthersStoryInitial()) {
+    getUserStories(page: 1, limit: 10); // Default page and limit
+  }
+
+  /// Fetch other user stories with pagination
+  Future<void> getUserStories({required int page, required int limit}) async {
+    emit(OthersStoryLoading()); // Emit loading state
+
+    final Either<Failure, MultiUserStoryResponse> result =
+        await profileRepo.getOtherUserStories(page,limit);
+
+    result.fold(
+      (failure) => emit(OthersStoryError(message: failure.errorMessage)), // Handle error
+      (userStoriesModel) => emit(OthersStoryLoaded(usersStoriesModel: userStoriesModel)), // Success
+    );
+  }
+
+  /// Mark story as viewed/read
+  Future<void> markStoryAsViewed(String storyId) async {
+    emit(StoryViewing()); // Emit viewing state
+
+    final Either<Failure, void> result = await profileRepo.markStoryAsViewed(storyId);
+
+    result.fold(
+      (failure) => emit(OthersStoryError(message: failure.errorMessage)), // Handle failure
+      (_) => emit(StoryViewed()), // Emit success state
+    );
+  }
+}

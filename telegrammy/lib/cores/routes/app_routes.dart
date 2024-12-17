@@ -27,12 +27,14 @@ import 'package:telegrammy/features/messages/presentation/views/chat_details.dar
 import 'package:telegrammy/features/messages/presentation/views/chat_wrapper.dart';
 import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
+import 'package:telegrammy/features/profile/data/models/stories_model.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/blocked_users_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/contacts_to_block.dart';
 import 'package:telegrammy/features/profile/presentation/views/creating_user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
+import 'package:telegrammy/features/profile/presentation/views/other_users_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_privacy_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_email.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/change_phone_number.dart';
@@ -271,17 +273,44 @@ GoRoute(
           );
         },
       ),
-      GoRoute(
-        name: RouteNames.storiesPage,
-        path: '/stories-page',
-        builder: (context, state) {
-          return BlocProvider(
-            create: (context) =>
-                StoriesCubit(), // Ensure you provide the appropriate Bloc/Cubit
-            child: StoriesView(), // Your StoriesView widget
-          );
-        },
+GoRoute(
+  name: RouteNames.otherUserStoryPage,
+  path: '/other-user-stories-page',
+  builder: (context, state) {
+    // Extract data from the state.extra
+    final extraData = state.extra as Map<String, dynamic>;
+    final userStories = extraData['userStories'] as List<Story>;
+    final userName = extraData['userName'] as String;
+    final userAvatar = extraData['userAvatar'] as String;
+
+    return BlocProvider(
+      create: (context) => OthersStoriesCubit(),
+      child: OthersStoryView(
+        userStories: userStories,
+        userName: userName,
+        userAvatar: userAvatar,
       ),
+    );
+  },
+),
+
+GoRoute(
+  name: RouteNames.storiesPage,
+  path: '/stories-page',
+  builder: (context, state) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => StoriesCubit(),
+        ),
+        BlocProvider(
+          create: (context) => OthersStoriesCubit(),
+        ),
+      ],
+      child: StoriesView(),
+    );
+  },
+),
       GoRoute(
         name: RouteNames.createStoryPage,
         path: '/create-stories-page',

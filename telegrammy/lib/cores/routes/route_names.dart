@@ -8,6 +8,7 @@ class RouteNames {
   static String verifyOTP = 'verifyOTP';
   static String profilePrivacyPage = 'privacy';
   static String storiesPage = 'story';
+  static String otherUserStoryPage = 'otherUserStoryPage';
   static String privacyAllowablePage = 'privacyAllowable';
   static String userStoryPage = 'userStoryPage';
   static String createStoryPage = 'createStoryPage';
@@ -27,4 +28,5 @@ class RouteNames {
   static String createGroup = 'createGroup';
   static String adminDashboardPage = 'adminDashboardPage';
   static String singleRegeisterUserPage = 'singleRegeisterUserPage';
+
 }

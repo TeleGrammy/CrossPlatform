@@ -9,12 +9,13 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
   final String photo;
   final String lastSeen;
+  final Function() onSearch;
 
   const ChatAppbar(
       {required this.name,
       super.key,
       required this.photo,
-      required this.lastSeen});
+      required this.lastSeen,required this.onSearch});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -104,6 +105,11 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           key: const Key('settings_button'),
           icon: const Icon(Icons.more_vert),
           onPressed: () => _showSettingsMenu(context),
+        ),
+                IconButton(
+          key: const Key('search_settings_button'),
+          icon: const Icon(Icons.search),
+          onPressed: onSearch,
         ),
       ],
     );

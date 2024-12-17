@@ -85,6 +85,7 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
   // Post the story (Base64 image and caption)
   void _postStory() {
     final story = StoryCreation(
+      mediaType: 'picture',
       content: _captionController.text, // Caption
       media: _imageUrl, // Base64 encoded image (can be null)
     );

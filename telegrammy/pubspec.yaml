@@ -77,6 +77,7 @@ dependencies:
   socket_io_client: ^2.0.0
   path_provider: ^2.1.5
   mic_stream: ^0.7.1+2
+  story_page_view: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

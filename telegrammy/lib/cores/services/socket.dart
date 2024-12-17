@@ -14,7 +14,7 @@ class SocketService {
       "autoConnect": false,
       'query': {
         'token':
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjMyIiwiZW1haWwiOiJtazAwMTUyNjRAZ21haWwuY29tIiwicGhvbmUiOiIwMTE1MDEzNDU4OSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczMzk1NTA3NiwiZXhwIjoxNzMzOTU4Njc2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.GaI0h2CdSQLHhYn-kE-RG7JE4m1xQHjDYNku_qhF77Q',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjMyIiwiZW1haWwiOiJtazAwMTUyNjRAZ21haWwuY29tIiwicGhvbmUiOiIwMTE1MDEzNDU4OSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczNDQ2MzkzNSwiZXhwIjoxNzM0NDY3NTM1LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.fKgyPtQO4K9UeXSq-yHHPPp78jGXmmJ4SpB1IHIffVo',
       }
     });
     socket.connect();
@@ -51,6 +51,10 @@ class SocketService {
   void deleteMessage(String event, dynamic data) {
     socket.emit(event, data);
   }
+  void draftMessage(String event, dynamic data) {
+    print(data);
+    socket.emit(event, data);
+  }
 
   void receiveMessage(String event, Function(dynamic) callback) {
     socket.on(event, (data) {
@@ -84,7 +88,7 @@ class SocketService {
 
   void pinMessagerecived(String event, Function(dynamic) callback) {
     socket.on(event, (data) {
-      // print('pinMessagerecived: $data');
+      print('pinMessagerecived: $data');
       callback(data);
     });
   }
@@ -92,6 +96,32 @@ class SocketService {
   void unpinMessagerecived(String event, Function(dynamic) callback) {
     socket.on(event, (data) {
       // print('unpinMessagerecived: $data');
+      callback(data);
+    });
+  }
+  void deliveredMessage(String event, Function(dynamic) callback) {
+    socket.on(event, (data) {
+      print('deliveredMessage: $data');
+      callback(data);
+    });
+  }
+  void seenMessage(String event, Function(dynamic) callback) {
+    socket.on(event, (data) {
+      print('seenMessage: $data');
+      callback(data);
+    });
+  }
+    void draftMessagerecived(String event, Function(dynamic) callback) {
+      print('dddddd');
+    socket.on(event, (data) {
+      print('draftMessage: $data');
+      callback(data);
+    });
+  }
+      void isSentMessage(String event, Function(dynamic) callback) {
+      // print('dddddd');
+    socket.on(event, (data) {
+      // print('isSentMessage: $data');
       callback(data);
     });
   }

@@ -37,37 +37,74 @@ class _UserStoryViewState extends State<UserStoryView> {
   }
 
   // Function to show viewers' list in a popup dialog
-  void _showViewersDialog(Map<String, DateTime> viewers) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Viewers', style: TextStyle(fontWeight: FontWeight.bold)),
-          content: Container(
-            height: 300,
-            child: ListView.builder(
-              itemCount: viewers.keys.length,
-              itemBuilder: (context, index) {
-                String viewer = viewers.keys.elementAt(index);
+ void _showViewersDialog(Map<String, ViewerDetails?> viewers) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Viewers', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Container(
+          height: 300,
+          width: double.maxFinite,
+          child: ListView.builder(
+            itemCount: viewers.keys.length,
+            itemBuilder: (context, index) {
+              String viewerId = viewers.keys.elementAt(index);
+              var viewerData = viewers[viewerId];
+
+              // Ensure viewerData is not null
+              if (viewerData == null) {
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(viewer),
+                    backgroundImage: AssetImage('assets/default_avatar.png'),
                   ),
-                  title: Text(viewer),
+                  title: Text('Unknown Viewer'),
+                  subtitle: Text('No data available'),
                 );
-              },
-            ),
+              }
+
+              // Safely extract profile details
+              String username = viewerData.profile?.username ?? 'Unknown';
+              String email = viewerData.profile?.email ?? 'No email';
+              String picture = viewerData.profile?.picture ?? '';
+              String screenName = viewerData.profile?.screenName ?? username;
+
+              // Fallback avatar if no picture is available
+              ImageProvider avatar = picture.isNotEmpty
+                  ? NetworkImage(picture)
+                  : AssetImage('assets/images/logo.png');
+
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: avatar,
+                ),
+                title: Text(screenName),
+                subtitle: Text(email),
+                trailing: Text(
+                  viewerData.viewedAt != null
+                      ? viewerData.viewedAt!
+                          .toLocal()
+                          .toString()
+                          .split('.')[0]
+                      : 'Unknown time',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              );
+            },
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
   String _formatExpirationDate(DateTime expirationDateTime) {
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(expirationDateTime);
@@ -77,9 +114,9 @@ class _UserStoryViewState extends State<UserStoryView> {
  Future<StoryItem> _fetchMedia(String url, String content) async {
   try {
     if (url.contains('.jpg') || url.contains('.jpeg') || url.contains('.png')) {
-      // Fetch only if the content is a valid image URL
+      // // Fetch only if the content is a valid image URL
       final response = await http.get(Uri.parse(url));
-      print('response');
+      print(url);
       if (response.statusCode == 200) {
         print('Successfully fetched image for story');
         return StoryItem.pageImage(
@@ -174,6 +211,7 @@ class _UserStoryViewState extends State<UserStoryView> {
                           GestureDetector(
                             onTap: () {
                               final viewers = state.storyResponse.data[0].viewers;
+                              print(viewers);
                               _showViewersDialog(viewers ?? {});
                             },
                             child: Text(

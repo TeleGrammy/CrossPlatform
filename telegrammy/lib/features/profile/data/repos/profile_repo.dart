@@ -25,11 +25,12 @@ Future<Either<Failure, void>> updateProfileInfo( ProfileInfo profileInfo);
   Future<Either<Failure, void>> updateUserEmail(String email);
   Future<Either<Failure, void>> updateUsername(String username);
   Future<Either<Failure, void>> updateUserPhoneNumber(String phoneNumber);
-  Future<Either<Failure, ProfilePictureResponse>> updateProfilePicture(
-      XFile pickedFile);
+  Future<Either<Failure, ProfilePictureResponse>> updateProfilePicture(XFile pickedFile);
   Future<Either<Failure, void>> deleteProfilePicture();
   Future<Either<Failure, UserPrivacySettingsResponse>> getUserSettings() ;
   Future<Either<Failure, void>> updateBlockingStatus(String action, String userId);
   Future<Either<Failure, void>> updateProfileVisibility(ProfileVisibility profileVisibility);
   Future<Either<Failure, void>> updateReadReceiptsStatus(bool isEnabled);
+  Future<Either<Failure, void>> markStoryAsViewed(String storyId);
+  Future<Either<Failure,MultiUserStoryResponse>> getOtherUserStories(int page, int limit);
 }

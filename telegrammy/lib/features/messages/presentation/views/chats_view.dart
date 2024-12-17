@@ -87,7 +87,7 @@ class ChatsScreen extends StatelessWidget {
                 final String id = chat.id;
                 final lastMessageTime =
                     chat.lastMessage?.timestamp.toString() ?? '';
-                final lastSeen = chat.lastSeen.toString();
+                final lastSeen = '';
                 // print(id);
                 // final name = participant.userId['screenName'] ?? 'Unknown';
                 // final photo = participant.userId['picture'] ?? 'default.jpg';
