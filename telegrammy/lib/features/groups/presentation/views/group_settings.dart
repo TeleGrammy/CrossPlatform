@@ -29,8 +29,8 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
     context.read<GroupCubit>().getGroupInfo(groupId);
 
     getit.get<GroupSocketService>().connectToGroupServer();
-    getit.get<GroupSocketService>().listenGroupDeleted();
-    getit.get<GroupSocketService>().listenLeftGroup();
+    // getit.get<GroupSocketService>().listenGroupDeleted();
+    //getit.get<GroupSocketService>().listenLeftGroup();
   }
 
   @override
@@ -96,17 +96,17 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                         SettingsBox(
                           children: [
                             ListTile(
-                              key: const ValueKey('ViewMembersTile'),
-                              title: Text('View group members'),
-                              trailing: Icon(Icons.arrow_forward),
-                              onTap: () => {
-                                //TODO: navigate to members list page
-                              },
-                            ),
+                                key: const ValueKey('ViewMembersTile'),
+                                title: Text('View group members'),
+                                trailing: Icon(Icons.arrow_forward),
+                                onTap: () {
+                                  //TODO: view group members
+                                }),
                           ],
                         ),
                         SizedBox(height: 20),
                         GroupAdminSettings(
+                          groupId: groupId,
                           groupPrivacy: state.groupData.groupPrivacy,
                           groupSizeLimit: state.groupData.groupSizeLimit,
                         ),

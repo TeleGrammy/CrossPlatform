@@ -27,4 +27,5 @@ class RouteNames {
   static String createGroup = 'createGroup';
   static String groupSettings = 'groupSettings';
   static String editGroupSettings = 'editGroupSettings';
+  static String addGroupMembers = 'addGroupMembers';
 }

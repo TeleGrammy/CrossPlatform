@@ -23,4 +23,5 @@ abstract class GroupRepo {
       String groupId, String privacyOption);
   Future<Either<Failure, void>> updateGroupSizeLimit(
       String groupId, int sizeLimit);
+  Future<Either<Failure, ContactsResponse>> getContacts();
 }

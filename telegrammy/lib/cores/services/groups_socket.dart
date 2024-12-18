@@ -44,6 +44,15 @@ class GroupSocketService {
     groupsSocket.emit('removingGroup', {'groupId': groupId});
   }
 
+  void addMember(String groupId, String userId) {
+    groupsSocket.emitWithAck('addingGroupMemberV2', {
+      'groupId': groupId,
+      'userIds': [userId]
+    }, ack: (response) {
+      print(response);
+    });
+  }
+
   void removeParticipant(String groupId, String userId) {
     groupsSocket
         .emit('removingParticipant', {'groupId': groupId, 'userId': userId});

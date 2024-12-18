@@ -69,4 +69,14 @@ class GroupRepoImplementation extends GroupRepo {
       return Left(ServerError(errorMessage: error.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, ContactsResponse>> getContacts() async {
+    try {
+      final response = await apiService.getContacts();
+      return Right(response);
+    } catch (error) {
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
 }

@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../cores/routes/route_names.dart';
 import '../../../profile/presentation/widgets/profile_settings/settings_box.dart';
 import '../view_models/group_cubit.dart';
 
 class GroupAdminSettings extends StatelessWidget {
   const GroupAdminSettings(
-      {super.key, required this.groupPrivacy, required this.groupSizeLimit});
+      {super.key,
+      required this.groupId,
+      required this.groupPrivacy,
+      required this.groupSizeLimit});
+  final String groupId;
   final String groupPrivacy;
   final int groupSizeLimit;
 
@@ -60,7 +66,7 @@ class GroupAdminSettings extends StatelessWidget {
           title: Text('Add members to group'),
           trailing: Icon(Icons.arrow_forward),
           onTap: () => {
-            //TODO: navigate to add members page
+            context.goNamed(RouteNames.addGroupMembers, extra: groupId),
           },
         ),
         ListTile(

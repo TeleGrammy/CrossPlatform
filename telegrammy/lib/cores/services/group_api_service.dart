@@ -152,4 +152,36 @@ class GroupApiService {
       throw Exception('Error updating group size limit: ${dioError.message}');
     }
   }
+
+  Future<ContactsResponse> getContacts() async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
+      final response = await dio.get(
+        '$baseUrl2/privacy/settings/get-contacts',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      return ContactsResponse.fromJson(response.data);
+    } on DioException catch (dioError) {
+      // print('error');
+      throw Exception('Error fetching contacts: ${dioError.message}');
+    }
+  }
+
+  // Future<List<ContactData>> getGroupMembers(String groupId) async {
+  //   try {
+  //     String? token = await getit.get<TokenStorageService>().getToken();
+  //     final response = await dio.get(
+  //       '$baseUrl2/groups/$groupId/members',
+  //       options: Options(headers: {
+  //         'Authorization': 'Bearer $token',
+  //       }),
+  //     );
+  //     return ContactsResponse.fromJson(response.data);
+  //   } on DioException catch (dioError) {
+  //     // print('error');
+  //     throw Exception('Error fetching blocked users: ${dioError.message}');
+  //   }
+  // }
 }
