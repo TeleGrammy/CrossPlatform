@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
+import 'package:telegrammy/features/messages/data/models/media.dart';
 
 class MessagingApiService {
   final dio = getit.get<Dio>();
@@ -76,7 +77,7 @@ class MessagingApiService {
     }
   }
 
-  Future<dynamic> uploadAudio(String? filePath) async {
+  Future<Media> uploadAudio(String? filePath) async {
     try {
       if (filePath == null) {
         throw Exception("No media file selected.");
@@ -108,11 +109,7 @@ class MessagingApiService {
         print(response);
         print("Media Key: ${response.data['mediaKey']}");
         print("Signed URL: ${response.data['signedUrl']}");
-        return {
-          "signedUrl": response.data['signedUrl'],
-          "mediaKey": response.data['mediaKey'],
-          "fileType": "Audio",
-        };
+        return Media.fromJson(response.data as Map<String, dynamic>);
       } else {
         print("Failed to upload audio: ${response.statusMessage}");
         throw Exception("Failed to upload audio: ${response.statusMessage}");

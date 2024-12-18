@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/features/messages/data/models/media.dart';
 import 'package:telegrammy/features/messages/data/repos/messages_repo_implementaion.dart';
 
 part 'messages_state.dart';
@@ -25,15 +26,13 @@ class MessagesCubit extends Cubit<MessagesState> {
     return fileData;
   }
 
-  Future<dynamic> uploadAudio(String filePath) async {
+  Future<Media> uploadAudio(String filePath) async {
     dynamic audioData;
-    emit(MessagesLoading());
     var result = await messagesRepo.uploadAudio(filePath);
     result.fold((failre) {
-      print('Cubit:error sending media file');
+      print('Cubit:error sending media file ${failre.errorMessage}');
       emit(Messagesfailture(error: failre.errorMessage));
     }, (data) {
-      emit(SendingMediaSuccess(mediaUrl: data));
       audioData = data;
     });
     return audioData;

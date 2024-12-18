@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:telegrammy/cores/routes/app_routes.dart';
-import 'package:telegrammy/cores/services/service_locator.dart';
-import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
-import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/bottom_bar.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/chat_appbar.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/chat_details_body.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/reply_preview.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/selected_message_appbar.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatWrapper extends StatefulWidget {
   final String name;
@@ -21,13 +11,16 @@ class ChatWrapper extends StatefulWidget {
   final String photo;
   final String lastSeen;
   final Message? forwardedMessage;
+  final bool isChannel;
+
   const ChatWrapper({
     Key? key,
     required this.name,
     required this.id,
     required this.photo,
     required this.lastSeen,
-    this.forwardedMessage
+    this.forwardedMessage,
+    required this.isChannel,
   }) : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -38,10 +31,6 @@ class ChatWrapperState extends State<ChatWrapper> {
   @override
   void initState() {
     super.initState();
-    // loadChatData();
-    // getit.get<SocketService>().connect();
-
-    // socketService.connect();
   }
 
   @override
@@ -61,14 +50,20 @@ class ChatWrapperState extends State<ChatWrapper> {
         } else if (state is MessagesSuccess) {
           List<Participant> participants =
               state.chatData['participants'] as List<Participant>;
+          // String userRole=participants.firstWhere((element) => element.id==userId).role;
+          String userRole = 'Admin';
+          print('${participants.first.role}--------------->');
           List<Message> messages = state.chatData['messages'] as List<Message>;
+          messages = messages.reversed.toList();
           return ChatDetails(
             name: widget.name,
             id: widget.id,
             photo: widget.photo,
             lastSeen: widget.lastSeen,
             messages: messages,
-            forwardedMessage:widget.forwardedMessage,
+            forwardedMessage: widget.forwardedMessage,
+            isChannel: widget.isChannel,
+            userRole: userRole,
           );
         } else {
           return Center(

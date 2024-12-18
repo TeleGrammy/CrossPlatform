@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -11,18 +14,22 @@ import 'package:telegrammy/features/messages/data/models/media.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/emoji_picker.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/media_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class BottomBar extends StatefulWidget {
   final Message? editedMessage;
   final String chatId;
   final Message? repliedMessage;
   final Function() clearReply;
-  const BottomBar(
-      {super.key,
-      required this.clearReply,
-      this.repliedMessage,
-      this.editedMessage,
-      required this.chatId});
+  final bool isChannel;
+  const BottomBar({
+    super.key,
+    required this.clearReply,
+    this.repliedMessage,
+    this.editedMessage,
+    required this.chatId,
+    required this.isChannel,
+  });
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -69,10 +76,10 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   Future<void> _initializeRecorder() async {
-    // if (await Permission.microphone.request().isDenied ||
-    //     await Permission.storage.request().isDenied) {
-    //   print("Permission denied!");
-    // }
+    if (await Permission.microphone.request().isDenied ||
+        await Permission.storage.request().isDenied) {
+      print("Permission denied!");
+    }
     final status = await Permission.microphone.request();
     if (!status.isGranted) {
       throw Exception('Microphone permission not granted');
@@ -81,32 +88,44 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   Future<void> _startRecording() async {
-    final _recorderePath = 'audio_${DateTime.now().millisecondsSinceEpoch}.aac';
-    setState(() {
-      _isRecording = true;
-    });
-    await _recorder.startRecorder(toFile: _recorderePath);
-  }
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath =
+          '${directory.path}/audio_${DateTime.now().millisecondsSinceEpoch}.wav';
 
-  Future<void> uploadAudio() async {
-    // return await getit
-    //     .get<MessagesRepoImplementaion>()
-    //     .uploadMedia(_recordPath);
+      setState(() {
+        _isRecording = true;
+        _recordPath = filePath;
+      });
+      print("Recording to: $_recordPath");
+      await _recorder.startRecorder(
+        toFile: filePath,
+        codec: Codec.pcm16WAV,
+      );
+    } catch (e) {
+      setState(() {
+        _isRecording = false;
+      });
+      print("Error while starting the recorder: $e");
+    }
   }
 
   Future<void> onSendAudio() async {
-    // Media media = await uploadAudio();
-    // print(media.mediaKey);
-    // print(media.mediaUrl);
-    // getit.get<SocketService>().sendMessage(
-    //   'message:send',
-    //   {
-    //     'mediaUrl': media.mediaUrl,
-    //     'chatId': widget.chatId,
-    //     'messageType': 'audio',
-    //     'mediaKey': media.mediaKey
-    //   },
-    // );
+    Media media = await context.read<MessagesCubit>().uploadAudio(_recordPath!);
+    print('${media.mediaKey}');
+    print(media.mediaUrl);
+    getit.get<SocketService>().sendMessage(
+      'message:send',
+      {
+        'mediaUrl': media.mediaUrl,
+        'chatId': widget.chatId,
+        'messageType': 'audio',
+        'mediaKey': media.mediaKey,
+        'isPost': (widget.isChannel) ? true : false,
+        'parentPost':
+            (widget.isChannel) ? widget.repliedMessage?.id ?? null : null,
+      },
+    );
   }
 
   Future<void> _stopRecording() async {
@@ -114,8 +133,18 @@ class _BottomBarState extends State<BottomBar> {
     setState(() {
       _isRecording = false;
     });
+
+    // Check if the file exists
     if (_recordPath != null) {
-      await onSendAudio();
+      if (!kIsWeb) {
+        File file = File(_recordPath!);
+        if (file.existsSync()) {
+          print("File saved successfully: ${file.path}");
+          await onSendAudio(); // Upload the file if it exists
+        } else {
+          print("File not found at: $_recordPath");
+        }
+      }
     }
   }
 
@@ -147,11 +176,13 @@ class _BottomBarState extends State<BottomBar> {
     getit.get<SocketService>().sendMessage(
       'message:send',
       {
-        'content': '',
         'chatId': widget.chatId,
         'messageType': 'sticker',
         'replyOn': widget.repliedMessage?.id ?? null,
         'mediaUrl': url,
+        'isPost': (widget.isChannel) ? true : false,
+        'parentPost':
+            (widget.isChannel) ? widget.repliedMessage?.id ?? null : null,
       },
     );
     widget.clearReply();
@@ -168,9 +199,6 @@ class _BottomBarState extends State<BottomBar> {
       mediaKey = data['mediaKey'];
       mediaUrl = data['signedUrl'];
       messageType = data['fileType'];
-      print(mediaKey);
-      print(mediaUrl);
-      print(messageType);
     }
 
     if (widget.editedMessage != null) {
@@ -187,6 +215,9 @@ class _BottomBarState extends State<BottomBar> {
             'replyOn': widget.repliedMessage?.id ?? null,
             'mediaUrl': mediaUrl,
             'mediaKey': mediaKey,
+            'isPost': (widget.isChannel) ? true : false,
+            'parentPost':
+                (widget.isChannel) ? widget.repliedMessage?.id ?? null : null,
           },
         );
       }

@@ -32,12 +32,12 @@ class MessageAttachmentWidget extends StatelessWidget {
       case "sticker":
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white, // White background color for the frame
+            color: Colors.white, 
             borderRadius:
-                BorderRadius.circular(10.0), // Optional: Rounded corners
+                BorderRadius.circular(10.0), 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1), // Light shadow for effect
+                color: Colors.black.withOpacity(0.1),
                 offset: Offset(0, 2),
                 blurRadius: 4,
               ),
@@ -45,7 +45,7 @@ class MessageAttachmentWidget extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(
-                10.0), // Match the container's border radius
+                10.0), 
             child: Image.network(
               message.mediaUrl!,
               errorBuilder: (context, error, stackTrace) =>

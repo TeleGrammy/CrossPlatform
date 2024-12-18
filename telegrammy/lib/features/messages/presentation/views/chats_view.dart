@@ -75,11 +75,6 @@ class ChatsScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final chat = chats[index];
 
-                // Get the participant whose ID is not equal to the current user's ID
-                // final participant = chat.participants.firstWhere(
-                //   (p) => p.userId['_id'] != userId,
-                // );
-
                 final name = chat.name;
                 final photo = chat.photo ?? 'default.jpg';
                 // final draftMessage = '';
@@ -87,21 +82,19 @@ class ChatsScreen extends StatelessWidget {
                 final String id = chat.id;
                 final lastMessageTime =
                     chat.lastMessage?.timestamp.toString() ?? '';
-                final lastSeen = chat.lastSeen.toString();
-                // print(id);
-                // final name = participant.userId['screenName'] ?? 'Unknown';
-                // final photo = participant.userId['picture'] ?? 'default.jpg';
-                // final draftMessage = participant['draft_message'] ?? '';
-
+                final lastSeen = '';
+                final isChannel = chat.isChannel;
                 return ContactPreview(
-                    key: Key('contactItem_$index'),
-                    id: id,
-                    name: name,
-                    photo: photo,
-                    lastMessage: lastMessage,
-                    lastMessageTime: lastMessageTime,
-                    lastSeen: lastSeen,
-                    forwardMessage: forwardMessage);
+                  key: Key('contactItem_$index'),
+                  id: id,
+                  name: name,
+                  photo: photo,
+                  lastMessage: lastMessage,
+                  lastMessageTime: lastMessageTime,
+                  lastSeen: lastSeen,
+                  forwardMessage: forwardMessage,
+                  isChannel: isChannel,
+                );
               },
             );
           } else if (state is ContactsFailture) {

@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/auth_api_service.dart';
+import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/messages_api_service.dart';
 import 'package:telegrammy/cores/services/profile_api_service.dart';
 import 'package:telegrammy/cores/services/socket.dart';
@@ -28,4 +29,5 @@ void setupServiceLocator() {
   getit.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage());
   getit.registerSingleton<RouteNames>(RouteNames());
   getit.registerSingleton<SocketService>(SocketService());
+  getit.registerSingleton<ChannelSocketService>(ChannelSocketService());
 }

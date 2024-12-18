@@ -42,12 +42,10 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     super.dispose();
   }
 
-  // Play or pause the audio
   void _togglePlayPause() async {
     if (_isPlaying) {
       await _audioPlayer.pause();
     } else {
-      // Use AudioSource.uri to handle network audio
       await _audioPlayer.play(UrlSource(widget.audioUrl));
     }
     setState(() {

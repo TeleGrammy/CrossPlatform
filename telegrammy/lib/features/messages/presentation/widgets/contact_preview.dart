@@ -13,6 +13,7 @@ class ContactPreview extends StatelessWidget {
   final String lastMessageTime;
   final String lastSeen;
   final Message? forwardMessage;
+  final bool isChannel;
 
   const ContactPreview(
       {Key? key,
@@ -22,8 +23,8 @@ class ContactPreview extends StatelessWidget {
       required this.lastMessage,
       required this.lastMessageTime,
       required this.lastSeen,
-      this.forwardMessage
-      })
+      this.forwardMessage,
+      required this.isChannel})
       : super(key: key);
 
   @override
@@ -45,16 +46,19 @@ class ContactPreview extends StatelessWidget {
         style: const TextStyle(fontSize: 14, color: Colors.grey),
       ),
       onTap: () {
-        if(forwardMessage!=null){
-          getit.get<SocketService>().sendMessage('message:send',           {
-            'content': forwardMessage!.content,
-            'chatId': id,
-            'messageType': 'text'
-          },);
+        if (forwardMessage != null) {
+          getit.get<SocketService>().sendMessage(
+            'message:send',
+            {
+              'content': forwardMessage!.content,
+              'chatId': id,
+              'messageType': 'text'
+            },
+          );
         }
         context.goNamed(
           RouteNames.chatWrapper,
-          extra: [name, id, userPhoto, lastSeen,],
+          extra: [name, id, userPhoto, lastSeen, isChannel],
         );
       },
     );

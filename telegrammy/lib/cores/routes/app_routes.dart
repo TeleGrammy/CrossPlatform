@@ -11,7 +11,6 @@ import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/r
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
-import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
@@ -38,26 +37,26 @@ import 'package:telegrammy/features/profile/presentation/views/profile_settings/
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
-    redirect: (context, state){
+    redirect: (context, state) {
       // RoutesHelper helper = RoutesHelper();
       // final bool isLoggedin = await helper.isLoggedIn();
       // final bool issignedUp = await helper.isSignedUp();
-    
+
       // // If the user has logged in and tries to access sign-up or login, send them to the home page
       // if (isLoggedin && state.uri.toString() == '/') {
       //   return '/contacts'; //redirect to the app main screen
       // }
-    
+
       // // If the user has signedup but not verified send them to the verification page
       // if (!isLoggedin && issignedUp) {
       //   return '/email-verification';
       // }
-    
+
       // // If the user is not authenticated and tries to access home, send them to the login/signup page
       // if (!isLoggedin) {
       //   return '/'; // Redirect to sign-up or login
       // }
-    
+
       // // Return null to indicate no redirection needed
       // return null;
     },
@@ -104,8 +103,9 @@ class AppRoutes {
           String id = extras[1];
           String photo = extras[2];
           String lastSeen = extras[3];
+          bool isChannel = extras[4];
           Message? forwardMessage;
-          if (extras.length == 5) forwardMessage = extras[4];
+          if (extras.length == 6) forwardMessage = extras[5];
 
           return BlocProvider(
             create: (context) => MessagesCubit(),
@@ -115,6 +115,7 @@ class AppRoutes {
               photo: photo,
               lastSeen: lastSeen,
               forwardedMessage: forwardMessage,
+              isChannel: isChannel,
             ),
           );
         },
@@ -301,14 +302,6 @@ class AppRoutes {
         builder: (context, state) => BlocProvider(
           create: (context) => ProfileSettingsCubit(),
           child: ChangePhoneNumberView(),
-        ),
-      ),
-      GoRoute(
-        name: RouteNames.channel,
-        path: '/channel',
-        builder: (context, state) => BlocProvider(
-          create: (context) => ChannelCubit(),
-          child: ChannelView(),
         ),
       ),
       GoRoute(

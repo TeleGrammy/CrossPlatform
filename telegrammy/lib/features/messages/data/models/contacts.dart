@@ -3,57 +3,40 @@ import 'dart:convert';
 class Chat {
   final String id;
   final String name;
-  final String email;
   final String? photo;
-  final String status;
-  final DateTime lastSeen;
-  final DateTime joinedAt;
-  final String role;
   final LastMessage? lastMessage;
   final String draftMessage;
+  final bool isChannel;
 
   Chat({
     required this.id,
     required this.name,
-    required this.email,
     this.photo,
-    required this.status,
-    required this.lastSeen,
-    required this.joinedAt,
-    required this.role,
     this.lastMessage,
     required this.draftMessage,
+    required this.isChannel,
   });
 
   factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      photo: json['photo'],
-      status: json['status'],
-      lastSeen: DateTime.parse(json['lastSeen']),
-      joinedAt: DateTime.parse(json['joinedAt']),
-      role: json['role'],
-      lastMessage: json['lastMessage'] != null
-          ? LastMessage.fromJson(json['lastMessage'])
-          : null,
-      draftMessage: json['draftMessage'] ?? '',
-    );
+        id: json['id'],
+        name: json['name'],
+        photo: json['photo'],
+        lastMessage: json['lastMessage'] != null
+            ? LastMessage.fromJson(json['lastMessage'])
+            : null,
+        draftMessage: json['draftMessage'] == null ? '' : json['draftMessage'],
+        isChannel: json['isChannel'] ?? false);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      'email': email,
       'photo': photo,
-      'status': status,
-      'lastSeen': lastSeen.toIso8601String(),
-      'joinedAt': joinedAt.toIso8601String(),
-      'role': role,
       'lastMessage': lastMessage?.toJson(),
       'draftMessage': draftMessage,
+      'isChannel': isChannel,
     };
   }
 }
@@ -64,7 +47,7 @@ class LastMessage {
   final String messageType;
   final String status;
   final String content;
-  final String mediaUrl;
+  final String? mediaUrl;
   final DateTime timestamp;
 
   LastMessage({
@@ -131,12 +114,14 @@ class Participant {
   final User user;
   final String joinedAt;
   final String draftMessage;
+  final String role;
 
   Participant({
     required this.id,
     required this.user,
     required this.joinedAt,
     required this.draftMessage,
+    required this.role,
   });
 
   factory Participant.fromJson(Map<String, dynamic> json) {
@@ -145,6 +130,7 @@ class Participant {
       user: User.fromJson(json['userId']),
       joinedAt: json['joinedAt'],
       draftMessage: json['draft_message'],
+      role: json['role'],
     );
   }
 
@@ -154,6 +140,7 @@ class Participant {
       'userId': user.toJson(),
       'joinedAt': joinedAt,
       'draft_message': draftMessage,
+      'role': role
     };
   }
 }

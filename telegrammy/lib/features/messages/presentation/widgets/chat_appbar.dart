@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 
@@ -7,14 +8,21 @@ import '../../../../cores/routes/route_names.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
+  final String chatId;
   final String photo;
   final String lastSeen;
+  final bool isChannel;
+  final String userRole;
 
-  const ChatAppbar(
-      {required this.name,
-      super.key,
-      required this.photo,
-      required this.lastSeen});
+  const ChatAppbar({
+    required this.name,
+    required this.chatId,
+    super.key,
+    required this.photo,
+    required this.lastSeen,
+    required this.isChannel,
+    required this.userRole,
+  });
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -25,9 +33,49 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             ListTile(
               key: const Key('settings_mute_option'),
+              leading: Icon(
+                Icons.volume_mute_rounded,
+                color: Colors.black,
+              ),
               title: const Text('Mute'),
               onTap: () => _showMuteOptions(context),
             ),
+            ListTile(
+              key: const Key('settings_mute_option'),
+              leading: Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              title: const Text('Search'),
+              onTap: () => {},
+            ),
+            if (isChannel)
+              ListTile(
+                key: const Key('settings_mute_option'),
+                leading: Icon(
+                  Icons.exit_to_app_outlined,
+                  color: Colors.red,
+                ),
+                title: const Text('leave Channel'),
+                onTap: () => {},
+              ),
+            if (isChannel &&
+                (userRole == "Creator" ||
+                    userRole ==
+                        "Admin")) //should add if the user is admin condition
+              ListTile(
+                key: const Key('settings_mute_option'),
+                leading: Icon(
+                  Icons.delete_rounded,
+                  color: Colors.red,
+                ),
+                title: const Text('delete Channel'),
+                onTap: () => {
+                  getit.get<ChannelSocketService>().removeChannel({
+                    'channelId':chatId
+                  })
+                },
+              ),
           ],
         );
       },
@@ -95,11 +143,12 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        IconButton(
-          key: const Key('call_button'),
-          icon: const Icon(Icons.call),
-          onPressed: () {},
-        ),
+        if (!isChannel)
+          IconButton(
+            key: const Key('call_button'),
+            icon: const Icon(Icons.call),
+            onPressed: () {},
+          ),
         IconButton(
           key: const Key('settings_button'),
           icon: const Icon(Icons.more_vert),

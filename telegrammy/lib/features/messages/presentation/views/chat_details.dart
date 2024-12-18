@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:telegrammy/cores/models/channel_model.dart';
+import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
@@ -17,15 +19,20 @@ class ChatDetails extends StatefulWidget {
   final String lastSeen;
   final List<Message> messages;
   final Message? forwardedMessage;
-  const ChatDetails(
-      {Key? key,
-      required this.name,
-      required this.id,
-      required this.photo,
-      required this.lastSeen,
-      required this.messages,
-      this.forwardedMessage})
-      : super(key: key); // Key for ChatDetails widget
+  final bool isChannel;
+  final String userRole;
+
+  const ChatDetails({
+    Key? key,
+    required this.name,
+    required this.id,
+    required this.photo,
+    required this.lastSeen,
+    required this.messages,
+    this.forwardedMessage,
+    required this.isChannel,
+    required this.userRole,
+  }) : super(key: key); // Key for ChatDetails widget
 
   @override
   State<ChatDetails> createState() => ChatDetailsState();
@@ -42,6 +49,9 @@ class ChatDetailsState extends State<ChatDetails> {
     // loadChatData();
 
     getit.get<SocketService>().connect();
+    if (widget.isChannel) {
+      getit.get<ChannelSocketService>().connect();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.forwardedMessage != null) {
         getit.get<SocketService>().sendMessage(
@@ -54,8 +64,6 @@ class ChatDetailsState extends State<ChatDetails> {
         );
       }
     });
-
-    // socketService.connect();
   }
 
   void onMessageTap(Message message) {
@@ -75,12 +83,6 @@ class ChatDetailsState extends State<ChatDetails> {
       repliedMessage = null;
     });
   }
-
-  // void onSendAudio(Message message) {
-  //   setState(() {
-  //     messages.add(message);
-  //   });
-  // }
 
   void onClickEdit() {
     setState(() {
@@ -122,13 +124,16 @@ class ChatDetailsState extends State<ChatDetails> {
         backgroundColor: Colors.white,
         appBar: selectedMessage == null
             ? ChatAppbar(
-                key: const Key('chatAppBar'), // Key for ChatAppbar
+                key: const Key('chatAppBar'),
+                chatId: widget.id,
                 name: widget.name,
                 photo: widget.photo,
-                lastSeen: widget.lastSeen)
+                lastSeen: widget.lastSeen,
+                isChannel: widget.isChannel,
+                userRole: widget.userRole, //to be changed
+              )
             : SelectedMessageAppbar(
-                key: const Key(
-                    'selectedMessageAppBar'), // Key for SelectedMessageAppbar
+                key: const Key('selectedMessageAppBar'),
                 onMessageUnTap: () {
                   setState(() => selectedMessage = null);
                 },
@@ -148,7 +153,7 @@ class ChatDetailsState extends State<ChatDetails> {
             ),
             if (repliedMessage != null)
               Padding(
-                key: const Key('replyPreview'), // Key for ReplyPreview
+                key: const Key('replyPreview'),
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: ReplyPreview(
                   repliedMessage: repliedMessage!,
@@ -157,18 +162,15 @@ class ChatDetailsState extends State<ChatDetails> {
               ),
             selectedMessage == null
                 ? BottomBar(
-                    key: const Key('bottomBar'), // Key for BottomBar
-                    // onSend: onSend,
-                    // onSendAudio: onSendAudio,
-                    // onEdit: onEdit,
+                    key: const Key('bottomBar'),
                     clearReply: clearReply,
                     editedMessage: editedMessage,
                     repliedMessage: repliedMessage,
                     chatId: widget.id,
+                    isChannel: widget.isChannel,
                   )
                 : SelectedMessageBottomBar(
-                    key: const Key(
-                        'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
+                    key: const Key('selectedMessageBottomBar'),
                     onReply: () {
                       onReply();
                     },
