@@ -25,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -47,31 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCpcsNX8qfx2PF6Nhhln3_fi3Pa_jy30HQ',
-    appId: '1:4445093650:web:17a8a4b7cae75b28da3dcb',
-    messagingSenderId: '4445093650',
-    projectId: 'telegrammy-d0854',
-    authDomain: 'telegrammy-d0854.firebaseapp.com',
-    storageBucket: 'telegrammy-d0854.firebasestorage.app',
+    apiKey: 'AIzaSyC0zLXiBij35Gc7XAj7pTWqFZNQldpIJc8',
+    appId: '1:49270575708:web:6347dae0eed5f547510c99',
+    messagingSenderId: '49270575708',
+    projectId: 'telegrammy-sw',
+    authDomain: 'telegrammy-sw.firebaseapp.com',
+    storageBucket: 'telegrammy-sw.firebasestorage.app',
+    measurementId: 'G-YK1QJ7MXT4',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAI3_MGUOjVxSXQVRnjCPeQhRJJ5QIUbvk',
-    appId: '1:4445093650:android:eb11f97ff0392949da3dcb',
-    messagingSenderId: '4445093650',
-    projectId: 'telegrammy-d0854',
-    storageBucket: 'telegrammy-d0854.firebasestorage.app',
+    apiKey: 'AIzaSyDgVr11HDnmui41bS8AzdxlyRrV-GrOSQU',
+    appId: '1:49270575708:android:ddac98229390f959510c99',
+    messagingSenderId: '49270575708',
+    projectId: 'telegrammy-sw',
+    storageBucket: 'telegrammy-sw.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCg7Rx-x-2NkOe2He3TXKRsX52eIIZx39U',
-    appId: '1:4445093650:ios:81037b4f7637e472da3dcb',
-    messagingSenderId: '4445093650',
-    projectId: 'telegrammy-d0854',
-    storageBucket: 'telegrammy-d0854.firebasestorage.app',
-    androidClientId: '4445093650-ubrld43a86sddle0asbhpm8phm361k58.apps.googleusercontent.com',
-    iosClientId: '4445093650-4m31lah6h6vquq897if7qdm3dvfnf0e4.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDaAZOcuHA24DS7sC6clvzlEjoFl8Y2byc',
+    appId: '1:49270575708:ios:0ddab49c84455ed5510c99',
+    messagingSenderId: '49270575708',
+    projectId: 'telegrammy-sw',
+    storageBucket: 'telegrammy-sw.firebasestorage.app',
     iosBundleId: 'com.example.telegrammy',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDaAZOcuHA24DS7sC6clvzlEjoFl8Y2byc',
+    appId: '1:49270575708:ios:0ddab49c84455ed5510c99',
+    messagingSenderId: '49270575708',
+    projectId: 'telegrammy-sw',
+    storageBucket: 'telegrammy-sw.firebasestorage.app',
+    iosBundleId: 'com.example.telegrammy',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyC0zLXiBij35Gc7XAj7pTWqFZNQldpIJc8',
+    appId: '1:49270575708:web:5e38f65c52ef6b6b510c99',
+    messagingSenderId: '49270575708',
+    projectId: 'telegrammy-sw',
+    authDomain: 'telegrammy-sw.firebaseapp.com',
+    storageBucket: 'telegrammy-sw.firebasestorage.app',
+    measurementId: 'G-XZGGT670WG',
   );
 
 }

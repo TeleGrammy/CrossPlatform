@@ -47,18 +47,18 @@ class _BottomBarState extends State<BottomBar> {
     _initializeMessage();
     _initializeRecorder();
     print(widget.chatId);
-    // Listen for draft messages
+  // ## Listen for draft messages
 
-    // getit.get<SocketService>().draftMessagerecived('draft', (data) {
-    //   print('salma11');
-    //   if (data != null && data['chatId'] == widget.chatId) {
-    //     print('salmmm$data');
-    //     setState(() {
-    //       _draftContent = data['draft'];
-    //       _messageController.text = _draftContent ?? '';
-    //     });
-    //   }
-    // });
+    getit.get<SocketService>().draftMessagerecived('draft', (data) {
+      print('salma11');
+      if (data != null && data['chatId'] == widget.chatId) {
+        print('salmmm$data');
+        setState(() {
+          _draftContent = data['draft'];
+          _messageController.text = _draftContent ?? '';
+        });
+      }
+    });
 
     _messageController.addListener(() {
       setState(() {
@@ -68,22 +68,23 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   void createDraft(String draftContent) async {
+    
     getit.get<SocketService>().draftMessage(
       'draft',
       {'chatId': widget.chatId, 'draft': draftContent},
     );
-    await _secureDraftService.saveDraft(widget.chatId, draftContent);
-    //  getit.get<SocketService>().draftMessagerecived('draft', (data) {
-    //   print('salma');
+    // await _secureDraftService.saveDraft(widget.chatId, draftContent);
+     getit.get<SocketService>().draftMessagerecived('draft', (data) {
+      print('salma');
 
-    //   if (data != null && data['chatId'] == widget.chatId) {
-    //     print('aa$data');
-    //     setState(() {
-    //       _draftContent = data['draft'];
-    //       _messageController.text = _draftContent ?? '';
-    //     });
-    //   }
-    // });
+      if (data != null && data['chatId'] == widget.chatId) {
+        print('aa$data');
+        setState(() {
+          _draftContent = data['draft'];
+          _messageController.text = _draftContent ?? '';
+        });
+      }
+    });
   }
 
   @override
@@ -95,7 +96,7 @@ class _BottomBarState extends State<BottomBar> {
   }
 
   void _initializeMessage() async {
-    String? savedDraft = await _secureDraftService.loadDraft(widget.chatId);
+    // String? savedDraft = await _secureDraftService.loadDraft(widget.chatId);
     // if (savedDraft != null) {
     //   setState(() {
     //     _messageController.text = savedDraft;
@@ -105,11 +106,7 @@ class _BottomBarState extends State<BottomBar> {
     if (widget.editedMessage != null) {
       _messageController.text = widget.editedMessage!.content;
       _isTyping = true;
-    } else if (savedDraft != null) {
-      _messageController.text = savedDraft;
-      _draftContent = savedDraft;
-
-      _isTyping = true;
+    
     } else {
       _messageController.clear();
       _isTyping = false;
@@ -193,7 +190,7 @@ class _BottomBarState extends State<BottomBar> {
           {'messageId': widget.editedMessage!.id, 'content': text});
     } else {
       if (text.trim().isNotEmpty) {
-        await _secureDraftService.clearDraft(widget.chatId);
+        // await _secureDraftService.clearDraft(widget.chatId);
         getit.get<SocketService>().sendMessage(
           'message:send',
           {

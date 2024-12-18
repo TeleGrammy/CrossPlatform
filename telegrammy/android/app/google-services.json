@@ -1,51 +1,45 @@
 {
   "project_info": {
-    "project_number": "4445093650",
-    "project_id": "telegrammy-d0854",
-    "storage_bucket": "telegrammy-d0854.firebasestorage.app"
+    "project_number": "49270575708",
+    "project_id": "telegrammy-sw",
+    "storage_bucket": "telegrammy-sw.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:4445093650:android:eb11f97ff0392949da3dcb",
+        "mobilesdk_app_id": "1:49270575708:android:ddac98229390f959510c99",
         "android_client_info": {
           "package_name": "com.example.telegrammy"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "4445093650-ubrld43a86sddle0asbhpm8phm361k58.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.telegrammy",
-            "certificate_hash": "4ee099762557d55fdff4a6fd703c5cae478b0ace"
-          }
-        },
-        {
-          "client_id": "4445093650-mpvv0pcck32kv82aqlpvqedagju0nvcp.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAI3_MGUOjVxSXQVRnjCPeQhRJJ5QIUbvk"
+          "current_key": "AIzaSyDgVr11HDnmui41bS8AzdxlyRrV-GrOSQU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "4445093650-mpvv0pcck32kv82aqlpvqedagju0nvcp.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "4445093650-4m31lah6h6vquq897if7qdm3dvfnf0e4.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.telegrammy"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49270575708:android:0f571258dceb3f43510c99",
+        "android_client_info": {
+          "package_name": "com.example.untitled"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgVr11HDnmui41bS8AzdxlyRrV-GrOSQU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }

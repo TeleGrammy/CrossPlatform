@@ -2,21 +2,27 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
-import 'package:telegrammy/cores/services/token_storage_service.dart';
+import 'package:telegrammy/features/notifications/data/handle_notifications.dart';
 import 'package:telegrammy/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  setupServiceLocator();
-  // await getit.get<TokenStorageService>().deleteToken(); //clearing the
-  // await getit.get<TokenStorageService>().deleteEmail();
-  runApp(
-    const MyApp(),
-  );
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.dumpErrorToConsole(details);
+  };
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    setupServiceLocator();
+        // await HandleNotifications().getToken();
+    runApp(const MyApp());
+  } catch (e, stack) {
+    print('Error during initialization: $e\n$stack');
+  }
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

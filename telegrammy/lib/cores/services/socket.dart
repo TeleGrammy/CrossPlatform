@@ -14,7 +14,7 @@ class SocketService {
       "autoConnect": false,
       'query': {
         'token':
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjMyIiwiZW1haWwiOiJtazAwMTUyNjRAZ21haWwuY29tIiwicGhvbmUiOiIwMTE1MDEzNDU4OSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczNDQ2MzkzNSwiZXhwIjoxNzM0NDY3NTM1LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.fKgyPtQO4K9UeXSq-yHHPPp78jGXmmJ4SpB1IHIffVo',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjMyIiwiZW1haWwiOiJtazAwMTUyNjRAZ21haWwuY29tIiwicGhvbmUiOiIwMTE1MDEzNDU4OSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczNDU0ODk1NiwiZXhwIjoxNzM0NTUyNTU2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.DfNw0bslh2_GxAq2mDf89-dYq1WNYeHCHfLfxA180bc',
       }
     });
     socket.connect();

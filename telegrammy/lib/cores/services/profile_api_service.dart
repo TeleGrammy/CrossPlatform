@@ -259,6 +259,7 @@ Future<void> markStoryAsViewed(String storyId) async {
     throw Exception('Error marking story as viewed: ${dioError.message}');
   }
 }
+
 //////////////////////////
 Future<void> createStory(StoryCreation storyCreation) async {
   try {

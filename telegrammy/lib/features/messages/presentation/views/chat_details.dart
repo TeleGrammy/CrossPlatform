@@ -81,9 +81,10 @@ class ChatDetailsState extends State<ChatDetails> {
   }
 
   void onMessageTap(Message message) {
+      // print(message.isPinned);
     setState(() {
       selectedMessage = message;
-      // print(message.content);
+      
       isPinned = checkPinning();
     });
   }
@@ -157,7 +158,7 @@ class ChatDetailsState extends State<ChatDetails> {
     });
 
     setState(() {
-      // print('insides2');
+    
       lastPinnedMessage = selectedMessage;
       selectedMessage = null;
     });
