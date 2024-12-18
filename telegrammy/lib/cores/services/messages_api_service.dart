@@ -39,7 +39,7 @@ class MessagesApiService {
         List<Message> messages = (data['messages']['data'] as List)
             .map((m) => Message.fromJson(m))
             .toList();
-        print(messages);
+        // print(messages);
         // Return success with parsed data
         return Right({
           'participants': participants,

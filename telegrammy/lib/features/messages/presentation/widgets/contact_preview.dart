@@ -6,10 +6,10 @@ import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 
 class ContactPreview extends StatelessWidget {
+  final String id;
   final String name;
   final String photo;
   final String lastMessage;
-  final String id;
   final String lastMessageTime;
   final String lastSeen;
   final Message? forwardMessage;
@@ -22,8 +22,7 @@ class ContactPreview extends StatelessWidget {
       required this.lastMessage,
       required this.lastMessageTime,
       required this.lastSeen,
-      this.forwardMessage
-      })
+      this.forwardMessage})
       : super(key: key);
 
   @override
@@ -45,16 +44,24 @@ class ContactPreview extends StatelessWidget {
         style: const TextStyle(fontSize: 14, color: Colors.grey),
       ),
       onTap: () {
-        if(forwardMessage!=null){
-          getit.get<SocketService>().sendMessage('message:send',           {
-            'content': forwardMessage!.content,
-            'chatId': id,
-            'messageType': 'text'
-          },);
+        if (forwardMessage != null) {
+          getit.get<SocketService>().sendMessage(
+            'message:send',
+            {
+              'content': forwardMessage!.content,
+              'chatId': id,
+              'messageType': 'text'
+            },
+          );
         }
         context.goNamed(
           RouteNames.chatWrapper,
-          extra: [name, id, userPhoto, lastSeen,],
+          extra: [
+            name,
+            id,
+            userPhoto,
+            lastSeen,
+          ],
         );
       },
     );

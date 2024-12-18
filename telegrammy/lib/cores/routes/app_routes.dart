@@ -14,7 +14,9 @@ import 'package:telegrammy/features/channels/presentation/view_models/channel_cu
 import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
-import 'package:telegrammy/features/groups/presentation/views/create_group/create_group_view.dart';
+import 'package:telegrammy/features/groups/presentation/views/create_group_view.dart';
+import 'package:telegrammy/features/groups/presentation/views/edit_group_settings.dart';
+import 'package:telegrammy/features/groups/presentation/views/group_settings.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
@@ -328,6 +330,22 @@ class AppRoutes {
           child: CreateGroupView(),
         ),
       ),
+      GoRoute(
+        name: RouteNames.groupSettings,
+        path: '/group-settings',
+        builder: (context, state) => BlocProvider(
+          create: (context) => GroupCubit(),
+          child: GroupSettingsView(),
+        ),
+      ),
+      GoRoute(
+          name: RouteNames.editGroupSettings,
+          path: '/edit-group-settings',
+          builder: (context, state) {
+            return BlocProvider(
+                create: (context) => GroupCubit(),
+                child: EditGroupSettingsView(groupId: state.extra as String));
+          }),
     ],
   );
 }

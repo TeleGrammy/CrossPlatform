@@ -5,9 +5,14 @@ class RoundedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonTitle;
   final Key buttonKey;
+  final Color backgroundColor;
 
   const RoundedButton(
-      {super.key, required this.onPressed, required this.buttonTitle, required this.buttonKey});
+      {super.key,
+      required this.onPressed,
+      required this.buttonTitle,
+      required this.buttonKey,
+      this.backgroundColor = secondaryColor});
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +23,13 @@ class RoundedButton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextButton(
-            key:buttonKey,
+            key: buttonKey,
             onPressed: onPressed,
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              backgroundColor: secondaryColor,
+              backgroundColor: backgroundColor,
               foregroundColor: roundedButtonFontColor,
             ),
             child: Text(

@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:telegrammy/cores/errors/Failure.dart';
+import 'package:telegrammy/cores/errors/Failture.dart';
 import 'package:telegrammy/features/profile/data/models/stories_model.dart';
 import 'package:telegrammy/features/profile/data/repos/profile_repo.dart';
 import 'story_state.dart';

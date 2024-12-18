@@ -136,8 +136,8 @@ class Message {
   final bool isForwarded;
   final bool isEdited;
   final String status;
-   String? mediaUrl;
-   String? mediaKey;
+  String? mediaUrl;
+  String? mediaKey;
 
   Message({
     required this.id,
@@ -150,8 +150,8 @@ class Message {
     required this.isForwarded,
     required this.isEdited,
     required this.status,
-     this.mediaUrl,
-     this.mediaKey,
+    this.mediaUrl,
+    this.mediaKey,
   });
   Map<String, dynamic> toJson() {
     return {

@@ -7,7 +7,7 @@ import 'package:telegrammy/cores/services/token_storage_service.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_state.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
-import '../../widgets/profile_settings/profile_picture_circle.dart';
+import '../../widgets/profile_settings/picture_circle.dart';
 import '../../widgets/profile_settings/basic_info_list.dart';
 import '../../widgets/profile_settings/status_and_last_seen_list.dart';
 import '../../widgets/profile_settings/settings_box.dart';
@@ -44,9 +44,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
               key: const ValueKey('editProfileInfoButton'),
               icon: Icon(Icons.edit),
               color: Colors.white,
-              onPressed: () => context.goNamed(RouteNames
-                  .editProfileInfo) //context.pushNamed(RouteNames.editProfileInfo),
-              ),
+              onPressed: () => context.goNamed(RouteNames.editProfileInfo)),
           IconButton(
               key: const ValueKey('LogoutButton'),
               icon: Icon(Icons.exit_to_app),
@@ -76,8 +74,7 @@ class _ProfileInfoViewState extends State<ProfileInfoView> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: 20),
-                        ProfilePictureCircle(
-                            imageUrl: state.profileInfo.profilePic),
+                        PictureCircle(imageUrl: state.profileInfo.profilePic),
                         SizedBox(height: 20),
                         Text(
                           state.profileInfo.screenName ?? "",

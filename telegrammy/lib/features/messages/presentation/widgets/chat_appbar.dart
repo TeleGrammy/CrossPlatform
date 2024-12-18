@@ -105,6 +105,11 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.more_vert),
           onPressed: () => _showSettingsMenu(context),
         ),
+        IconButton(
+          key: const Key('chat_info_button'),
+          icon: const Icon(Icons.info_outline),
+          onPressed: () => {context.goNamed(RouteNames.groupSettings)},
+        ),
       ],
     );
   }

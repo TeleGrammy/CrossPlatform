@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:telegrammy/features/profile/data/models/profile_info_model.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_state.dart';
 
-import '../../../../../cores/errors/Failure.dart';
+import '../../../../../cores/errors/Failture.dart';
 import '../../../../../cores/services/service_locator.dart';
 import '../../../data/repos/profile_repo.dart';
 import '../../../data/repos/profile_repo_implemention.dart';

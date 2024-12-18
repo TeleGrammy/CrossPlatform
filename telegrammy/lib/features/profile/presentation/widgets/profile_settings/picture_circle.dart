@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 
-class ProfilePictureCircle extends StatelessWidget {
-  ProfilePictureCircle({super.key, this.imageUrl});
+class PictureCircle extends StatelessWidget {
+  PictureCircle({super.key, this.imageUrl});
 
   final String? imageUrl;
   final profilePicPlaceholderIcon = const Icon(
@@ -15,7 +15,7 @@ class ProfilePictureCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      key: const ValueKey('ProfilePictureCircle'),
+      key: const ValueKey('PictureCircle'),
       alignment: Alignment.center,
       child: ClipOval(
         child: Container(

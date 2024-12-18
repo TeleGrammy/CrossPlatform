@@ -4,8 +4,6 @@ import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/data/repos/messages_repo_implementaion.dart';
 
-import '../../../../../cores/models/group_model.dart';
-
 part 'contacts_state.dart';
 
 class ContactsCubit extends Cubit<ContactsState> {
@@ -21,6 +19,4 @@ class ContactsCubit extends Cubit<ContactsState> {
       emit(ContactsFailture());
     }
   }
-
-  Future<void> createGroup(Group newGroup) async {}
 }

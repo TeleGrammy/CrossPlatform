@@ -3,24 +3,14 @@ import 'dart:convert';
 class Chat {
   final String id;
   final String name;
-  final String email;
   final String? photo;
-  final String status;
-  final DateTime lastSeen;
-  final DateTime joinedAt;
-  final String role;
   final LastMessage? lastMessage;
   final String draftMessage;
 
   Chat({
     required this.id,
     required this.name,
-    required this.email,
     this.photo,
-    required this.status,
-    required this.lastSeen,
-    required this.joinedAt,
-    required this.role,
     this.lastMessage,
     required this.draftMessage,
   });
@@ -29,16 +19,11 @@ class Chat {
     return Chat(
       id: json['id'],
       name: json['name'],
-      email: json['email'],
       photo: json['photo'],
-      status: json['status'],
-      lastSeen: DateTime.parse(json['lastSeen']),
-      joinedAt: DateTime.parse(json['joinedAt']),
-      role: json['role'],
       lastMessage: json['lastMessage'] != null
           ? LastMessage.fromJson(json['lastMessage'])
           : null,
-      draftMessage: json['draftMessage'] ?? '',
+      draftMessage: json['draftMessage'] == null ? '' : json['draftMessage'],
     );
   }
 
@@ -46,12 +31,7 @@ class Chat {
     return {
       'id': id,
       'name': name,
-      'email': email,
       'photo': photo,
-      'status': status,
-      'lastSeen': lastSeen.toIso8601String(),
-      'joinedAt': joinedAt.toIso8601String(),
-      'role': role,
       'lastMessage': lastMessage?.toJson(),
       'draftMessage': draftMessage,
     };
@@ -64,7 +44,7 @@ class LastMessage {
   final String messageType;
   final String status;
   final String content;
-  final String mediaUrl;
+  final String? mediaUrl;
   final DateTime timestamp;
 
   LastMessage({

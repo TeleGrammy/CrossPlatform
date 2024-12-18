@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:telegrammy/cores/errors/Failure.dart';
+import 'package:telegrammy/cores/errors/Failture.dart';
 import 'package:telegrammy/features/profile/data/models/blocked_user_model.dart';
 import 'package:telegrammy/features/profile/data/models/profile_info_model.dart';
 import 'package:telegrammy/features/profile/data/models/contacts_toblock_model.dart';

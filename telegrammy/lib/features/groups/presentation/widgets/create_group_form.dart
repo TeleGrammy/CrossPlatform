@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
-import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/widgets/custom_text_field.dart';
 import 'package:telegrammy/cores/widgets/rounded_button.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
 
-import '../../../../cores/models/group_model.dart';
+import '../../../../cores/routes/route_names.dart';
+import '../../../../cores/services/groups_socket.dart';
+import '../../../../cores/services/service_locator.dart';
 
 class CreateGroupForm extends StatefulWidget {
   const CreateGroupForm({
@@ -14,13 +16,11 @@ class CreateGroupForm extends StatefulWidget {
     required this.formKey,
     required this.groupNameController,
     required this.groupDescriptionController,
-    required this.onSubmit,
   });
 
   final GlobalKey<FormState> formKey;
   final TextEditingController groupNameController;
   final TextEditingController groupDescriptionController;
-  final Function(Group) onSubmit;
 
   @override
   State<CreateGroupForm> createState() => _CreateGroupFormState();
@@ -28,6 +28,12 @@ class CreateGroupForm extends StatefulWidget {
 
 class _CreateGroupFormState extends State<CreateGroupForm> {
   bool isGroupPublic = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getit.get<GroupSocketService>().listenGroupCreated();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,45 +59,6 @@ class _CreateGroupFormState extends State<CreateGroupForm> {
             validator: (value) => null,
           ),
           SizedBox(height: 16),
-          Row(
-            children: [
-              Text(
-                'Privacy Setting:',
-                style: textStyle16,
-              ),
-              Radio<bool>(
-                key: const ValueKey('publicGroupRadioButton'),
-                value: true,
-                groupValue: isGroupPublic,
-                onChanged: (value) {
-                  setState(() {
-                    isGroupPublic = value ?? true;
-                    print(isGroupPublic);
-                  });
-                },
-              ),
-              Text(
-                'Public',
-                style: textStyle16,
-              ),
-              Radio<bool>(
-                key: const ValueKey('privateGroupRadioButton'),
-                value: false,
-                groupValue: isGroupPublic,
-                onChanged: (value) {
-                  setState(() {
-                    isGroupPublic = value ?? false;
-                    print(isGroupPublic);
-                  });
-                },
-              ),
-              Text(
-                'Private',
-                style: textStyle16,
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
 
           //errors message box
           BlocBuilder<GroupCubit, GroupState>(
@@ -118,13 +85,10 @@ class _CreateGroupFormState extends State<CreateGroupForm> {
             child: RoundedButton(
               onPressed: () {
                 if (widget.formKey.currentState?.validate() ?? false) {
-                  var newGroup = Group(
-                    name: widget.groupNameController.text,
-                    description: widget.groupDescriptionController.text,
-                    isGroupPublic: isGroupPublic,
-                  );
-
-                  widget.onSubmit(newGroup);
+                  getit.get<GroupSocketService>().createGroup(
+                      widget.groupNameController.text,
+                      widget.groupDescriptionController.text);
+                  context.goNamed(RouteNames.chats);
                 }
               },
               buttonKey: const ValueKey('createGroupButton'),
