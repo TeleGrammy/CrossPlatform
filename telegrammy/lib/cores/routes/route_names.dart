@@ -25,4 +25,6 @@ class RouteNames {
   static String blockingView = 'blockingView';
   static String ContactsToBlockFromView = 'contactsToBlockFromView';
   static String createGroup = 'createGroup';
+  static String onGoingCall = 'onGoingCall';
+  static String incomingCall = 'incomingCall';
 }

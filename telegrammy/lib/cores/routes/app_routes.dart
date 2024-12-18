@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/helpers/routes_helper.dart';
 import 'package:telegrammy/features/Home/presentation/views/home_view.dart';
@@ -24,6 +25,8 @@ import 'package:telegrammy/features/messages/presentation/views/chat_details.dar
 import 'package:telegrammy/features/messages/presentation/views/chat_wrapper.dart';
 import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
+import 'package:telegrammy/features/messages/presentation/views/in_coming_call.dart';
+import 'package:telegrammy/features/messages/presentation/views/on_going_call.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/views/blocked_users_view.dart';
@@ -336,6 +339,34 @@ class AppRoutes {
           child: CreateGroupView(),
         ),
       ),
+      GoRoute(
+          name: RouteNames.onGoingCall,
+          path: '/onGoingCall',
+          builder: (context, state) {
+            Map<String, dynamic>? params = state.extra as Map<String, dynamic>?;
+            return OutgoingCallScreen(
+                name: params!['name'],
+                photoUrl: params['photo'],
+                chatId: params['id']);
+          }),
+      GoRoute(
+          name: RouteNames.incomingCall,
+          path: '/incomingCall',
+          builder: (context, state) {
+            print(state.extra);
+            Map<String, dynamic>? params = state.extra as Map<String, dynamic>?;
+
+            return IncomingCallScreen(
+              name: params!['name'],
+              photoUrl: params['photo'],
+              callId: params['callId'],
+              remoteOffer: RTCSessionDescription(
+                params['remoteOffer']['sdp'], // SDP string from the JSON
+                params['remoteOffer']
+                    ['type'], // Type string from the JSON (e.g., "offer")
+              ),
+            );
+          }),
     ],
   );
 }

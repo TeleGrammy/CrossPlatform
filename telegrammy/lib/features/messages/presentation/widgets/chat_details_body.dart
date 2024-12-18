@@ -1,5 +1,8 @@
 import 'package:audioplayers/audioplayers.dart'; // Add this package for audio playback
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
@@ -35,7 +38,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
     super.initState();
     // Initialize the local messages list
     messages = List.from(widget.messages);
-
+    
     getit.get<SocketService>().receiveMessage('message:sent', (data) {
       // Check if replyOn is not null
       if (data['replyOn'] != null) {
@@ -49,11 +52,11 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
       // Create the Message object
       Message message = Message.fromJson(data);
 
-      setState(() {
+        setState(() {
         messages.add(message);
         _scrollToBottom(); // Automatically scroll to the bottom
       });
-    });
+    }); 
 
     getit.get<SocketService>().receiveEditedMessage('message:updated', (data) {
       if (data['replyOn'] != null) {
@@ -80,6 +83,10 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
           data['replyOn'] = messages[index].toJson();
         }
       }
+
+    getit.get<SocketService>().recieveCall('call:incomingCall', (data){
+      context.goNamed(RouteNames.incomingCall,extra: data);
+    });
 
       Message message = Message.fromJson(data);
       int index = messages.indexWhere((m) => m.id == message.id);

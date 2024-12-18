@@ -9,12 +9,15 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String name;
   final String photo;
   final String lastSeen;
+  final String id;
 
   const ChatAppbar(
       {required this.name,
       super.key,
       required this.photo,
-      required this.lastSeen});
+      required this.lastSeen,
+      required this.id
+      });
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -98,7 +101,13 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           key: const Key('call_button'),
           icon: const Icon(Icons.call),
-          onPressed: () {},
+          onPressed: () {
+            context.goNamed(RouteNames.onGoingCall,extra: {
+              'name': name,
+              'photo': photo,
+              'id': id,
+            });
+          },
         ),
         IconButton(
           key: const Key('settings_button'),

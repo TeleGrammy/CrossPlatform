@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
@@ -21,15 +22,16 @@ class ChatDetails extends StatefulWidget {
   final String lastSeen;
   final List<Message> messages;
   final Message? forwardedMessage;
-  const ChatDetails(
-      {Key? key,
-      required this.name,
-      required this.id,
-      required this.photo,
-      required this.lastSeen,
-      required this.messages,
-      this.forwardedMessage})
-      : super(key: key); // Key for ChatDetails widget
+
+  const ChatDetails({
+    Key? key,
+    required this.name,
+    required this.id,
+    required this.photo,
+    required this.lastSeen,
+    required this.messages,
+    this.forwardedMessage,
+  }) : super(key: key);
 
   @override
   State<ChatDetails> createState() => ChatDetailsState();
@@ -39,13 +41,17 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? selectedMessage;
   Message? repliedMessage;
   Message? editedMessage;
-  late List<Participant> participants;
+  bool isSocketInitialized = false; // Tracks whether the socket is ready
+
   @override
   void initState() {
     super.initState();
-    // loadChatData();
+    _initializeSocketConnection();
+  }
 
-    getit.get<SocketService>().connect();
+  Future<void> _initializeSocketConnection() async {
+    await getit.get<SocketService>().connect();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.forwardedMessage != null) {
         getit.get<SocketService>().sendMessage(
@@ -53,13 +59,23 @@ class ChatDetailsState extends State<ChatDetails> {
           {
             'messageId': widget.forwardedMessage!.id,
             'chatId': widget.id,
-            'isForwarded': true
+            'isForwarded': true,
           },
         );
       }
+      
+      getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
+        context.goNamed(RouteNames.incomingCall, extra: {
+          'name': 'mmmomo',
+          'photo': 'default.png',
+          'callId': response['_id'],
+          'remoteOffer': response['callObj']['offer'],
+        });
+      });
+      setState(() {
+        isSocketInitialized = true; // Mark socket as initialized
+      });
     });
-
-    // socketService.connect();
   }
 
   void onMessageTap(Message message) {
@@ -80,78 +96,33 @@ class ChatDetailsState extends State<ChatDetails> {
     });
   }
 
-  // void onSendAudio(Message message) {
-  //   setState(() {
-  //     messages.add(message);
-  //   });
-  // }
-
   void onClickEdit() {
     setState(() {
       editedMessage = selectedMessage;
-      repliedMessage = selectedMessage!.replyOn;
+      repliedMessage = selectedMessage?.replyOn;
       selectedMessage = null;
     });
   }
 
   void onClickDelete() {
-    getit.get<SocketService>().deleteMessage(
-      'message:delete',
-      {'messageId': selectedMessage!.id},
-    );
-    setState(() {
-      selectedMessage = null;
-    });
-    // setState(() {
-    //   messages.add(Message(
-    //     text: "message has been deleted",
-    //     time: DateTime.now().toString(),
-    //     isSentByUser: true,
-    //     repliedTo: null,
-    //   )
-    //   );
-    // clearReply();
-    // });
+    if (selectedMessage != null) {
+      getit.get<SocketService>().deleteMessage(
+        'message:delete',
+        {'messageId': selectedMessage!.id},
+      );
+      setState(() {
+        selectedMessage = null;
+      });
+    }
   }
 
-  // void onSend(String text) {
-  //   if (text.trim().isNotEmpty) {
-  //     getit.get<SocketService>().sendMessage(
-  //       'message:send',
-  //       {'content': text, 'chatId': widget.id, 'messageType': 'text'},
-  //     );
-  //     // socketService.sendMessage('event', "data");
-  //     // setState(() {
-  //     //   messages.add(Message(
-  //     //     text: text,
-  //     //     time: DateTime.now().toString(),
-  //     //     isSentByUser: true,
-  //     //     repliedTo: repliedMessage,
-  //     //   ));
-  //     // }
-  //     // );
-  //   }
-  // }
-
-  // void onEdit(Message message, String editedString) {
-  //   if (editedString.trim().isNotEmpty) {
-  //     final index = messages.indexOf(message);
-  //     setState(() {
-  //       messages[index] = Message(
-  //         text: editedString,
-  //         time: DateTime.now().toString(),
-  //         isSentByUser: true,
-  //         repliedTo: message.repliedTo,
-  //       );
-  //     });
-  //   }
-  // }
-
   void onReply() {
-    onMessageSwipe(selectedMessage!);
-    setState(() {
-      selectedMessage = null;
-    });
+    if (selectedMessage != null) {
+      onMessageSwipe(selectedMessage!);
+      setState(() {
+        selectedMessage = null;
+      });
+    }
   }
 
   @override
@@ -165,65 +136,67 @@ class ChatDetailsState extends State<ChatDetails> {
           });
         }
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: selectedMessage == null
-            ? ChatAppbar(
-                key: const Key('chatAppBar'), // Key for ChatAppbar
-                name: widget.name,
-                photo: widget.photo,
-                lastSeen: widget.lastSeen)
-            : SelectedMessageAppbar(
-                key: const Key(
-                    'selectedMessageAppBar'), // Key for SelectedMessageAppbar
-                onMessageUnTap: () {
-                  setState(() => selectedMessage = null);
-                },
-                onClickEdit: onClickEdit,
-                onClickDelete: onClickDelete,
-              ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ChatDetailsBody(
-                  key: const Key('chatDetailsBody'),
-                  messages: widget.messages,
-                  onMessageTap: onMessageTap,
-                  onMessageSwipe: onMessageSwipe,
-                  selectedMessage: selectedMessage,
-                  userId: widget.id),
-            ),
-            if (repliedMessage != null)
-              Padding(
-                key: const Key('replyPreview'), // Key for ReplyPreview
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ReplyPreview(
-                  repliedMessage: repliedMessage!,
-                  onCancel: clearReply,
-                ),
-              ),
-            selectedMessage == null
-                ? BottomBar(
-                    key: const Key('bottomBar'), // Key for BottomBar
-                    // onSend: onSend,
-                    // onSendAudio: onSendAudio,
-                    // onEdit: onEdit,
-                    clearReply: clearReply,
-                    editedMessage: editedMessage,
-                    repliedMessage: repliedMessage,
-                    chatId: widget.id,
-                  )
-                : SelectedMessageBottomBar(
-                    key: const Key(
-                        'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
-                    onReply: () {
-                      onReply();
-                    },
-                    selectedMessage: selectedMessage!,
+      child: isSocketInitialized
+          ? Scaffold(
+              backgroundColor: Colors.white,
+              appBar: selectedMessage == null
+                  ? ChatAppbar(
+                      key: const Key('chatAppBar'),
+                      name: widget.name,
+                      photo: widget.photo,
+                      lastSeen: widget.lastSeen,
+                      id: widget.id,
+                    )
+                  : SelectedMessageAppbar(
+                      key: const Key('selectedMessageAppBar'),
+                      onMessageUnTap: () {
+                        setState(() => selectedMessage = null);
+                      },
+                      onClickEdit: onClickEdit,
+                      onClickDelete: onClickDelete,
+                    ),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: ChatDetailsBody(
+                      key: const Key('chatDetailsBody'),
+                      messages: widget.messages,
+                      onMessageTap: onMessageTap,
+                      onMessageSwipe: onMessageSwipe,
+                      selectedMessage: selectedMessage,
+                      userId: widget.id,
+                    ),
                   ),
-          ],
-        ),
-      ),
+                  if (repliedMessage != null)
+                    Padding(
+                      key: const Key('replyPreview'),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ReplyPreview(
+                        repliedMessage: repliedMessage!,
+                        onCancel: clearReply,
+                      ),
+                    ),
+                  selectedMessage == null
+                      ? BottomBar(
+                          key: const Key('bottomBar'),
+                          clearReply: clearReply,
+                          editedMessage: editedMessage,
+                          repliedMessage: repliedMessage,
+                          chatId: widget.id,
+                        )
+                      : SelectedMessageBottomBar(
+                          key: const Key('selectedMessageBottomBar'),
+                          onReply: onReply,
+                          selectedMessage: selectedMessage!,
+                        ),
+                ],
+              ),
+            )
+          : const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(), // Loading indicator
+              ),
+            ),
     );
   }
 }

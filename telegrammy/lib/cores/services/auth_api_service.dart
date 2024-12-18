@@ -217,32 +217,6 @@ class ApiService {
     }
   }
 
-  // Future<void> forgetPassword(email) async {
-  //   try {
-  //     final response = await getit.get<Dio>().post(
-  //         'http://10.0.2.2:8080/api/v1/forget-password',
-  //         data: {'email': email});
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
-  // Future<void> resetPassword(password, newPassword) async {
-  //   try {
-  //     // final userLoginData = {'UUID': email, 'password': password};
-  //     final response = await getit
-  //         .get<Dio>()
-  //         .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
-
-  //     await getit.get<FlutterSecureStorage>().write(
-  //         key: 'accessToken', value: response.data['data']['accessToken']);
-
-  //     // context.goNamed(RouteNames.home);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   Future<List<Chat>> fetchChats() async {
     try {
       //const String token =
@@ -267,7 +241,8 @@ class ApiService {
           );
       // print(response);
       if (response.statusCode == 200) {
-        final List<dynamic> chats = response.data['chats'];
+        List<dynamic> chats = response.data['chats'];
+        print(chats);
         // final String userId = response.data['userId'];
         return chats.map((chat) => Chat.fromJson(chat)).toList();
       } else {
