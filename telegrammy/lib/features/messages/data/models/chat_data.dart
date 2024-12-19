@@ -1,46 +1,16 @@
 import 'package:meta/meta.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 class ChatData {
   final Chat chat;
-  final Messages messages;
+  final List<Message> messages;
 
   ChatData({required this.chat, required this.messages});
 
   factory ChatData.fromJson(Map<String, dynamic> json) {
     return ChatData(
       chat: Chat.fromJson(json['chat']),
-      messages: Messages.fromJson(json['messages']),
-    );
-  }
-}
-
-class Chat {
-  final String id;
-  final List<Participantt> participants;
-  final bool isGroup;
-  final bool isChannel;
-  final String createdAt;
-  final List<dynamic> pinnedMessages;
-
-  Chat({
-    required this.id,
-    required this.participants,
-    required this.isGroup,
-    required this.isChannel,
-    required this.createdAt,
-    required this.pinnedMessages,
-  });
-
-  factory Chat.fromJson(Map<String, dynamic> json) {
-    return Chat(
-      id: json['_id'],
-      participants: (json['participants'] as List)
-          .map((participant) => Participantt.fromJson(participant))
-          .toList(),
-      isGroup: json['isGroup'],
-      isChannel: json['isChannel'],
-      createdAt: json['createdAt'],
-      pinnedMessages: json['pinnedMessages'] ?? [],
+      messages: json['messages'],
     );
   }
 }
@@ -100,31 +70,6 @@ class User {
   }
 }
 
-class Messages {
-  final int totalMessages;
-  final int currentPage;
-  final int totalPages;
-  final List<Message> data;
-
-  Messages({
-    required this.totalMessages,
-    required this.currentPage,
-    required this.totalPages,
-    required this.data,
-  });
-
-  factory Messages.fromJson(Map<String, dynamic> json) {
-    return Messages(
-      totalMessages: json['totalMessages'],
-      currentPage: json['currentPage'],
-      totalPages: json['totalPages'],
-      data: (json['data'] as List)
-          .map((message) => Message.fromJson(message))
-          .toList(),
-    );
-  }
-}
-
 class Message {
   final String id;
   final String sender;
@@ -136,8 +81,8 @@ class Message {
   final bool isForwarded;
   final bool isEdited;
   final String status;
-   String? mediaUrl;
-   String? mediaKey;
+  String? mediaUrl;
+  String? mediaKey;
 
   Message({
     required this.id,
@@ -150,8 +95,8 @@ class Message {
     required this.isForwarded,
     required this.isEdited,
     required this.status,
-     this.mediaUrl,
-     this.mediaKey,
+    this.mediaUrl,
+    this.mediaKey,
   });
   Map<String, dynamic> toJson() {
     return {

@@ -6,7 +6,6 @@ import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatsScreen extends StatelessWidget {
   final Message? forwardMessage;
@@ -74,26 +73,12 @@ class ChatsScreen extends StatelessWidget {
               itemCount: chats.length,
               itemBuilder: (context, index) {
                 final chat = chats[index];
-
-                final name = chat.name;
-                final photo = chat.photo ?? 'default.jpg';
-                // final draftMessage = '';
-                final lastMessage = chat.lastMessage?.content ?? '';
-                final String id = chat.id;
-                final lastMessageTime =
-                    chat.lastMessage?.timestamp.toString() ?? '';
                 final lastSeen = '';
-                final isChannel = chat.isChannel;
                 return ContactPreview(
                   key: Key('contactItem_$index'),
-                  id: id,
-                  name: name,
-                  photo: photo,
-                  lastMessage: lastMessage,
-                  lastMessageTime: lastMessageTime,
+                  chat: chat,
                   lastSeen: lastSeen,
                   forwardMessage: forwardMessage,
-                  isChannel: isChannel,
                 );
               },
             );

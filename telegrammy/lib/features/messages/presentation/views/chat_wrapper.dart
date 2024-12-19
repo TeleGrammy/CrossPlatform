@@ -6,21 +6,15 @@ import 'package:telegrammy/features/messages/presentation/view_models/messages_c
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 
 class ChatWrapper extends StatefulWidget {
-  final String name;
-  final String id;
-  final String photo;
   final String lastSeen;
   final Message? forwardedMessage;
-  final bool isChannel;
+  final Chat chat;
 
   const ChatWrapper({
     Key? key,
-    required this.name,
-    required this.id,
-    required this.photo,
+    required this.chat,
     required this.lastSeen,
     this.forwardedMessage,
-    required this.isChannel,
   }) : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -35,7 +29,7 @@ class ChatWrapperState extends State<ChatWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<MessagesCubit>().fetchMessages(chatId: widget.id);
+    context.read<MessagesCubit>().fetchMessages(chatId: widget.chat.id);
     return BlocBuilder<MessagesCubit, MessagesState>(
       builder: (context, state) {
         if (state is MessagesLoading) {
@@ -43,8 +37,9 @@ class ChatWrapperState extends State<ChatWrapper> {
         } else if (state is Messagesfailture) {
           return Center(
               child: TextButton(
-            onPressed: () =>
-                context.read<MessagesCubit>().fetchMessages(chatId: widget.id),
+            onPressed: () => context
+                .read<MessagesCubit>()
+                .fetchMessages(chatId: widget.chat.id),
             child: const Text('Retry'),
           ));
         } else if (state is MessagesSuccess) {
@@ -52,18 +47,17 @@ class ChatWrapperState extends State<ChatWrapper> {
               state.chatData['participants'] as List<Participant>;
           // String userRole=participants.firstWhere((element) => element.id==userId).role;
           String userRole = 'Admin';
-          print('${participants.first.role}--------------->');
           List<Message> messages = state.chatData['messages'] as List<Message>;
           messages = messages.reversed.toList();
           return ChatDetails(
-            name: widget.name,
-            id: widget.id,
-            photo: widget.photo,
+            chatData: ChatData(
+              chat: widget.chat,
+              messages: messages,
+            ),
             lastSeen: widget.lastSeen,
-            messages: messages,
             forwardedMessage: widget.forwardedMessage,
-            isChannel: widget.isChannel,
             userRole: userRole,
+            userId: '',
           );
         } else {
           return Center(

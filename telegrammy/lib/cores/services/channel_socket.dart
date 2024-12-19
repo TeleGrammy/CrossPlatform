@@ -1,4 +1,5 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 
@@ -15,7 +16,7 @@ class ChannelSocketService {
       }
 
       socket = IO.io(
-        "http://localhost:8080/channel/",
+        "$socketurl/channel/",
         <String, dynamic>{
           "transports": ["websocket"],
           "autoConnect": false,
@@ -49,7 +50,8 @@ class ChannelSocketService {
 
   void removeChannel(dynamic data) {
     print('inside remove channel socket event');
-    socket?.emitWithAck('removingChannel', [data], ack: (Response) {
+    print(data);
+    socket?.emitWithAck('removingChannel', data, ack: (Response) {
       print('channel removed response: $Response');
     });
   }

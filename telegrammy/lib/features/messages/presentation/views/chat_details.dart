@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:telegrammy/cores/models/channel_model.dart';
 import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
@@ -13,26 +12,20 @@ import 'package:telegrammy/features/messages/presentation/widgets/selected_messa
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatDetails extends StatefulWidget {
-  final String name;
-  final String id;
-  final String photo;
   final String lastSeen;
-  final List<Message> messages;
   final Message? forwardedMessage;
-  final bool isChannel;
+  final String userId;
   final String userRole;
+  final ChatData chatData;
 
   const ChatDetails({
     Key? key,
-    required this.name,
-    required this.id,
-    required this.photo,
-    required this.lastSeen,
-    required this.messages,
+    required this.chatData,
     this.forwardedMessage,
-    required this.isChannel,
+    required this.lastSeen,
     required this.userRole,
-  }) : super(key: key); // Key for ChatDetails widget
+    required this.userId,
+  }) : super(key: key);
 
   @override
   State<ChatDetails> createState() => ChatDetailsState();
@@ -46,10 +39,9 @@ class ChatDetailsState extends State<ChatDetails> {
   @override
   void initState() {
     super.initState();
-    // loadChatData();
 
     getit.get<SocketService>().connect();
-    if (widget.isChannel) {
+    if (widget.chatData.chat.isChannel) {
       getit.get<ChannelSocketService>().connect();
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -58,7 +50,7 @@ class ChatDetailsState extends State<ChatDetails> {
           'message:send',
           {
             'messageId': widget.forwardedMessage!.id,
-            'chatId': widget.id,
+            'chatId': widget.chatData.chat.id,
             'isForwarded': true
           },
         );
@@ -125,12 +117,9 @@ class ChatDetailsState extends State<ChatDetails> {
         appBar: selectedMessage == null
             ? ChatAppbar(
                 key: const Key('chatAppBar'),
-                chatId: widget.id,
-                name: widget.name,
-                photo: widget.photo,
                 lastSeen: widget.lastSeen,
-                isChannel: widget.isChannel,
-                userRole: widget.userRole, //to be changed
+                userRole: widget.userRole,
+                chat: widget.chatData.chat,
               )
             : SelectedMessageAppbar(
                 key: const Key('selectedMessageAppBar'),
@@ -145,11 +134,11 @@ class ChatDetailsState extends State<ChatDetails> {
             Expanded(
               child: ChatDetailsBody(
                   key: const Key('chatDetailsBody'),
-                  messages: widget.messages,
+                  messages: widget.chatData.messages,
                   onMessageTap: onMessageTap,
                   onMessageSwipe: onMessageSwipe,
                   selectedMessage: selectedMessage,
-                  userId: widget.id),
+                  userId: widget.userId),
             ),
             if (repliedMessage != null)
               Padding(
@@ -166,8 +155,8 @@ class ChatDetailsState extends State<ChatDetails> {
                     clearReply: clearReply,
                     editedMessage: editedMessage,
                     repliedMessage: repliedMessage,
-                    chatId: widget.id,
-                    isChannel: widget.isChannel,
+                    chatId: widget.chatData.chat.id,
+                    isChannel: widget.chatData.chat.isChannel,
                   )
                 : SelectedMessageBottomBar(
                     key: const Key('selectedMessageBottomBar'),

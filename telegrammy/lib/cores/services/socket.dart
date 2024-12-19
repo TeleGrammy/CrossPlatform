@@ -1,4 +1,5 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 
@@ -7,7 +8,7 @@ class SocketService {
 
   Future<void> connect() async {
     String? token = await getit.get<TokenStorageService>().getToken();
-    socket = IO.io("http://localhost:8080", <String, dynamic>{
+    socket = IO.io(socketurl, <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
       'query': {

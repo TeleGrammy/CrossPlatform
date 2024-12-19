@@ -3,26 +3,20 @@ import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 import '../../../../cores/routes/route_names.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final String name;
-  final String chatId;
-  final String photo;
+  final Chat chat;
   final String lastSeen;
-  final bool isChannel;
   final String userRole;
 
-  const ChatAppbar({
-    required this.name,
-    required this.chatId,
-    super.key,
-    required this.photo,
-    required this.lastSeen,
-    required this.isChannel,
-    required this.userRole,
-  });
+  const ChatAppbar(
+      {super.key,
+      required this.lastSeen,
+      required this.chat,
+      required this.userRole});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -49,7 +43,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
               title: const Text('Search'),
               onTap: () => {},
             ),
-            if (isChannel)
+            if (chat.isChannel)
               ListTile(
                 key: const Key('settings_mute_option'),
                 leading: Icon(
@@ -59,7 +53,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
                 title: const Text('leave Channel'),
                 onTap: () => {},
               ),
-            if (isChannel &&
+            if (chat.isChannel &&
                 (userRole == "Creator" ||
                     userRole ==
                         "Admin")) //should add if the user is admin condition
@@ -70,10 +64,13 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.red,
                 ),
                 title: const Text('delete Channel'),
-                onTap: () => {
-                  getit.get<ChannelSocketService>().removeChannel({
-                    'channelId':chatId
-                  })
+                onTap: () {
+                  getit
+                      .get<ChannelSocketService>()
+                      .removeChannel({'channelId': chat.channelId});
+                  getit
+                      .get<ChannelSocketService>()
+                      .errorChannelMessage((dynamic callback) {});
                 },
               ),
           ],
@@ -121,7 +118,8 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           CircleAvatar(
             key: const Key('profile_picture'),
-            backgroundImage: AssetImage(photo),
+            backgroundImage:
+                (chat.photo != null) ? AssetImage(chat.photo!) : null,
             radius: 20,
           ),
           const SizedBox(width: 10),
@@ -130,7 +128,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                name,
+                chat.name,
                 key: Key('participant_name'),
               ),
               Text(
@@ -143,7 +141,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        if (!isChannel)
+        if (!chat.isChannel)
           IconButton(
             key: const Key('call_button'),
             icon: const Icon(Icons.call),
