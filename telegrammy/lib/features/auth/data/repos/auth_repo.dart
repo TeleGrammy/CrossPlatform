@@ -25,6 +25,7 @@ abstract class AuthRepo {
       String email, String verificationCode);
   Future<Either<Failure, void>> resendEmailVerification(String email);
   Future<Either<Failure, void>> forgetPassword(String email);
+    void logout();
   // Future<Either<Failure, void>> resetPassword(
   //     String password, String newPassword);
 }

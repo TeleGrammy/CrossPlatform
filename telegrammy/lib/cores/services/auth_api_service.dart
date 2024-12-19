@@ -253,4 +253,11 @@ class ApiService {
       throw Exception('Error: $e');
     }
   }
+
+  void logout() async {
+    await getit.get<FlutterSecureStorage>().delete(key: 'accessToken');
+    await getit.get<Dio>().get(
+          '$baseUrl/api/v1/auth/logout',
+        );
+  }
 }

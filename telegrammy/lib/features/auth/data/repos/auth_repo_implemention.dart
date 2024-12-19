@@ -102,4 +102,7 @@ class AuthRepoImplemention extends AuthRepo {
   //     return Left(ServerError(errorMessage: error.toString()));
   //   }
   // }
+  void logout() {
+    apiService.logout();
+  }
 }
