@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
+import 'package:telegrammy/features/notifications/data/handle_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
 // import 'package:flutter_web_auth_plus/flutter_web_auth_plus.dart';
@@ -165,6 +166,8 @@ class ApiService {
   Future<Either<String, void>> login(userLoginData) async {
     try {
       print(userLoginData);
+      final tokenn=await HandleNotifications().getToken();
+      print(tokenn);
       print('$baseUrl/auth/login');
       final response = await getit
           .get<Dio>()
