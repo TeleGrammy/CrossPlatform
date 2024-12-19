@@ -105,6 +105,33 @@ class ProfileRepoImplementation extends ProfileRepo {
   }
 
   @override
+  Future<Either<Failure, MultiUserStoryResponse>> getOtherUserStories(
+      int page, int limit) async {
+    try {
+      // Call the API service to get user stories
+      final otherStoryResponse =
+          await profileApiService.getOtherUserStories(page, limit);
+      return Right(otherStoryResponse); // Successful response
+    } catch (error) {
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
+
+
+    @override
+  Future<Either<Failure, void>> markStoryAsViewed(String storyId) async {
+       try {
+      // Call the API service to update the user profile visibility
+      await profileApiService.markStoryAsViewed(storyId);
+      return const Right(null); // Successful response (void)
+    } catch (error) {
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, UserPrivacySettingsResponse>> getUserSettings() async {
     try {
       // Call the API service to get user privacy settings

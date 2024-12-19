@@ -112,6 +112,7 @@ class ContactstoCubit extends Cubit<ContactstoState> {
   /// Block a user and reload the contacts
   Future<void> blockUser(String userId) async {
     try {
+      print(userId);
       emit(ContactsLoading()); // Optional: Indicate loading when blocking
       final Either<Failure, void> response =
           await profileRepo.updateBlockingStatus("block", userId);

@@ -41,6 +41,10 @@ class SocketService {
   void deleteMessage(String event, dynamic data) {
     socket?.emit(event, data);
   }
+  void draftMessage(String event, dynamic data) {
+    print(data);
+    socket?.emit(event, data);
+  }
 
   void receiveMessage(String event, Function(dynamic) callback) {
     socket?.on(event, (data) {
@@ -59,6 +63,55 @@ class SocketService {
   void receiveDeletedMessage(String event, Function(dynamic) callback) {
     socket?.on(event, (data) {
       print('Message deleted: $data');
+      callback(data);
+    });
+  }
+
+
+  void pinMessage(String event, dynamic data) {
+    socket?.emit(event, data);
+  }
+
+  void unpinMessage(String event, dynamic data) {
+    socket?.emit(event, data);
+  }
+
+  void pinMessagerecived(String event, Function(dynamic) callback) {
+    socket?.on(event, (data) {
+      print('pinMessagerecived: $data');
+      callback(data);
+    });
+  }
+
+  void unpinMessagerecived(String event, Function(dynamic) callback) {
+    socket?.on(event, (data) {
+      // print('unpinMessagerecived: $data');
+      callback(data);
+    });
+  }
+  void deliveredMessage(String event, Function(dynamic) callback) {
+    socket?.on(event, (data) {
+      print('deliveredMessage: $data');
+      callback(data);
+    });
+  }
+  void seenMessage(String event, Function(dynamic) callback) {
+    socket?.on(event, (data) {
+      print('seenMessage: $data');
+      callback(data);
+    });
+  }
+    void draftMessagerecived(String event, Function(dynamic) callback) {
+      print('dddddd');
+    socket?.on(event, (data) {
+      print('draftMessage: $data');
+      callback(data);
+    });
+  }
+      void isSentMessage(String event, Function(dynamic) callback) {
+      // print('dddddd');
+    socket?.on(event, (data) {
+      // print('isSentMessage: $data');
       callback(data);
     });
   }
