@@ -80,7 +80,7 @@ class Message {
   final Message? replyOn; // Nullable to handle null values
   final bool isForwarded;
   final bool isEdited;
-  final String status;
+  String status;
   String? mediaUrl;
   String? mediaKey;
 

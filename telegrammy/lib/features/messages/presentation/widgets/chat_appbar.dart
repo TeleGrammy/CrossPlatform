@@ -11,12 +11,14 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   final Chat chat;
   final String lastSeen;
   final String userRole;
+  final Function() onSearch;
 
   const ChatAppbar(
       {super.key,
       required this.lastSeen,
       required this.chat,
-      required this.userRole});
+      required this.userRole,
+      required this.onSearch});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -151,6 +153,17 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           key: const Key('settings_button'),
           icon: const Icon(Icons.more_vert),
           onPressed: () => _showSettingsMenu(context),
+        ),
+        IconButton(
+            key: const Key('chat_info_button'),
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              if (chat.isGroup) context.goNamed(RouteNames.groupSettings);
+            }),
+        IconButton(
+          key: const Key('search_settings_button'),
+          icon: const Icon(Icons.search),
+          onPressed: onSearch,
         ),
       ],
     );

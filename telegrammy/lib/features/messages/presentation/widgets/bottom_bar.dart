@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:telegrammy/cores/services/draft_storage_service.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
@@ -38,22 +38,56 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   final TextEditingController _messageController = TextEditingController();
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-
+  final _secureDraftService = SecureDraftStorageService();
   bool _isTyping = false;
   bool _isRecording = false;
   String? _recordPath;
   dynamic mediaMessage;
+  String? _draftContent;
 
   @override
   void initState() {
     super.initState();
     _initializeMessage();
     _initializeRecorder();
+    print(widget.chatId);
+  // ## Listen for draft messages
+
+    getit.get<SocketService>().draftMessagerecived('draft', (data) {
+      print('salma11');
+      if (data != null && data['chatId'] == widget.chatId) {
+        print('salmmm$data');
+        setState(() {
+          _draftContent = data['draft'];
+          _messageController.text = _draftContent ?? '';
+        });
+      }
+    });
 
     _messageController.addListener(() {
       setState(() {
         _isTyping = _messageController.text.isNotEmpty;
       });
+    });
+  }
+
+  void createDraft(String draftContent) async {
+    
+    getit.get<SocketService>().draftMessage(
+      'draft',
+      {'chatId': widget.chatId, 'draft': draftContent},
+    );
+    // await _secureDraftService.saveDraft(widget.chatId, draftContent);
+     getit.get<SocketService>().draftMessagerecived('draft', (data) {
+      print('salma');
+
+      if (data != null && data['chatId'] == widget.chatId) {
+        print('aa$data');
+        setState(() {
+          _draftContent = data['draft'];
+          _messageController.text = _draftContent ?? '';
+        });
+      }
     });
   }
 
@@ -65,10 +99,18 @@ class _BottomBarState extends State<BottomBar> {
     }
   }
 
-  void _initializeMessage() {
+  void _initializeMessage() async {
+    // String? savedDraft = await _secureDraftService.loadDraft(widget.chatId);
+    // if (savedDraft != null) {
+    //   setState(() {
+    //     _messageController.text = savedDraft;
+    //     _isTyping = savedDraft.isNotEmpty;
+    //   });
+    // }
     if (widget.editedMessage != null) {
       _messageController.text = widget.editedMessage!.content;
       _isTyping = true;
+    
     } else {
       _messageController.clear();
       _isTyping = false;
@@ -222,11 +264,15 @@ class _BottomBarState extends State<BottomBar> {
         );
       }
     }
+    // _draftText = '';
     widget.clearReply();
   }
 
   @override
   void dispose() {
+    if (_messageController.text.isNotEmpty) {
+      createDraft(_messageController.text);
+    }
     _messageController.dispose();
     _recorder.closeRecorder();
     super.dispose();
@@ -257,6 +303,32 @@ class _BottomBarState extends State<BottomBar> {
                 ],
               )
             : SizedBox.shrink(),
+        // Optional: Display a visual indicator for draft content
+        if (_draftContent != null && !_isTyping)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            color: Colors.yellow[100],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Draft: "${_draftContent}"',
+                  style: const TextStyle(
+                      fontSize: 12, fontStyle: FontStyle.italic),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.clear, size: 16, color: Colors.grey),
+                  onPressed: () {
+                    setState(() {
+                      _draftContent = null;
+                      _messageController.clear();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        // The main input row
         Row(
           key: const Key('bottom_bar_row'),
           children: [

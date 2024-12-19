@@ -27,6 +27,7 @@ class MessagesApiService {
               },
             ),
           );
+      print(response.data);
       // Check response status
       if (response.statusCode == 200) {
         final data = response.data;
@@ -39,7 +40,7 @@ class MessagesApiService {
         List<Message> messages = (data['messages']['data'] as List)
             .map((m) => Message.fromJson(m))
             .toList();
-        print(messages);
+        // print(messages);
         // Return success with parsed data
         return Right({
           'participants': participants,
@@ -69,7 +70,7 @@ class MessagesApiService {
       });
 
       final response = await dio.post(
-        'http://localhost:8080/api/v1/messaging/upload/audio',
+        '$baseUrl/messaging/upload/audio',
         data: formData,
         options: Options(
           headers: {
@@ -89,4 +90,43 @@ class MessagesApiService {
       return Media(mediaKey: null, mediaUrl: null);
     }
   }
+  Future<void>muteChat(String chatId) async {
+  try {
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    await dio.patch(
+      '$baseUrl2/notification/mute',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+      data:{'chatId'}
+    );
+
+    print('chat muted  successfully');
+  } on DioException catch (dioError) {
+    throw Exception('Error marking story as viewed: ${dioError.message}');
+  }
+}
+
+  Future<void>unmuteChat(String chatId) async {
+  try {
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    await dio.patch(
+      '$baseUrl2/notification/unmute',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+      data:{'chatId'}
+    );
+
+    print('chat unmuted  successfully');
+  } on DioException catch (dioError) {
+    throw Exception('Error marking story as viewed: ${dioError.message}');
+  }
+}
 }
