@@ -19,15 +19,6 @@ class GroupApiService {
           'Authorization': 'Bearer $token',
         }),
       );
-      final data = response.data;
-      final result = {
-        'name': data['data']['group']['name'],
-        'image': data['data']['group']['image'],
-        'description': data['data']['group']['description'],
-        'groupId': data['data']['group']['_id'],
-        'groupPrivacy': data['data']['group']['groupType'],
-        'groupSizeLimit': data['data']['group']['groupSizeLimit'],
-      };
       return Group.fromJson(response.data['data']['group']);
     } on DioException catch (dioError) {
       throw Exception('Error fetching group info: ${dioError.message}');
@@ -86,17 +77,6 @@ class GroupApiService {
       } else {
         print("Failed to update group picture: ${response.data}");
       }
-
-      print(response);
-      final data = response.data;
-      final result = {
-        'name': data['data']['group']['name'],
-        'image': data['data']['group']['image'],
-        'description': data['data']['group']['description'],
-        'groupId': data['data']['group']['_id'],
-        'groupPrivacy': data['data']['group']['groupType'],
-        'groupSizeLimit': data['data']['group']['groupSizeLimit'],
-      };
       return Group.fromJson(response.data['data']['group']);
     } on DioException catch (dioError) {
       throw Exception('Error updating group picture: ${dioError.message}');

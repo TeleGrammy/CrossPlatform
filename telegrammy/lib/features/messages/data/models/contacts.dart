@@ -6,6 +6,8 @@ class Chat {
   final String? photo;
   final LastMessage? lastMessage;
   final String draftMessage;
+  final bool isChannel;
+  final bool isGroup;
 
   Chat({
     required this.id,
@@ -13,18 +15,31 @@ class Chat {
     this.photo,
     this.lastMessage,
     required this.draftMessage,
+    required this.isGroup,
+    required this.isChannel,
   });
 
   factory Chat.fromJson(Map<String, dynamic> json) {
+    bool isGroup = false, isChannel = false;
+
+    // if (json['isGroup'] != null && json['isGroup'] == 'true')
+    //   isGroup = true;
+    // else if (json['isChannel'] != null && json['isChannel'] == 'true')
+    //   isChannel = true;
+
+    isGroup = json['isGroup'] ?? false;
+    isChannel = json['isChannel'] ?? false;
+
     return Chat(
-      id: json['id'],
-      name: json['name'],
-      photo: json['photo'],
-      lastMessage: json['lastMessage'] != null
-          ? LastMessage.fromJson(json['lastMessage'])
-          : null,
-      draftMessage: json['draftMessage'] == null ? '' : json['draftMessage'],
-    );
+        id: json['id'],
+        name: json['name'],
+        photo: json['photo'],
+        lastMessage: json['lastMessage'] != null
+            ? LastMessage.fromJson(json['lastMessage'])
+            : null,
+        draftMessage: json['draftMessage'] == null ? '' : json['draftMessage'],
+        isGroup: isGroup,
+        isChannel: isChannel);
   }
 
   Map<String, dynamic> toJson() {
@@ -34,6 +49,8 @@ class Chat {
       'photo': photo,
       'lastMessage': lastMessage?.toJson(),
       'draftMessage': draftMessage,
+      'isGroup': isGroup.toString(),
+      'isChannel': isChannel.toString()
     };
   }
 }

@@ -270,6 +270,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> chats = response.data['chats'];
         // final String userId = response.data['userId'];
+        print(chats);
         return chats.map((chat) => Chat.fromJson(chat)).toList();
       } else {
         throw Exception('Failed to fetch contacts');

@@ -37,6 +37,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: const ValueKey('GroupSettingsAppBar'),
         leading: IconButton(
           onPressed: () {
             //context.goNamed(RouteNames.profileInfo);
@@ -48,7 +49,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
         backgroundColor: primaryColor,
         actions: [
           IconButton(
-            key: const ValueKey('editProfileInfoButton'),
+            key: const ValueKey('EditProfileInfoButton'),
             icon: Icon(Icons.edit),
             color: Colors.white,
             onPressed: () =>
@@ -75,6 +76,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                       children: [
                         SizedBox(height: 20),
                         PictureCircle(
+                            key: const ValueKey('GroupPictureCircle'),
                             imageUrl: state.groupData.image ?? 'default.jpg'),
                         SizedBox(height: 20),
                         Text(
@@ -105,11 +107,13 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                           ],
                         ),
                         SizedBox(height: 20),
-                        GroupAdminSettings(
-                          groupId: groupId,
-                          groupPrivacy: state.groupData.groupPrivacy,
-                          groupSizeLimit: state.groupData.groupSizeLimit,
-                        ),
+                        (!isAdmin)
+                            ? SizedBox.shrink()
+                            : GroupAdminSettings(
+                                groupId: groupId,
+                                groupPrivacy: state.groupData.groupPrivacy,
+                                groupSizeLimit: state.groupData.groupSizeLimit,
+                              ),
                         SizedBox(height: 20),
                         RoundedButton(
                           onPressed: () {

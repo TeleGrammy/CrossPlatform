@@ -27,6 +27,7 @@ class MessagesApiService {
               },
             ),
           );
+      print(response.data);
       // Check response status
       if (response.statusCode == 200) {
         final data = response.data;
