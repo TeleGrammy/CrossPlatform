@@ -11,7 +11,6 @@ import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/r
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
-import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/AddMembersCubit/group_members_cubit.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
@@ -19,6 +18,7 @@ import 'package:telegrammy/features/groups/presentation/views/add_members_view.d
 import 'package:telegrammy/features/groups/presentation/views/create_group_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/edit_group_settings.dart';
 import 'package:telegrammy/features/groups/presentation/views/group_settings.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
@@ -105,19 +105,19 @@ class AppRoutes {
         path: '/chatWrapper',
         builder: (context, state) {
           final List<dynamic> extras = state.extra as List<dynamic>;
-          String name = extras[0];
-          String id = extras[1];
-          String photo = extras[2];
-          String lastSeen = extras[3];
+          // String name = extras[0];
+          // String id = extras[1];
+          // String photo = extras[2];
+          // bool isChannel = extras[4];
+          Chat chat = extras[0];
+          String lastSeen = extras[1];
           Message? forwardMessage;
-          if (extras.length == 5) forwardMessage = extras[4];
+          if (extras.length == 3) forwardMessage = extras[5];
 
           return BlocProvider(
             create: (context) => MessagesCubit(),
             child: ChatWrapper(
-              name: name,
-              id: id,
-              photo: photo,
+              chat: chat,
               lastSeen: lastSeen,
               forwardedMessage: forwardMessage,
             ),
@@ -306,14 +306,6 @@ class AppRoutes {
         builder: (context, state) => BlocProvider(
           create: (context) => ProfileSettingsCubit(),
           child: ChangePhoneNumberView(),
-        ),
-      ),
-      GoRoute(
-        name: RouteNames.channel,
-        path: '/channel',
-        builder: (context, state) => BlocProvider(
-          create: (context) => ChannelCubit(),
-          child: ChannelView(),
         ),
       ),
       GoRoute(

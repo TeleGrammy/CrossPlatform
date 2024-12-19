@@ -184,13 +184,6 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                             fontSize: 16.0,
                           ),
                         ),
-                        Text(
-                          message.content,
-                          style: const TextStyle(
-                            color: Colors.black87,
-                            fontSize: 16.0,
-                          ),
-                        ),
                         const SizedBox(height: 4.0),
                         Text(
                           'Sent at ${message.timestamp}',

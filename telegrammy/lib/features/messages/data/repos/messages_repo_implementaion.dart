@@ -53,7 +53,7 @@ class MessagesRepoImplementaion extends MessagesRepo {
   }
 
   @override
-  Future<Either<Failure, dynamic>> uploadAudio(String filePath) async {
+  Future<Either<Failure,Media>> uploadAudio(String filePath) async {
     try {
       dynamic data = await apiService.uploadAudio(filePath);
       return Right(data);

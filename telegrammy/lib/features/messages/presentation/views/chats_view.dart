@@ -95,36 +95,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
               itemCount: chats.length,
               itemBuilder: (context, index) {
                 final chat = chats[index];
-
-                // Get the participant whose ID is not equal to the current user's ID
-                // final participant = chat.participants.firstWhere(
-                //   (p) => p.userId['_id'] != userId,
-                // );
-
-                final String id = chat.id;
-                final name = chat.name;
-                final photo = chat.photo ?? 'default.jpg';
-
-                String lastSeen = '';
-
-                // final draftMessage = '';
-                final lastMessage = chat.lastMessage?.content ?? '';
-                final lastMessageTime =
-                    chat.lastMessage?.timestamp.toString() ?? '';
-                // print(id);
-                // final name = participant.userId['screenName'] ?? 'Unknown';
-                // final photo = participant.userId['picture'] ?? 'default.jpg';
-                // final draftMessage = participant['draft_message'] ?? '';
-
+                final lastSeen = '';
                 return ContactPreview(
-                    key: Key('contactItem_$index'),
-                    id: id,
-                    name: name,
-                    photo: photo,
-                    lastMessage: lastMessage,
-                    lastMessageTime: lastMessageTime,
-                    lastSeen: lastSeen,
-                    forwardMessage: widget.forwardMessage);
+                  key: Key('contactItem_$index'),
+                  chat: chat,
+                  lastSeen: lastSeen,
+                  forwardMessage: widget.forwardMessage,
+                );
               },
             );
           } else if (state is ContactsFailture) {

@@ -2,11 +2,13 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:telegrammy/cores/models/channel_model.dart';
 import 'package:telegrammy/cores/models/post_model.dart';
+import 'package:telegrammy/features/channels/data/repos/channel_repo_implementation.dart';
 
 part 'channel_state.dart';
 
 class ChannelCubit extends Cubit<ChannelState> {
   ChannelCubit() : super(ChannelInitial());
+  ChannelsRepoImplementaion repoImplementaion = ChannelsRepoImplementaion();
 
   List<Post> posts = [
     Post(
@@ -54,5 +56,17 @@ class ChannelCubit extends Cubit<ChannelState> {
 
     emit(getChannelPostsSuccess(
         isAdmin: true, isJoined: false, channel: channel));
+  }
+
+  Future<void> createChannel(Channel newChannel) async {
+    emit(ChannelCreateLoading());
+    final result = await repoImplementaion.createChannel(newChannel);
+    result.fold((failre) {
+      print('Cubit:error signing up user ${failre.errorMessage}');
+      emit(ChannelCreateFailure(errorMessage: failre.errorMessage));
+    }, (data) {
+      print('Cubit:user signed up successfully');
+      emit(ChannelCreateSuccess());
+    });
   }
 }
