@@ -11,22 +11,28 @@ import 'package:telegrammy/features/profile/presentation/widgets/profile_setting
 import '../../../../../cores/styles/styles.dart';
 import '../../../../cores/services/groups_socket.dart';
 import '../../../../cores/services/service_locator.dart';
+import '../../../messages/data/models/contacts.dart';
 
 class GroupSettingsView extends StatefulWidget {
-  const GroupSettingsView({super.key});
+  GroupSettingsView({super.key, required this.chat, required this.lastSeen}) {
+    groupId = chat.groupId!;
+  }
+  final Chat chat;
+  final String lastSeen;
+  late String groupId;
 
   @override
   State<GroupSettingsView> createState() => _GroupSettingsViewState();
 }
 
 class _GroupSettingsViewState extends State<GroupSettingsView> {
-  String groupId = '6761f0048a2111362183137a';
+  // String groupId = '6761f0048a2111362183137a';
   bool isAdmin = true; //TODO: use this to enable/disable admin functions
 
   @override
   void initState() {
     super.initState();
-    context.read<GroupCubit>().getGroupInfo(groupId);
+    context.read<GroupCubit>().getGroupInfo(widget.groupId);
 
     getit.get<GroupSocketService>().connectToGroupServer();
     // getit.get<GroupSocketService>().listenGroupDeleted();
@@ -40,8 +46,10 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
         key: const ValueKey('GroupSettingsAppBar'),
         leading: IconButton(
           onPressed: () {
-            //context.goNamed(RouteNames.profileInfo);
-            // TODO: go back to chat
+            context.goNamed(
+              RouteNames.chatWrapper,
+              extra: [widget.chat, widget.lastSeen],
+            );
           },
           icon: Icon(Icons.arrow_back),
         ),
@@ -52,8 +60,8 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
             key: const ValueKey('EditProfileInfoButton'),
             icon: Icon(Icons.edit),
             color: Colors.white,
-            onPressed: () =>
-                context.goNamed(RouteNames.editGroupSettings, extra: groupId),
+            onPressed: () => context.goNamed(RouteNames.editGroupSettings,
+                extra: widget.groupId),
           ),
         ],
       ),
@@ -78,12 +86,14 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                             imageUrl: state.groupData.image ?? 'default.jpg'),
                         SizedBox(height: 20),
                         Text(
+                          key: const ValueKey('GroupName'),
                           state.groupData.name,
                           style: textStyle30,
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 20),
                         SettingsBox(
+                          key: const ValueKey('GroupDescription'),
                           children: [
                             ListTile(
                               key: const ValueKey('GroupDescriptionTile'),
@@ -102,7 +112,7 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                 onTap: () {
                                   // TODO: show members
                                   context.goNamed(RouteNames.viewGroupMembers,
-                                      extra: [groupId, state.members]);
+                                      extra: [widget.groupId, state.members]);
                                 }),
                           ],
                         ),
@@ -110,18 +120,21 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                         (!isAdmin)
                             ? SizedBox.shrink()
                             : GroupAdminSettings(
-                                groupId: groupId,
+                                groupId: widget.groupId,
                                 groupPrivacy: state.groupData.groupPrivacy,
                                 groupSizeLimit: state.groupData.groupSizeLimit,
                                 contactsToAddFrom:
                                     state.contactsExcludingMembers!,
-                                membersToMakeAdmins: [],
+                                membersToMakeAdmins: state.nonAdminMembers!,
                                 nonAdminMembers: state.nonAdminMembers!,
                               ),
                         SizedBox(height: 20),
                         RoundedButton(
+                          key: const ValueKey('LeaveGroupButton'),
                           onPressed: () {
-                            getit.get<GroupSocketService>().leaveGroup(groupId);
+                            getit
+                                .get<GroupSocketService>()
+                                .leaveGroup(widget.groupId);
                             context.goNamed(RouteNames.chats);
                           },
                           buttonTitle: 'Leave Group',
@@ -129,10 +142,11 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                         ),
                         (isAdmin)
                             ? RoundedButton(
+                                key: const ValueKey('DeleteGroupButton'),
                                 onPressed: () {
                                   getit
                                       .get<GroupSocketService>()
-                                      .deleteGroup(groupId);
+                                      .deleteGroup(widget.groupId);
                                   context.goNamed(RouteNames.chats);
                                 },
                                 buttonTitle: 'Delete Group',

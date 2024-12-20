@@ -89,4 +89,9 @@ class GroupRepoImplementation extends GroupRepo {
   Future<List<dynamic>> getGroupRelevantUsers(String groupId) async {
     return await apiService.getGroupRelevantUsers(groupId);
   }
+
+  @override
+  Future<void> makeAdmin(String groupId, String userId) async {
+    return await apiService.makeAdmin(groupId, userId);
+  }
 }

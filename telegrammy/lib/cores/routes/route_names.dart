@@ -35,4 +35,5 @@ class RouteNames {
   static String singleRegeisterUserPage = 'singleRegeisterUserPage';
   static String viewGroupMembers = 'viewGroupMembers';
   static String removeGroupMembers = 'removeGroupMembers';
+  static String addGroupAdmin = 'addGroupAdmin';
 }

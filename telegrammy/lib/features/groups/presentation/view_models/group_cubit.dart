@@ -146,8 +146,9 @@ class GroupCubit extends Cubit<GroupState> {
     getit.get<GroupRepoImplementation>().getGroupMembers(groupId);
   }
 
-  Future<void> addAdminToGroup() async {}
-  Future<void> addUsersToGroup() async {}
+  Future<void> makeAdmin(String groupId, String userId) async {
+    await getit.get<GroupRepoImplementation>().makeAdmin(groupId, userId);
+  }
 
   Future<void> setMessagingPermissions() async {}
   Future<void> setMediaDownloadPermissions() async {}

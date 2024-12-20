@@ -4,12 +4,6 @@ import 'package:telegrammy/features/groups/data/models/group.dart';
 import '../../../../cores/errors/Failture.dart';
 
 abstract class GroupRepo {
-  Future<void> deleteGroup() async {}
-  Future<void> leaveGroup() async {}
-
-  Future<void> addAdminToGroup() async {}
-  Future<void> addUsersToGroup() async {}
-
   Future<void> setMessagingPermissions() async {}
   Future<void> setMediaDownloadPermissions() async {}
 
@@ -27,4 +21,5 @@ abstract class GroupRepo {
   Future<MembersResponse> getGroupMembers(String groupId);
   Future<AdminsResponse> getGroupAdmins(String groupId);
   Future<List<dynamic>> getGroupRelevantUsers(String groupId);
+  Future<void> makeAdmin(String groupId, String userId);
 }

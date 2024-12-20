@@ -24,8 +24,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
       required this.chat,
       required this.userRole,
       required this.onSearch,
-      required this.id
-      });
+      required this.id});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -154,7 +153,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           key: const Key('call_button'),
           icon: const Icon(Icons.call),
           onPressed: () {
-            context.goNamed(RouteNames.onGoingCall,extra: {
+            context.goNamed(RouteNames.onGoingCall, extra: {
               'name': name,
               'photo': photo,
               'id': id,
@@ -170,7 +169,9 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
             key: const Key('chat_info_button'),
             icon: const Icon(Icons.info_outline),
             onPressed: () {
-              if (chat.isGroup) context.goNamed(RouteNames.groupSettings);
+              if (chat.isGroup)
+                context
+                    .goNamed(RouteNames.groupSettings, extra: [chat, lastSeen]);
             }),
         IconButton(
           key: const Key('search_settings_button'),

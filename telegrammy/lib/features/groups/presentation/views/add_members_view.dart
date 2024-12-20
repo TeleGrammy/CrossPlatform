@@ -43,6 +43,7 @@ class _AddGroupMembersViewState extends State<AddGroupMembersView> {
                       final isBlocked = contact.blockDetails == "not_blocked";
 
                       return ListTile(
+                        key: ValueKey('userToAdd_$index'),
                         tileColor: primaryColor,
                         leading: CircleAvatar(
                           backgroundImage: contact.picture != null
@@ -51,11 +52,12 @@ class _AddGroupMembersViewState extends State<AddGroupMembersView> {
                           radius: 20,
                         ),
                         title: Text(
+                          key: ValueKey('username_$index'),
                           contact.username,
                           style: TextStyle(color: tileInfoHintColor),
                         ),
                         trailing: IconButton(
-                          key: const ValueKey('AddMemberButton'),
+                          key: ValueKey('AddMemberButton_$index'),
                           icon: Icon(Icons.add),
                           onPressed: () async {
                             getit

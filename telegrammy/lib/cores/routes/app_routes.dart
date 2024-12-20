@@ -17,6 +17,7 @@ import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_v
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
+import 'package:telegrammy/features/groups/presentation/views/add_admin_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/add_members_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/edit_group_settings.dart';
@@ -410,10 +411,18 @@ class AppRoutes {
       GoRoute(
         name: RouteNames.groupSettings,
         path: '/group-settings',
-        builder: (context, state) => BlocProvider(
-          create: (context) => GroupCubit(),
-          child: GroupSettingsView(),
-        ),
+        builder: (context, state) {
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          Chat chat = extras[0];
+          String lastSeen = extras[1];
+          return BlocProvider(
+            create: (context) => GroupCubit(),
+            child: GroupSettingsView(
+              chat: chat,
+              lastSeen: lastSeen,
+            ),
+          );
+        },
       ),
       GoRoute(
           name: RouteNames.editGroupSettings,
@@ -454,6 +463,19 @@ class AppRoutes {
             groupId: extras[0],
             membersToRemoveFrom: extras[1],
           );
+        },
+      ),
+      GoRoute(
+        name: RouteNames.addGroupAdmin,
+        path: '/add-group-admins',
+        builder: (context, state) {
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          return BlocProvider(
+              create: (context) => GroupCubit(),
+              child: AddGroupAdminView(
+                groupId: extras[0],
+                usersToMakeAdmins: extras[1],
+              ));
         },
       ),
     ],

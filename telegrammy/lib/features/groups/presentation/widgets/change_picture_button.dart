@@ -16,6 +16,7 @@ class ChangePictureButton extends StatelessWidget {
         return Wrap(
           children: [
             ListTile(
+              key: const ValueKey('UpdateGroupPictureButton'),
               leading: Icon(Icons.photo_camera),
               title: Text('Update Group Picture'),
               onTap: () {
@@ -24,6 +25,7 @@ class ChangePictureButton extends StatelessWidget {
               },
             ),
             ListTile(
+              key: const ValueKey('DeleteGroupPictureButton'),
               leading: Icon(Icons.delete),
               title: Text('Delete Group Picture'),
               onTap: () {

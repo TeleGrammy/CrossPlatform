@@ -7,7 +7,7 @@ import '../../../profile/presentation/widgets/profile_settings/settings_box.dart
 import '../view_models/group_cubit.dart';
 
 class GroupAdminSettings extends StatelessWidget {
-  const GroupAdminSettings(
+  GroupAdminSettings(
       {super.key,
       required this.groupId,
       required this.groupPrivacy,
@@ -72,7 +72,6 @@ class GroupAdminSettings extends StatelessWidget {
           title: Text('Add members to group'),
           trailing: Icon(Icons.arrow_forward),
           onTap: () => {
-            //TODO: add users
             context.goNamed(RouteNames.addGroupMembers, extra: [
               groupId,
               contactsToAddFrom,
@@ -84,7 +83,6 @@ class GroupAdminSettings extends StatelessWidget {
           title: Text('Remove members from group'),
           trailing: Icon(Icons.arrow_forward),
           onTap: () => {
-            //TODO: navigate to remove members page
             context.goNamed(RouteNames.removeGroupMembers, extra: [
               groupId,
               nonAdminMembers,
@@ -96,7 +94,10 @@ class GroupAdminSettings extends StatelessWidget {
           title: Text('Add admins to group'),
           trailing: Icon(Icons.arrow_forward),
           onTap: () => {
-            //TODO: navigate to add admins page
+            context.goNamed(RouteNames.addGroupAdmin, extra: [
+              groupId,
+              membersToMakeAdmins,
+            ]),
           },
         ),
       ],

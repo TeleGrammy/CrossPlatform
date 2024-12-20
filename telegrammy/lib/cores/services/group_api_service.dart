@@ -213,4 +213,20 @@ class GroupApiService {
       throw Exception('Error fetching group admins: ${dioError.message}');
     }
   }
+
+  Future<void> makeAdmin(String groupId, String userId) async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
+      final response = await dio.patch(
+        '$baseUrl/groups/$groupId/admins/$userId',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      print(response.data['status']);
+      return null;
+    } on DioException catch (dioError) {
+      throw Exception('Error making user an admin: ${dioError.message}');
+    }
+  }
 }

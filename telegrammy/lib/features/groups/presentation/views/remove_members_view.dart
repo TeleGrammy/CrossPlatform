@@ -43,6 +43,7 @@ class _RemoveGroupMembersViewState extends State<RemoveGroupMembersView> {
                       final contact = widget.membersToRemoveFrom[index];
 
                       return ListTile(
+                        key: ValueKey('MemberToRemove_$index'),
                         tileColor: primaryColor,
                         leading: CircleAvatar(
                           backgroundImage: contact.picture != null
@@ -51,11 +52,12 @@ class _RemoveGroupMembersViewState extends State<RemoveGroupMembersView> {
                           radius: 20,
                         ),
                         title: Text(
+                          key: ValueKey('username_$index'),
                           contact.username,
                           style: TextStyle(color: tileInfoHintColor),
                         ),
                         trailing: IconButton(
-                          key: const ValueKey('RemoveMemberButton'),
+                          key: ValueKey('RemoveMemberButton_$index'),
                           icon: Icon(Icons.remove_circle_outline),
                           onPressed: () async {
                             getit.get<GroupSocketService>().removeParticipant(

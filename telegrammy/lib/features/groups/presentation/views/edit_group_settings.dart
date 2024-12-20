@@ -40,12 +40,14 @@ class _EditGroupSettingsViewState extends State<EditGroupSettingsView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: ProfileSettingsAppBar(
+          key: const ValueKey('EditGroupSettingsAppBar'),
           title: 'Edit Profile Info',
           backButtonOnPressed: () {
             context.goNamed(RouteNames.groupSettings);
           },
           actions: [
             TextButton(
+                key: const ValueKey('SaveChangesButton'),
                 onPressed: () async {
                   if (_formKey.currentState?.validate() ?? false) {
                     await context.read<GroupCubit>().updateGroupInfo(
@@ -88,8 +90,11 @@ class _EditGroupSettingsViewState extends State<EditGroupSettingsView> {
                     children: [
                       SizedBox(height: 20),
                       PictureCircle(
+                          key: const ValueKey('GroupPictureCircle'),
                           imageUrl: state.groupData.image ?? 'default.jpg'),
-                      ChangePictureButton(),
+                      ChangePictureButton(
+                        key: const ValueKey('ChangeGroupPictureButton'),
+                      ),
                       SizedBox(height: 20),
                       Form(
                         key: _formKey,

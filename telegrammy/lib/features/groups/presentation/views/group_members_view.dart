@@ -43,6 +43,7 @@ class _GroupMembersViewState extends State<GroupMembersView> {
                       final contact = widget.members[index];
 
                       return ListTile(
+                        key: ValueKey('GroupMember_$index'),
                         tileColor: primaryColor,
                         leading: CircleAvatar(
                           backgroundImage: contact.picture != null
@@ -51,6 +52,7 @@ class _GroupMembersViewState extends State<GroupMembersView> {
                           radius: 20,
                         ),
                         title: Text(
+                          key: ValueKey('username_$index'),
                           contact.username,
                           style: TextStyle(color: tileInfoHintColor),
                         ),
