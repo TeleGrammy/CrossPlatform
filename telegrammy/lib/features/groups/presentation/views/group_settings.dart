@@ -60,8 +60,10 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
             key: const ValueKey('EditProfileInfoButton'),
             icon: Icon(Icons.edit),
             color: Colors.white,
-            onPressed: () => context.goNamed(RouteNames.editGroupSettings,
-                extra: widget.groupId),
+            onPressed: () => context.pushNamed(
+                RouteNames
+                    .editGroupSettings, //context.goNamed(RouteNames.editGroupSettings,
+                extra: [widget.groupId, widget.chat, widget.lastSeen]),
           ),
         ],
       ),

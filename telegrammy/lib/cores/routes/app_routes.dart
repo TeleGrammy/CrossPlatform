@@ -52,6 +52,7 @@ import 'package:telegrammy/features/profile/presentation/view_models/story_cubit
 import 'package:telegrammy/features/profile/presentation/views/user_story_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/profile_info_view.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/edit_profile_info_view.dart';
+import 'package:telegrammy/features/search/presentation/views/global_search.dart';
 
 class AppRoutes {
   static GoRouter goRouter = GoRouter(
@@ -429,9 +430,14 @@ class AppRoutes {
           name: RouteNames.editGroupSettings,
           path: '/edit-group-settings',
           builder: (context, state) {
+            final List<dynamic> extras = state.extra as List<dynamic>;
             return BlocProvider(
                 create: (context) => GroupCubit(),
-                child: EditGroupSettingsView(groupId: state.extra as String));
+                child: EditGroupSettingsView(
+                  groupId: extras[0],
+                  chat: extras[1],
+                  lastSeen: extras[2],
+                ));
           }),
       GoRoute(
         name: RouteNames.addGroupMembers,
@@ -483,6 +489,11 @@ class AppRoutes {
         name: RouteNames.addContact,
         path: '/add-contact',
         builder: (context, state) => AddContactView(),
+      ),
+      GoRoute(
+        name: RouteNames.globalSearch,
+        path: '/global-search',
+        builder: (context, state) => GlobalSearchView(),
       ),
     ],
   );

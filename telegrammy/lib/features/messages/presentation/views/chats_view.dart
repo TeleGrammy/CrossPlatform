@@ -65,6 +65,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
         title: Text('Chats'),
         backgroundColor: primaryColor,
         actions: [
+          IconButton(
+            key: const ValueKey('GlobalSearchButton'),
+            icon: Icon(Icons.search),
+            onPressed: () {
+              context.goNamed(RouteNames.globalSearch);
+            },
+          ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.add_circle_rounded),
             onSelected: onDropdownItemSelected,

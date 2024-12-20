@@ -5,12 +5,19 @@ import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/groups/presentation/widgets/change_picture_button.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
 
+import '../../../messages/data/models/contacts.dart';
 import '../../../profile/presentation/widgets/profile_settings/picture_circle.dart';
 import '../view_models/group_cubit.dart';
 
 class EditGroupSettingsView extends StatefulWidget {
-  const EditGroupSettingsView({super.key, required this.groupId});
+  const EditGroupSettingsView(
+      {super.key,
+      required this.groupId,
+      required this.chat,
+      required this.lastSeen});
   final String groupId;
+  final Chat chat;
+  final String lastSeen;
 
   @override
   State<EditGroupSettingsView> createState() => _EditGroupSettingsViewState();
@@ -41,9 +48,10 @@ class _EditGroupSettingsViewState extends State<EditGroupSettingsView> {
     return Scaffold(
         appBar: ProfileSettingsAppBar(
           key: const ValueKey('EditGroupSettingsAppBar'),
-          title: 'Edit Profile Info',
+          title: 'Edit Group Info',
           backButtonOnPressed: () {
-            context.goNamed(RouteNames.groupSettings);
+            context.goNamed(RouteNames.groupSettings,
+                extra: [widget.chat, widget.lastSeen]);
           },
           actions: [
             TextButton(
@@ -54,11 +62,14 @@ class _EditGroupSettingsViewState extends State<EditGroupSettingsView> {
                         groupId: widget.groupId,
                         name: groupNameController.text,
                         description: groupDescriptionController.text);
+                    Future.delayed(Duration(seconds: 1));
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Group info successfully!')),
+                      SnackBar(
+                          content: Text('Group info updated successfully!')),
                     );
-                    context.goNamed(RouteNames.groupSettings);
+                    context.goNamed(RouteNames.groupSettings,
+                        extra: [widget.chat, widget.lastSeen]);
                   }
                 },
                 child: Text(

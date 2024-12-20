@@ -37,4 +37,5 @@ class RouteNames {
   static String removeGroupMembers = 'removeGroupMembers';
   static String addGroupAdmin = 'addGroupAdmin';
   static String addContact = 'addContact';
+  static String globalSearch = 'globalSearch';
 }
