@@ -386,7 +386,7 @@ class AppRoutes {
           builder: (context, state) {
             Map<String, dynamic>? params = state.extra as Map<String, dynamic>?;
             return OutgoingCallScreen(
-              chat:params['chat'],
+              chat:params!['chat'],
               userId: params['userId'],
             );
           }),
