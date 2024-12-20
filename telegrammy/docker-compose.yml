@@ -9,3 +9,23 @@ services:
       my-network:
 networks:
   my-network:
+# services:
+#   backend:
+#     image: telegrammy/backend:admin # telegrammy/backend:[module_name] (check with the backend repo)
+#     ports: 
+#       - "8080:${PORT}"
+#     env_file:
+#       - .env
+#     networks:
+#       my-network:
+#   backend-2:
+#     image: telegrammy/backend:profile-management # telegrammy/backend:[module_name] (check with the backend repo)
+#     ports: 
+#       - "4000:${PORT}"
+#     env_file:
+#       - .env
+#     networks:
+#       my-network:
+# networks:
+#   my-network:
+
