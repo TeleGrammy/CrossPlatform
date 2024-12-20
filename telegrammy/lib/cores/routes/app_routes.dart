@@ -28,6 +28,7 @@ import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/presentation/views/add_contact.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_wrapper.dart';
 import 'package:telegrammy/features/messages/presentation/views/chats_view.dart';
 import 'package:telegrammy/features/messages/presentation/views/forward_to_page.dart';
@@ -477,6 +478,11 @@ class AppRoutes {
                 usersToMakeAdmins: extras[1],
               ));
         },
+      ),
+      GoRoute(
+        name: RouteNames.addContact,
+        path: '/add-contact',
+        builder: (context, state) => AddContactView(),
       ),
     ],
   );

@@ -13,7 +13,6 @@ class CreateGroupView extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
   final groupNameController = TextEditingController();
   final groupDescriptionController = TextEditingController();
-  final adminController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

@@ -229,4 +229,21 @@ class GroupApiService {
       throw Exception('Error making user an admin: ${dioError.message}');
     }
   }
+
+  Future<void> addContact(String username) async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
+      final response = await dio.post('$baseUrl/chats/fetch-contacts',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }),
+          data: {
+            'contacts': [username]
+          });
+      print(response.data['status']);
+      return null;
+    } on DioException catch (dioError) {
+      throw Exception('Error adding contact: ${dioError.message}');
+    }
+  }
 }

@@ -50,7 +50,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
         context.goNamed(RouteNames.createGroup);
       } else if (value == 'New Channel') {
         context.goNamed(RouteNames.createChannel);
-      }
+      } else
+        context.goNamed(RouteNames.addContact);
     }
 
     return Scaffold(
