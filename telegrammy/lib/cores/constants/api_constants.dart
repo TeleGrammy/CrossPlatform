@@ -7,6 +7,7 @@ const baseUrl = 'http://localhost:8080/api/v1';
 const baseUrl2 = 'http://localhost:8080/api/v1';
 // const baseUrl = 'http://192.168.0.101:8080/api/v1';
 // const baseUrl2 = 'http://192.168.0.101:8080/api/v1';
+
 const registerPath = '/auth/register';
 const verificationPath = '/auth/verify';
 const resendVerificationPath = '/auth/resend-verification';

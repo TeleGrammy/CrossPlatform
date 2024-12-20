@@ -1,21 +1,30 @@
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 import '../../../../cores/routes/route_names.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
+  final Chat chat;
+  final String lastSeen;
+  final String userRole;
+  final Function() onSearch;
   final String name;
   final String photo;
-  final String lastSeen;
   final String id;
 
   const ChatAppbar(
-      {required this.name,
-      super.key,
+      {super.key,
+      required this.name,
       required this.photo,
       required this.lastSeen,
+      required this.chat,
+      required this.userRole,
+      required this.onSearch,
       required this.id
       });
 
@@ -28,9 +37,52 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             ListTile(
               key: const Key('settings_mute_option'),
+              leading: Icon(
+                Icons.volume_mute_rounded,
+                color: Colors.black,
+              ),
               title: const Text('Mute'),
               onTap: () => _showMuteOptions(context),
             ),
+            ListTile(
+              key: const Key('settings_mute_option'),
+              leading: Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              title: const Text('Search'),
+              onTap: () => {},
+            ),
+            if (chat.isChannel)
+              ListTile(
+                key: const Key('settings_mute_option'),
+                leading: Icon(
+                  Icons.exit_to_app_outlined,
+                  color: Colors.red,
+                ),
+                title: const Text('leave Channel'),
+                onTap: () => {},
+              ),
+            if (chat.isChannel &&
+                (userRole == "Creator" ||
+                    userRole ==
+                        "Admin")) //should add if the user is admin condition
+              ListTile(
+                key: const Key('settings_mute_option'),
+                leading: Icon(
+                  Icons.delete_rounded,
+                  color: Colors.red,
+                ),
+                title: const Text('delete Channel'),
+                onTap: () {
+                  getit
+                      .get<ChannelSocketService>()
+                      .removeChannel({'channelId': chat.channelId});
+                  getit
+                      .get<ChannelSocketService>()
+                      .errorChannelMessage((dynamic callback) {});
+                },
+              ),
           ],
         );
       },
@@ -76,7 +128,8 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           CircleAvatar(
             key: const Key('profile_picture'),
-            backgroundImage: AssetImage(photo),
+            backgroundImage:
+                (chat.photo != null) ? AssetImage(chat.photo!) : null,
             radius: 20,
           ),
           const SizedBox(width: 10),
@@ -85,7 +138,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                name,
+                chat.name,
                 key: Key('participant_name'),
               ),
               Text(
@@ -113,6 +166,17 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           key: const Key('settings_button'),
           icon: const Icon(Icons.more_vert),
           onPressed: () => _showSettingsMenu(context),
+        ),
+        IconButton(
+            key: const Key('chat_info_button'),
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              if (chat.isGroup) context.goNamed(RouteNames.groupSettings);
+            }),
+        IconButton(
+          key: const Key('search_settings_button'),
+          icon: const Icon(Icons.search),
+          onPressed: onSearch,
         ),
       ],
     );

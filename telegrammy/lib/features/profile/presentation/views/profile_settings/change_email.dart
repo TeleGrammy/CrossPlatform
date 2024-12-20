@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../../cores/routes/route_names.dart';
 import '../../widgets/profile_settings/profile_settings_app_bar.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import '../../view_models/profile_settings_cubit/profile_state.dart';
@@ -47,9 +48,9 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                             content: Text(
-                                'Email updated successfully!\nCheck your inbox to verify your new email!')),
+                                'Check your inbox to verify your new email!')),
                       );
-                      context.pop();
+                      context.goNamed(RouteNames.emailVerification);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

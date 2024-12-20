@@ -16,3 +16,8 @@ final class Messagesfailture extends MessagesState {
   final String error;
   Messagesfailture({required this.error});
 }
+
+final class SendingMediaSuccess extends MessagesState {
+  final dynamic mediaUrl;
+  SendingMediaSuccess({required this.mediaUrl});
+}

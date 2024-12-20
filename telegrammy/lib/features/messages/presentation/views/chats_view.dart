@@ -7,10 +7,31 @@ import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
-class ChatsScreen extends StatelessWidget {
+import '../../../../cores/services/groups_socket.dart';
+import '../../../../cores/services/service_locator.dart';
+
+class ChatsScreen extends StatefulWidget {
   final Message? forwardMessage;
   const ChatsScreen({Key? key, this.forwardMessage}) : super(key: key);
+
+  @override
+  State<ChatsScreen> createState() => _ChatsScreenState();
+}
+
+class _ChatsScreenState extends State<ChatsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getit.get<GroupSocketService>().connectToGroupServer();
+  }
+
+  @override
+  void dispose() {
+    //getit.get<GroupSocketService>().disconnectGroups();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,14 +115,11 @@ class ChatsScreen extends StatelessWidget {
                 // final draftMessage = participant['draft_message'] ?? '';
 
                 return ContactPreview(
-                    key: Key('contactItem_$index'),
-                    id: id,
-                    name: name,
-                    photo: photo,
-                    lastMessage: lastMessage,
-                    lastMessageTime: lastMessageTime,
-                    lastSeen: lastSeen,
-                    forwardMessage: forwardMessage);
+                  key: Key('contactItem_$index'),
+                  chat: chat,
+                  lastSeen: lastSeen,
+                  forwardMessage: widget.forwardMessage,
+                );
               },
             );
           } else if (state is ContactsFailture) {
