@@ -72,6 +72,36 @@ class _ChatsScreenState extends State<ChatsScreen> {
               context.goNamed(RouteNames.globalSearch);
             },
           ),
+       IconButton(
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: const Text('Navigate to'),
+          children: [
+            ListTile(
+              leading: const Icon(Icons.group),
+              title: const Text('Groups'),
+              onTap: () {
+                context.goNamed(RouteNames.adminDashboardPageFilterMedia); // Navigate to Groups page
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Users'),
+              onTap: () {
+                context.goNamed(RouteNames.adminDashboardPage); // Navigate to Users page
+              },
+            ),
+          ],
+        );
+      },
+    );
+  },
+  icon: const Icon(Icons.admin_panel_settings),
+  tooltip: 'Admin Dashboard',
+),
           PopupMenuButton<String>(
             icon: const Icon(Icons.add_circle_rounded),
             onSelected: onDropdownItemSelected,

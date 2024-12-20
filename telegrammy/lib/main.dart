@@ -15,8 +15,10 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
     setupServiceLocator();
-        // await HandleNotifications().getToken();
+    //  final tokenn=await HandleNotifications().getToken();
+    //   print('tokenmmmmmmm$tokenn');
         //  FirebaseMessaging.onBackgroundMessage(HandleNotifications().firebaseMessagingBackgroundHandler);
     runApp(const MyApp());
   } catch (e, stack) {

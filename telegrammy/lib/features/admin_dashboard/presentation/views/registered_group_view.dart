@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:telegrammy/features/admin_dashboard/data/models/registered_users_model.dart';
+import 'package:telegrammy/features/admin_dashboard/data/models/groups_dashboard_model.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/widgets/admin_board_bar.dart';
 
-class UserDetailView extends StatelessWidget {
-  final RegisteredUsersData user;
+class GroupDetailView extends StatelessWidget {
+  final GroupData group;
 
-  const UserDetailView({Key? key, required this.user}) : super(key: key);
+  const GroupDetailView({Key? key, required this.group}) : super(key: key);
 
   // Helper function to handle null values with a fancy placeholder
   String displayValue(String? value, {String placeholder = "Not Available"}) {
@@ -16,9 +16,9 @@ class UserDetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AdminboardAppBar(
-        titleBar: user.username,
-        key: const ValueKey('Single_Registered_Users_appbar'),
-        signn:'1'
+        titleBar: group.name,
+        key: const ValueKey('Single_Group_Details_Appbar'),
+        signn:'2'
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -29,12 +29,11 @@ class UserDetailView extends StatelessWidget {
               Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage:
-                      user.picture != null && user.picture!.isNotEmpty
-                          ? NetworkImage(user.picture!) as ImageProvider
-                          : AssetImage('assets/images/logo.png'),
-                  child: user.picture == null || user.picture!.isEmpty
-                      ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                  backgroundImage: group.image != null && group.image!.isNotEmpty
+                      ? NetworkImage(group.image!) as ImageProvider
+                      : AssetImage('assets/images/default_group.png'),
+                  child: group.image == null || group.image!.isEmpty
+                      ? const Icon(Icons.group, size: 50, color: Colors.grey)
                       : null,
                 ),
               ),
@@ -55,50 +54,24 @@ class UserDetailView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildInfoRow(
-                      context,
-                      "Name",
-                      displayValue(user.username),
-                    ),
-                    _buildInfoRow(
-                      context,
-                      "Screen Name",
-                      displayValue(user.screenName),
-                    ),
-                    _buildInfoRow(
-                      context,
-                      "Email",
-                      displayValue(user.email),
-                    ),
-                    _buildInfoRow(
-                      context,
-                      "Phone",
-                      displayValue(user.phone),
-                    ),
-                    _buildInfoRow(
-                      context,
-                      "Bio",
-                      displayValue(user.bio),
-                    ),
-                    _buildInfoRow(
-                      context,
-                      "Status",
-                      displayValue(user.status),
-                      valueColor: user.status == "banned"
-                          ? Colors.red
-                          : Colors.green,
-                    ),
-                    _buildInfoRow(
-                      context,
-                      "Banned",
-                      user.status == "banned" ? "Yes" : "No",
-                      valueColor: user.status == "banned"
-                          ? Colors.red
-                          : Colors.green,
-                    ),
+                    _buildInfoRow(context, "Name", group.name),
+                    _buildInfoRow(context, "Description", displayValue(group.description)),
+                    _buildInfoRow(context, "Group Type", group.groupType),
+                    _buildInfoRow(context, "Owner", group.owner.username),
+                    _buildInfoRow(context, "Owner Email", group.owner.email),
+                    _buildInfoRow(context, "Owner Phone", group.owner.phone),
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+              Text(
+                "Permissions",
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 10),
+              _buildPermissionsList(context, group.groupPermissions),
             ],
           ),
         ),
@@ -106,7 +79,7 @@ class UserDetailView extends StatelessWidget {
     );
   }
 
-  // Helper widget for consistent styling
+  // Helper widget for consistent styling of info rows
   Widget _buildInfoRow(BuildContext context, String label, String value,
       {Color? valueColor}) {
     return Padding(
@@ -133,6 +106,29 @@ class UserDetailView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // Helper widget for permissions list
+  Widget _buildPermissionsList(BuildContext context, GroupPermissions permissions) {
+    final permissionsMap = {
+      "Send Text Messages": permissions.sendTextMessages,
+      "Add Users": permissions.addUsers,
+      "Pin Messages": permissions.pinMessages,
+      "Change Chat Info": permissions.changeChatInfo,
+      "Apply Filter": permissions.applyFilter,
+    };
+
+    return Column(
+      children: permissionsMap.entries.map((entry) {
+        return ListTile(
+          leading: Icon(
+            entry.value ? Icons.check : Icons.close,
+            color: entry.value ? Colors.green : Colors.red,
+          ),
+          title: Text(entry.key),
+        );
+      }).toList(),
     );
   }
 }
