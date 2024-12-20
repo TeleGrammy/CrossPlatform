@@ -8,14 +8,13 @@ import 'package:telegrammy/features/messages/presentation/views/chat_details.dar
 class ChatWrapper extends StatefulWidget {
   final Message? forwardedMessage;
   final String userId;
-    final ChatView chat;
-  const ChatWrapper(
-      {required this.userId,
-      Key? key,
-      this.forwardedMessage,
-      required this.chat,
-      })
-      : super(key: key); // Key for ChatDetails widget
+  final ChatView chat;
+  const ChatWrapper({
+    required this.userId,
+    Key? key,
+    this.forwardedMessage,
+    required this.chat,
+  }) : super(key: key); // Key for ChatDetails widget
 
   @override
   State<ChatWrapper> createState() => ChatWrapperState();

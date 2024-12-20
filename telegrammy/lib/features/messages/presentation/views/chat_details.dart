@@ -37,7 +37,7 @@ class ChatDetails extends StatefulWidget {
     // required this.messages,
     this.forwardedMessage,
     required this.userId,
-        required this.chatData,
+    required this.chatData,
     required this.userRole,
   }) : super(key: key);
 
@@ -51,7 +51,7 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? editedMessage;
   Message? lastPinnedMessage;
   Message? SearchedMessage;
-  late List<Participant> participants;
+  // late List<Participant> participants;
   bool isPinned = false;
   final ScrollController _scrollController = ScrollController();
   bool isSocketInitialized = false; // Tracks whether the socket is ready
@@ -88,13 +88,13 @@ class ChatDetailsState extends State<ChatDetails> {
       }
 
       getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
-        if(mounted) {
+        if (mounted) {
           context.goNamed(RouteNames.incomingCall, extra: {
             'name': 'mmmomo',
             'photo': 'default.png',
             'callId': response['_id'],
             'remoteOffer': response['callObj']['offer'],
-            'chat':widget.chatData.chat,
+            'chat': widget.chatData.chat,
             'userId': widget.userId,
           });
         }
@@ -375,7 +375,6 @@ class ChatDetailsState extends State<ChatDetails> {
                       lastSeen: widget.chatData.chat.lastSeen!,
                       userRole: widget.userRole,
                       userId: widget.userId,
-                      
                       chat: widget.chatData.chat,
                       onSearch: onSearch,
                       name: widget.chatData.chat.name,
@@ -405,7 +404,7 @@ class ChatDetailsState extends State<ChatDetails> {
                       onMessageSwipe: onMessageSwipe,
                       selectedMessage: selectedMessage,
                       userId: widget.userId,
-                      participants: participants,
+                      participants: widget.participants,
                       searchedMessage: SearchedMessage,
                       havePin: lastPinnedMessage != null,
                       lastPinnedMessage: lastPinnedMessage,
