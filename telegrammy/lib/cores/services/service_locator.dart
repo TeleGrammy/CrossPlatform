@@ -5,6 +5,7 @@ import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/admin_dashboard_api_service.dart';
 import 'package:telegrammy/cores/services/auth_api_service.dart';
 import 'package:telegrammy/cores/services/channel_socket.dart';
+import 'package:telegrammy/cores/services/global_search_api_service.dart';
 import 'package:telegrammy/cores/services/group_api_service.dart';
 import 'package:telegrammy/cores/services/groups_socket.dart';
 import 'package:telegrammy/cores/services/messages_api_service.dart';
@@ -25,14 +26,20 @@ void setupServiceLocator() {
   getit.registerSingleton<ApiService>(ApiService(dio: Dio()));
   getit.registerSingleton<MessagesApiService>(MessagesApiService(dio: Dio()));
   getit.registerSingleton<ProfileApiService>(ProfileApiService(dio: Dio()));
-  getit.registerSingleton<ProfileRepoImplementation>(ProfileRepoImplementation(profileApiService: getit.get<ProfileApiService>()));
+  getit.registerSingleton<ProfileRepoImplementation>(ProfileRepoImplementation(
+      profileApiService: getit.get<ProfileApiService>()));
 
-  getit.registerSingleton<AdminDashboardApiService>(AdminDashboardApiService(dio: Dio()));
-  getit.registerSingleton<AdminDashboardRepoImplementation>(AdminDashboardRepoImplementation(adminDashboardApiService: getit.get<AdminDashboardApiService>()));
+  getit.registerSingleton<AdminDashboardApiService>(
+      AdminDashboardApiService(dio: Dio()));
+  getit.registerSingleton<AdminDashboardRepoImplementation>(
+      AdminDashboardRepoImplementation(
+          adminDashboardApiService: getit.get<AdminDashboardApiService>()));
 
-
-  getit.registerSingleton<NotificationsApiService>(NotificationsApiService(dio: Dio()));
-  getit.registerSingleton<NotificationsRepoImplementation>(NotificationsRepoImplementation(notificationsApiService: getit.get<NotificationsApiService>()));
+  getit.registerSingleton<NotificationsApiService>(
+      NotificationsApiService(dio: Dio()));
+  getit.registerSingleton<NotificationsRepoImplementation>(
+      NotificationsRepoImplementation(
+          notificationsApiService: getit.get<NotificationsApiService>()));
 
   getit.registerSingleton<Dio>(Dio());
   getit.registerSingleton<AuthRepoImplemention>(
@@ -47,4 +54,5 @@ void setupServiceLocator() {
   getit.registerSingleton<GroupApiService>(GroupApiService());
   getit.registerSingleton<GroupRepoImplementation>(GroupRepoImplementation());
   getit.registerSingleton<GroupSocketService>(GroupSocketService());
+  getit.registerSingleton<GlobalSearchApiService>(GlobalSearchApiService());
 }

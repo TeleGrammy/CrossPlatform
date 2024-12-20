@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/services/global_search_api_service.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
+import 'package:telegrammy/features/search/data/models/search_model.dart';
 
 import '../../../../cores/constants/app_colors.dart';
 import '../../../../cores/routes/route_names.dart';
+import '../../../../cores/services/service_locator.dart';
 
 class GlobalSearchView extends StatefulWidget {
   @override
@@ -12,39 +15,31 @@ class GlobalSearchView extends StatefulWidget {
 
 class _GlobalSearchViewState extends State<GlobalSearchView> {
   final TextEditingController _searchController = TextEditingController();
-  List<String> _searchResults = [];
+  List<SearchResult> results = [];
 
   // Filter options
   String _selectedCategory = 'Global';
-  String? _selectedSubCategory = 'user';
+  String _selectedSubCategory = 'user';
   final Map<String, List<String>> _categories = {
     'Global': ['user', 'group', 'channel', 'message'],
     'Messages': ['all', 'text', 'image', 'video', 'link'],
   };
+  final Map<String, String> _attributes = {
+    'user': 'uuid',
+    'group': 'name',
+    'channel': 'name',
+    'message': 'message'
+  };
 
-  // Mock function to simulate searching
-  void search(String query) {
-    // Replace this with your actual search logic
-    final allItems = [
-      "Apple",
-      "Banana",
-      "Cherry",
-      "Date",
-      "Elderberry",
-      "Fig",
-      "Grape",
-      "Honeydew",
-    ];
+  void search(String category, String subCategory, String query) async {
+    if (category == 'Global') {
+      String attribute = _attributes[subCategory]!;
+      final response = await getit
+          .get<GlobalSearchApiService>()
+          .globalSearch(subCategory, attribute, query);
 
-    if (query.isEmpty) {
       setState(() {
-        _searchResults = [];
-      });
-    } else {
-      setState(() {
-        _searchResults = allItems
-            .where((item) => item.toLowerCase().contains(query.toLowerCase()))
-            .toList();
+        results = response.results;
       });
     }
   }
@@ -72,7 +67,9 @@ class _GlobalSearchViewState extends State<GlobalSearchView> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
-              onChanged: search,
+              onChanged: (query) {
+                search(_selectedCategory, _selectedSubCategory, query);
+              },
               decoration: InputDecoration(
                 hintText: 'Search...',
                 prefixIcon: Icon(Icons.search),
@@ -135,7 +132,7 @@ class _GlobalSearchViewState extends State<GlobalSearchView> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _selectedSubCategory = value;
+                        _selectedSubCategory = value!;
                       });
                     },
                   ),
@@ -145,10 +142,27 @@ class _GlobalSearchViewState extends State<GlobalSearchView> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _searchResults.length,
+              itemCount: results.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(_searchResults[index]),
+                  leading: CircleAvatar(
+                    // backgroundImage: !hasPhoto
+                    //     ? AssetImage(userPhoto)
+                    //     : NetworkImage(userPhoto) as ImageProvider,
+                    backgroundImage: (results[index].picture != null)
+                        ? NetworkImage(results[index].picture!) as ImageProvider
+                        : AssetImage('assets/images/logo.png'),
+                  ),
+                  title: Text(
+                    results[index].title,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                  subtitle: Text(
+                    results[index].subtitle,
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  onTap: () {},
                 );
               },
             ),
