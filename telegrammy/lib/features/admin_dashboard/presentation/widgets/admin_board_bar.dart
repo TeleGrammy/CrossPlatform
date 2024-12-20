@@ -24,7 +24,7 @@ class AdminboardAppBar extends StatelessWidget implements PreferredSizeWidget {
            context.goNamed(RouteNames.adminDashboardPage);
  else
   // print('go');
-  context.goNamed(RouteNames.profilePrivacyPage);
+  context.goNamed(RouteNames.chats);
 
         },
         icon: Icon(Icons.arrow_back, color: Colors.white)

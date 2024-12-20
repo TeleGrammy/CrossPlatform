@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/helpers/routes_helper.dart';
 import 'package:telegrammy/features/Home/presentation/views/home_view.dart';
 import 'package:telegrammy/features/admin_dashboard/data/models/registered_users_model.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/view_model/admin_dashboard/admin_dashboard_cubit.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_user_view.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_users_view.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
@@ -384,6 +385,14 @@ GoRoute(
         builder: (context, state) => BlocProvider(
           create: (context) => ChannelCubit(),
           child: CreateGroupView(),
+        ),
+      ),
+            GoRoute(
+        name: RouteNames.adminDashboardPage,
+        path: '/adminDashboardPage',
+        builder: (context, state) => BlocProvider(
+          create: (context) => RegisteredUsersCubit(),
+          child: RegisteredUsersView(),
         ),
       ),
     ],

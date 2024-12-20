@@ -22,7 +22,7 @@ Future<RegisteredUsersResponse> getRegisteredUsers() async {
         'Authorization': 'Bearer $token',
       }),
     );
-    //  print(UserPrivacySettingsResponse.fromJson(response.data));
+    //  print(response.data);
     return RegisteredUsersResponse.fromJson(response.data);
    
   } on DioException catch (dioError) {
@@ -31,7 +31,7 @@ Future<RegisteredUsersResponse> getRegisteredUsers() async {
 }
 
 
-Future<void> banOrUnbanUser(bool isBanned, String userId) async {
+Future<void> banOrUnbanUser(String isBanned, String userId) async {
   final String url = "$baseUrl2/admins/users/$userId"; // Append 'block' or 'unblock' to the URL
 
   try {
@@ -39,7 +39,41 @@ Future<void> banOrUnbanUser(bool isBanned, String userId) async {
     String? token = await getit.get<TokenStorageService>().getToken();
 
     // Construct the request body
-    final Map<String, bool> body = {"isBanned": isBanned};
+    final Map<String, String> body = {"status": isBanned};
+
+    // Make the PATCH request with Dio
+    final response = await dio.patch(
+      url,
+      data: body, // Pass the body directly
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      print('Successfully updated banning status.');
+    } else {
+      print('Failed to updatebanning status. Status Code: ${response.statusCode}');
+      print('Response: ${response.data}');
+    }
+  } on DioException catch (dioError) {
+    print('Error updating banning status: ${dioError.message}');
+  } catch (e) {
+    print('An unexpected error occurred: $e');
+  }
+} 
+Future<void> filterMediaGroup(String isBanned, String groupId) async {
+  final String url = "$baseUrl2/admins/filter/$groupId"; // Append 'block' or 'unblock' to the URL
+
+  try {
+    // Retrieve the token
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    // Construct the request body
+    final Map<String, String> body = {"status": isBanned};
 
     // Make the PATCH request with Dio
     final response = await dio.patch(

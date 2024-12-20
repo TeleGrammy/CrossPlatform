@@ -33,30 +33,37 @@ class ChatsScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            context.goNamed(RouteNames.profileInfo);
-          },
-          icon: Icon(Icons.person),
-        ),
-        title: Text('Chats'),
-        backgroundColor: primaryColor,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.add_circle_rounded),
-            onSelected: onDropdownItemSelected,
-            itemBuilder: (BuildContext context) {
-              return addListOptions.map((String option) {
-                return PopupMenuItem<String>(
-                  value: option,
-                  child: Text(option),
-                );
-              }).toList();
-            },
-          ),
-        ],
-      ),
+     appBar: AppBar(
+  leading: IconButton(
+    onPressed: () {
+      context.goNamed(RouteNames.profileInfo);
+    },
+    icon: Icon(Icons.person),
+  ),
+  title: Text('Chats'),
+  backgroundColor: primaryColor,
+  actions: [
+    PopupMenuButton<String>(
+      icon: const Icon(Icons.add_circle_rounded),
+      onSelected: onDropdownItemSelected,
+      itemBuilder: (BuildContext context) {
+        return addListOptions.map((String option) {
+          return PopupMenuItem<String>(
+            value: option,
+            child: Text(option),
+          );
+        }).toList();
+      },
+    ),
+    IconButton(
+      onPressed: () {
+        context.goNamed(RouteNames.adminDashboardPage); // Replace with your admin dashboard route
+      },
+      icon: Icon(Icons.admin_panel_settings), // Use appropriate icon for the dashboard
+      tooltip: 'Admin Dashboard', // Tooltip for accessibility
+    ),
+  ],
+),
       body: BlocBuilder<ContactsCubit, ContactsState>(
         builder: (context, state) {
           if (state is ContactsLoading) {

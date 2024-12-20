@@ -21,7 +21,7 @@ class AdminDashboardRepoImplementation extends AdminDashboardRepo {
       // print('salma');
       // Call the API service to get blocked users
       final registeredUsersResponse = await adminDashboardApiService. getRegisteredUsers();
-
+      // print(registeredUsersResponse);
       return Right(registeredUsersResponse); // Successful response
     } catch (error) {
       // print('error');
@@ -32,10 +32,25 @@ class AdminDashboardRepoImplementation extends AdminDashboardRepo {
 
  
 @override
-Future<Either<Failure, void>> banOrUnbanUser(bool isBanned, String userId) async {
+Future<Either<Failure, void>> banOrUnbanUser(String isBanned, String userId) async {
   try {
     // Call the API service to update the blocking status
+    print(isBanned);
     await adminDashboardApiService.banOrUnbanUser(isBanned, userId);
+
+    // Return success (void) as a Right value
+    return const Right(null);
+  } catch (error) {
+    // Handle the error and return a failure
+   
+    return Left(ServerError(errorMessage: error.toString()));
+  }
+}
+@override
+Future<Either<Failure, void>> filterMediaGroup(String isBanned, String userId) async {
+  try {
+    // Call the API service to update the blocking status
+    await adminDashboardApiService.filterMediaGroup(isBanned, userId);
 
     // Return success (void) as a Right value
     return const Right(null);

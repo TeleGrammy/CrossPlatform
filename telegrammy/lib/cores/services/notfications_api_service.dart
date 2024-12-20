@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
-import 'package:telegrammy/features/admin_dashboard/data/models/registered_users_model.dart';
+
 
 
 class NotificationsApiService {

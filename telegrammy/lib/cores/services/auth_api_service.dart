@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:dio/dio.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/notifications/data/handle_notifications.dart';
@@ -166,12 +165,12 @@ class ApiService {
   Future<Either<String, void>> login(userLoginData) async {
     try {
       print(userLoginData);
-      final tokenn=await HandleNotifications().getToken();
-      print(tokenn);
+      // final tokenn=await HandleNotifications().getToken();
+      // print(tokenn);
       print('$baseUrl/auth/login');
       final response = await getit
           .get<Dio>()
-          .post('$baseUrl/auth/login', data: userLoginData);
+          .post('$baseUrl2/auth/login', data: userLoginData);
       print(response);
       setTokenInLocalStorage(response);
       print(response);
