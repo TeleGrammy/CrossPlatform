@@ -71,12 +71,22 @@ class GroupRepoImplementation extends GroupRepo {
   }
 
   @override
-  Future<Either<Failure, ContactsResponse>> getContacts() async {
-    try {
-      final response = await apiService.getContacts();
-      return Right(response);
-    } catch (error) {
-      return Left(ServerError(errorMessage: error.toString()));
-    }
+  Future<ContactsResponse> getContacts() async {
+    return await apiService.getContacts();
+  }
+
+  @override
+  Future<MembersResponse> getGroupMembers(String groupId) async {
+    return await apiService.getGroupMembers(groupId);
+  }
+
+  @override
+  Future<AdminsResponse> getGroupAdmins(String groupId) async {
+    return await apiService.getGroupAdmins(groupId);
+  }
+
+  @override
+  Future<List<dynamic>> getGroupRelevantUsers(String groupId) async {
+    return await apiService.getGroupRelevantUsers(groupId);
   }
 }

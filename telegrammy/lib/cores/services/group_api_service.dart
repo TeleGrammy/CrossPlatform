@@ -137,31 +137,80 @@ class GroupApiService {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
       final response = await dio.get(
-        '$baseUrl2/privacy/settings/get-contacts',
+        '$baseUrl/privacy/settings/get-contacts',
         options: Options(headers: {
           'Authorization': 'Bearer $token',
         }),
       );
       return ContactsResponse.fromJson(response.data);
     } on DioException catch (dioError) {
-      // print('error');
       throw Exception('Error fetching contacts: ${dioError.message}');
     }
   }
 
-  // Future<List<ContactData>> getGroupMembers(String groupId) async {
-  //   try {
-  //     String? token = await getit.get<TokenStorageService>().getToken();
-  //     final response = await dio.get(
-  //       '$baseUrl2/groups/$groupId/members',
-  //       options: Options(headers: {
-  //         'Authorization': 'Bearer $token',
-  //       }),
-  //     );
-  //     return ContactsResponse.fromJson(response.data);
-  //   } on DioException catch (dioError) {
-  //     // print('error');
-  //     throw Exception('Error fetching blocked users: ${dioError.message}');
-  //   }
-  // }
+  Future<MembersResponse> getGroupMembers(String groupId) async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
+      final response = await dio.get(
+        '$baseUrl/groups/$groupId/members',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      print(response.data);
+      return MembersResponse.fromJson(response.data);
+    } on DioException catch (dioError) {
+      throw Exception('Error fetching group members: ${dioError.message}');
+    }
+  }
+
+  Future<List<dynamic>> getGroupRelevantUsers(String groupId) async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
+
+      final contactsResponse = await dio.get(
+        '$baseUrl/privacy/settings/get-contacts',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      final membersResponse = await dio.get(
+        '$baseUrl/groups/$groupId/members',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      final adminsResponse = await dio.get(
+        '$baseUrl/groups/$groupId/admins',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+
+      List<dynamic> result = [
+        ContactsResponse.fromJson(contactsResponse.data),
+        MembersResponse.fromJson(membersResponse.data),
+        AdminsResponse.fromJson(adminsResponse.data),
+      ];
+      return result;
+    } on DioException catch (dioError) {
+      throw Exception('Error fetching group users: ${dioError.message}');
+    }
+  }
+
+  Future<AdminsResponse> getGroupAdmins(String groupId) async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
+      final response = await dio.get(
+        '$baseUrl/groups/$groupId/admins',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      print(response.data);
+      return AdminsResponse.fromJson(response.data);
+    } on DioException catch (dioError) {
+      throw Exception('Error fetching group admins: ${dioError.message}');
+    }
+  }
 }

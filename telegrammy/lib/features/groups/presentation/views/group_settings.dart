@@ -20,7 +20,7 @@ class GroupSettingsView extends StatefulWidget {
 }
 
 class _GroupSettingsViewState extends State<GroupSettingsView> {
-  String groupId = '6762a5784d18aaa1af91772a';
+  String groupId = '6761f0048a2111362183137a';
   bool isAdmin = true; //TODO: use this to enable/disable admin functions
 
   @override
@@ -64,8 +64,6 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
           } else if (state is GroupError) {
             return Center(child: Text(state.errorMessage));
           } else if (state is GroupLoaded) {
-            print(state.groupData);
-
             return SafeArea(
               child: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -102,7 +100,9 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                 title: Text('View group members'),
                                 trailing: Icon(Icons.arrow_forward),
                                 onTap: () {
-                                  //TODO: view group members
+                                  // TODO: show members
+                                  context.goNamed(RouteNames.viewGroupMembers,
+                                      extra: [groupId, state.members]);
                                 }),
                           ],
                         ),
@@ -113,6 +113,10 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                 groupId: groupId,
                                 groupPrivacy: state.groupData.groupPrivacy,
                                 groupSizeLimit: state.groupData.groupSizeLimit,
+                                contactsToAddFrom:
+                                    state.contactsExcludingMembers!,
+                                membersToMakeAdmins: [],
+                                nonAdminMembers: state.nonAdminMembers!,
                               ),
                         SizedBox(height: 20),
                         RoundedButton(
@@ -123,17 +127,19 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                           buttonTitle: 'Leave Group',
                           buttonKey: const ValueKey('LeaveGroupButton'),
                         ),
-                        RoundedButton(
-                          onPressed: () {
-                            getit
-                                .get<GroupSocketService>()
-                                .deleteGroup(groupId);
-                            context.goNamed(RouteNames.chats);
-                          },
-                          buttonTitle: 'Delete Group',
-                          buttonKey: const ValueKey('DeleteGroupButton'),
-                          backgroundColor: Colors.red[900]!,
-                        ),
+                        (isAdmin)
+                            ? RoundedButton(
+                                onPressed: () {
+                                  getit
+                                      .get<GroupSocketService>()
+                                      .deleteGroup(groupId);
+                                  context.goNamed(RouteNames.chats);
+                                },
+                                buttonTitle: 'Delete Group',
+                                buttonKey: const ValueKey('DeleteGroupButton'),
+                                backgroundColor: Colors.red[900]!,
+                              )
+                            : SizedBox.shrink(),
                       ],
                     ),
                   )),

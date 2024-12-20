@@ -10,7 +10,9 @@ import 'package:telegrammy/features/messages/presentation/views/chats_view.dart'
 import 'package:mocktail/mocktail.dart' as mocktail;
 
 import 'contacts_view_test.mocks.dart';
-@GenerateMocks([ContactsCubit], customMocks: [MockSpec<ContactsCubit>(as: #MyMockContactsCubit)])
+
+@GenerateMocks([ContactsCubit],
+    customMocks: [MockSpec<ContactsCubit>(as: #MyMockContactsCubit)])
 
 // class MockContactsCubit extends Mock implements ContactsCubit {}
 // class MockContactsCubit extends MockCubit<ContactsState> implements ContactsCubit {}
@@ -67,7 +69,7 @@ void main() {
     ];
 
     when(mockContactsCubit.state)
-        .thenReturn(ContactsSuccess(contacts: mockContacts));
+        .thenReturn(ContactsSuccess(contactsExcludingMembers: mockContacts));
 
     await tester.pumpWidget(createTestableWidget());
 

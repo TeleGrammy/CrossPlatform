@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
-import 'package:telegrammy/features/groups/presentation/view_models/AddMembersCubit/group_members_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
 import '../../../../cores/routes/route_names.dart';
 import '../../../../cores/services/groups_socket.dart';
 import '../../../../cores/services/service_locator.dart';
+import '../../data/models/group.dart';
 
 class AddGroupMembersView extends StatefulWidget {
-  AddGroupMembersView({required this.groupId});
+  AddGroupMembersView({required this.groupId, required this.contactsToAddFrom});
   final String groupId;
+  final List<ContactData> contactsToAddFrom;
   @override
   _AddGroupMembersViewState createState() => _AddGroupMembersViewState();
 }
@@ -19,7 +19,6 @@ class _AddGroupMembersViewState extends State<AddGroupMembersView> {
   @override
   void initState() {
     super.initState();
-    context.read<GroupMembersCubit>().getContacts();
     getit.get<GroupSocketService>().connectToGroupServer();
   }
 
@@ -31,75 +30,54 @@ class _AddGroupMembersViewState extends State<AddGroupMembersView> {
         title: 'Add members to group',
         key: const ValueKey('AddGroupMembersAppBar'),
       ),
-      body: BlocBuilder<GroupMembersCubit, GroupMembersState>(
-        builder: (context, state) {
-          if (state is GroupMembersLoading) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is GroupMembersError) {
-            return Center(
-              child: Text(
-                state.errorMessage,
-                style: TextStyle(color: Colors.red),
-              ),
-            );
-          } else if (state is GroupMembersLoaded) {
-            // Filter out blocked contacts
-            final contacts = state.contacts
-                .where((contact) => contact.blockDetails == "not_blocked")
-                .toList();
+      body: Column(
+        children: [
+          SizedBox(height: 30),
+          Expanded(
+            key: const ValueKey('MembersToAdd'),
+            child: widget.contactsToAddFrom.isNotEmpty
+                ? ListView.builder(
+                    itemCount: widget.contactsToAddFrom.length,
+                    itemBuilder: (context, index) {
+                      final contact = widget.contactsToAddFrom[index];
+                      final isBlocked = contact.blockDetails == "not_blocked";
 
-            return Column(
-              children: [
-                SizedBox(height: 30),
-                Expanded(
-                  key: const ValueKey('MembersToAdd'),
-                  child: contacts.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: contacts.length,
-                          itemBuilder: (context, index) {
-                            final contact = contacts[index];
-                            final isBlocked =
-                                contact.blockDetails == "not_blocked";
-
-                            return ListTile(
-                              tileColor: primaryColor,
-                              leading: CircleAvatar(
-                                backgroundImage: contact.picture != null
-                                    ? NetworkImage(contact.picture!)
-                                    : null,
-                                radius: 20,
-                              ),
-                              title: Text(
-                                contact.username,
-                                style: TextStyle(color: tileInfoHintColor),
-                              ),
-                              trailing: IconButton(
-                                icon: Icon(Icons.add),
-                                onPressed: () async {
-                                  getit.get<GroupSocketService>().addMember(
-                                      widget.groupId, contact.userId);
-                                  setState(() {
-                                    state.contacts.remove(contact);
-                                  });
-                                },
-                              ),
-                            );
-                          },
-                        )
-                      : Center(
-                          key: const ValueKey('NoContactsToBlockText'),
-                          child: Text(
-                            'No contacts available.',
-                            style: TextStyle(color: tileInfoHintColor),
-                          ),
+                      return ListTile(
+                        tileColor: primaryColor,
+                        leading: CircleAvatar(
+                          backgroundImage: contact.picture != null
+                              ? NetworkImage(contact.picture!)
+                              : null,
+                          radius: 20,
                         ),
-                ),
-              ],
-            );
-          }
-
-          return Center(child: CircularProgressIndicator());
-        },
+                        title: Text(
+                          contact.username,
+                          style: TextStyle(color: tileInfoHintColor),
+                        ),
+                        trailing: IconButton(
+                          key: const ValueKey('AddMemberButton'),
+                          icon: Icon(Icons.add),
+                          onPressed: () async {
+                            getit
+                                .get<GroupSocketService>()
+                                .addMember(widget.groupId, contact.userId);
+                            setState(() {
+                              widget.contactsToAddFrom.remove(contact);
+                            });
+                          },
+                        ),
+                      );
+                    },
+                  )
+                : Center(
+                    key: const ValueKey('NoContactsToAddText'),
+                    child: Text(
+                      'No contacts available to add.',
+                      style: TextStyle(color: tileInfoHintColor),
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }

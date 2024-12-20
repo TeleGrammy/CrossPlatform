@@ -21,18 +21,18 @@ class ChatDetails extends StatefulWidget {
   final String userId;
   final String userRole;
   final ChatData chatData;
-  final List<Message> messages;
-  final String name;
-  final String id;
-  final String photo;
+  // final List<Message> messages;
+  // final String name;
+  // final String id;
+  // final String photo;
 
   const ChatDetails({
     Key? key,
-    required this.name,
-    required this.id,
-    required this.photo,
+    // required this.name,
+    // required this.id,
+    // required this.photo,
     required this.lastSeen,
-    required this.messages,
+    // required this.messages,
     this.forwardedMessage,
     required this.chatData,
     required this.userRole,
@@ -72,7 +72,7 @@ class ChatDetailsState extends State<ChatDetails> {
           'message:send',
           {
             'messageId': widget.forwardedMessage!.id,
-            'chatId': widget.id,
+            'chatId': widget.chatData.chat.id,
             'isForwarded': true,
           },
         );
@@ -221,7 +221,7 @@ class ChatDetailsState extends State<ChatDetails> {
   void createDraft(String draftContent) {
     getit.get<SocketService>().draftMessage(
       'draft',
-      {'chatId': widget.id},
+      {'chatId': widget.chatData.chat.id},
     );
 
     getit.get<SocketService>().draftMessagerecived('draft', (data) {
@@ -363,9 +363,9 @@ class ChatDetailsState extends State<ChatDetails> {
                       userRole: widget.userRole,
                       chat: widget.chatData.chat,
                       onSearch: onSearch,
-                      name: widget.name,
-                      photo: widget.photo,
-                      id: widget.id,
+                      name: widget.chatData.chat.name,
+                      photo: widget.chatData.chat.photo ?? 'default.jpg',
+                      id: widget.chatData.chat.id,
                     )
                   : SelectedMessageAppbar(
                       key: const Key('selectedMessageAppBar'),

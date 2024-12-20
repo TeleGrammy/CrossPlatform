@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
@@ -8,15 +7,16 @@ import '../../../../cores/services/groups_socket.dart';
 import '../../../../cores/services/service_locator.dart';
 import '../../data/models/group.dart';
 
-class GroupMembersView extends StatefulWidget {
-  GroupMembersView({required this.groupId, required this.members});
+class RemoveGroupMembersView extends StatefulWidget {
+  RemoveGroupMembersView(
+      {required this.groupId, required this.membersToRemoveFrom});
   final String groupId;
-  final List<MemberData> members;
+  final List<MemberData> membersToRemoveFrom;
   @override
-  _GroupMembersViewState createState() => _GroupMembersViewState();
+  _RemoveGroupMembersViewState createState() => _RemoveGroupMembersViewState();
 }
 
-class _GroupMembersViewState extends State<GroupMembersView> {
+class _RemoveGroupMembersViewState extends State<RemoveGroupMembersView> {
   @override
   void initState() {
     super.initState();
@@ -28,19 +28,19 @@ class _GroupMembersViewState extends State<GroupMembersView> {
     return Scaffold(
       appBar: ProfileSettingsAppBar(
         backButtonOnPressed: () => context.goNamed(RouteNames.groupSettings),
-        title: 'Group members',
-        key: const ValueKey('GroupMembersAppBar'),
+        title: 'Remove members from group',
+        key: const ValueKey('RemoveGroupMembersAppBar'),
       ),
       body: Column(
         children: [
           SizedBox(height: 30),
           Expanded(
-            key: const ValueKey('GroupMembers'),
-            child: widget.members.isNotEmpty
+            key: const ValueKey('MembersToRemove'),
+            child: widget.membersToRemoveFrom.isNotEmpty
                 ? ListView.builder(
-                    itemCount: widget.members.length,
+                    itemCount: widget.membersToRemoveFrom.length,
                     itemBuilder: (context, index) {
-                      final contact = widget.members[index];
+                      final contact = widget.membersToRemoveFrom[index];
 
                       return ListTile(
                         tileColor: primaryColor,
@@ -54,13 +54,24 @@ class _GroupMembersViewState extends State<GroupMembersView> {
                           contact.username,
                           style: TextStyle(color: tileInfoHintColor),
                         ),
+                        trailing: IconButton(
+                          key: const ValueKey('RemoveMemberButton'),
+                          icon: Icon(Icons.remove_circle_outline),
+                          onPressed: () async {
+                            getit.get<GroupSocketService>().removeParticipant(
+                                widget.groupId, contact.userId);
+                            setState(() {
+                              widget.membersToRemoveFrom.remove(contact);
+                            });
+                          },
+                        ),
                       );
                     },
                   )
                 : Center(
-                    key: const ValueKey('NoMembersText'),
+                    key: const ValueKey('NoMembersToRemoveText'),
                     child: Text(
-                      'No Members yet.',
+                      'No members to remove.',
                       style: TextStyle(color: tileInfoHintColor),
                     ),
                   ),

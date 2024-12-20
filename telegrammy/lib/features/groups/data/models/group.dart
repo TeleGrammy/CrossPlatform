@@ -77,3 +77,54 @@ class ContactData {
     );
   }
 }
+
+class MembersResponse {
+  final List<MemberData> members;
+
+  MembersResponse({required this.members});
+
+  factory MembersResponse.fromJson(Map<String, dynamic> json) {
+    return MembersResponse(
+      members: (json['data']['members'] as List<dynamic>)
+          .map((memberJson) => MemberData.fromJson(memberJson))
+          .toList(),
+    );
+  }
+
+  @override
+  String toString() => "MembersResponse(members: $members)";
+}
+
+class MemberData {
+  final String userId;
+  final String username;
+  final String? picture;
+
+  MemberData({required this.userId, required this.username, this.picture});
+
+  // Factory to create an instance from JSON
+  factory MemberData.fromJson(Map<String, dynamic> json) {
+    return MemberData(
+      username: json['username'],
+      picture: json['picture'] ?? null,
+      userId: json['id'],
+    );
+  }
+}
+
+class AdminsResponse {
+  final List<MemberData> admins;
+
+  AdminsResponse({required this.admins});
+
+  factory AdminsResponse.fromJson(Map<String, dynamic> json) {
+    return AdminsResponse(
+      admins: (json['data']['admins'] as List<dynamic>)
+          .map((adminJson) => MemberData.fromJson(adminJson))
+          .toList(),
+    );
+  }
+
+  @override
+  String toString() => "AdminsResponse(members: $admins)";
+}

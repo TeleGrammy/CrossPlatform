@@ -16,12 +16,13 @@ import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/v
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
-import 'package:telegrammy/features/groups/presentation/view_models/AddMembersCubit/group_members_cubit.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
 import 'package:telegrammy/features/groups/presentation/views/add_members_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/create_group_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/edit_group_settings.dart';
+import 'package:telegrammy/features/groups/presentation/views/group_members_view.dart';
 import 'package:telegrammy/features/groups/presentation/views/group_settings.dart';
+import 'package:telegrammy/features/groups/presentation/views/remove_members_view.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
@@ -92,16 +93,16 @@ class AppRoutes {
       //     child:  RegisteredUsersView(),
       //   ),
       // ),
-GoRoute(
-  name: RouteNames.singleRegeisterUserPage,
-  path: '/singleRegeisterUserPage',
-  builder: (context, state) {
-    // Retrieve the user from the 'extra' parameter
-    final RegisteredUsersData user = state.extra as RegisteredUsersData;
+      GoRoute(
+        name: RouteNames.singleRegeisterUserPage,
+        path: '/singleRegeisterUserPage',
+        builder: (context, state) {
+          // Retrieve the user from the 'extra' parameter
+          final RegisteredUsersData user = state.extra as RegisteredUsersData;
 
-    return UserDetailView(user: user); // Pass the user to the view
-  },
-),
+          return UserDetailView(user: user); // Pass the user to the view
+        },
+      ),
       // GoRoute(
       //   name: RouteNames.chats,
       //   path: '/chats',
@@ -273,44 +274,44 @@ GoRoute(
           );
         },
       ),
-GoRoute(
-  name: RouteNames.otherUserStoryPage,
-  path: '/other-user-stories-page',
-  builder: (context, state) {
-    // Extract data from the state.extra
-    final extraData = state.extra as Map<String, dynamic>;
-    final userStories = extraData['userStories'] as List<Story>;
-    final userName = extraData['userName'] as String;
-    final userAvatar = extraData['userAvatar'] as String;
+      GoRoute(
+        name: RouteNames.otherUserStoryPage,
+        path: '/other-user-stories-page',
+        builder: (context, state) {
+          // Extract data from the state.extra
+          final extraData = state.extra as Map<String, dynamic>;
+          final userStories = extraData['userStories'] as List<Story>;
+          final userName = extraData['userName'] as String;
+          final userAvatar = extraData['userAvatar'] as String;
 
-    return BlocProvider(
-      create: (context) => OthersStoriesCubit(),
-      child: OthersStoryView(
-        userStories: userStories,
-        userName: userName,
-        userAvatar: userAvatar,
+          return BlocProvider(
+            create: (context) => OthersStoriesCubit(),
+            child: OthersStoryView(
+              userStories: userStories,
+              userName: userName,
+              userAvatar: userAvatar,
+            ),
+          );
+        },
       ),
-    );
-  },
-),
 
-GoRoute(
-  name: RouteNames.storiesPage,
-  path: '/stories-page',
-  builder: (context, state) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => StoriesCubit(),
-        ),
-        BlocProvider(
-          create: (context) => OthersStoriesCubit(),
-        ),
-      ],
-      child: StoriesView(),
-    );
-  },
-),
+      GoRoute(
+        name: RouteNames.storiesPage,
+        path: '/stories-page',
+        builder: (context, state) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => StoriesCubit(),
+              ),
+              BlocProvider(
+                create: (context) => OthersStoriesCubit(),
+              ),
+            ],
+            child: StoriesView(),
+          );
+        },
+      ),
       GoRoute(
         name: RouteNames.createStoryPage,
         path: '/create-stories-page',
@@ -425,9 +426,35 @@ GoRoute(
       GoRoute(
         name: RouteNames.addGroupMembers,
         path: '/add-group-members',
-        builder: (context, state) => BlocProvider(
-            create: (context) => GroupMembersCubit(),
-            child: AddGroupMembersView(groupId: state.extra as String)),
+        builder: (context, state) {
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          return AddGroupMembersView(
+            groupId: extras[0],
+            contactsToAddFrom: extras[1],
+          );
+        },
+      ),
+      GoRoute(
+        name: RouteNames.viewGroupMembers,
+        path: '/view-group-members',
+        builder: (context, state) {
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          return GroupMembersView(
+            groupId: extras[0],
+            members: extras[1],
+          );
+        },
+      ),
+      GoRoute(
+        name: RouteNames.removeGroupMembers,
+        path: '/remove-group-members',
+        builder: (context, state) {
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          return RemoveGroupMembersView(
+            groupId: extras[0],
+            membersToRemoveFrom: extras[1],
+          );
+        },
       ),
     ],
   );

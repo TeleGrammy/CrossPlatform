@@ -9,7 +9,16 @@ final class GroupLoading extends GroupState {}
 
 final class GroupLoaded extends GroupState {
   final Group groupData;
-  GroupLoaded({required this.groupData});
+  List<MemberData>? members;
+  List<MemberData>? admins;
+  List<ContactData>? contactsExcludingMembers;
+  List<MemberData>? nonAdminMembers;
+  GroupLoaded(
+      {required this.groupData,
+      this.members,
+      this.admins,
+      this.contactsExcludingMembers,
+      this.nonAdminMembers});
 }
 
 final class GroupError extends GroupState {

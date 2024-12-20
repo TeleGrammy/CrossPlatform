@@ -19,12 +19,67 @@ class GroupCubit extends Cubit<GroupState> {
     return pickedFile;
   }
 
+  List<ContactData> getNonMemberContacts(
+      List<ContactData> contactList, List<MemberData> memberList) {
+    final memberIds = memberList.map((member) => member.userId).toSet();
+
+    return contactList
+        .where((contact) => !memberIds.contains(contact.userId))
+        .toList();
+  }
+
+  List<MemberData> getNonAdminMembers(
+      List<MemberData> memberList, List<MemberData> adminList) {
+    final adminIds = adminList.map((admin) => admin.userId).toSet();
+
+    return memberList
+        .where((contact) => !adminIds.contains(contact.userId))
+        .toList();
+  }
+
   Future<void> getGroupInfo(String groupId) async {
     try {
       emit(GroupLoading());
-      final Group result =
+      final Group groupData =
           await getit.get<GroupRepoImplementation>().getGroupInfo(groupId);
-      emit(GroupLoaded(groupData: result));
+
+      // final contactsResponse =
+      //     await getit.get<GroupRepoImplementation>().getContacts();
+      // print(contactsResponse.contacts);
+      //
+      // final membersResponse =
+      //     await getit.get<GroupRepoImplementation>().getGroupMembers(groupId);
+      // print(membersResponse.members);
+      //
+      // final adminsResponse =
+      //     await getit.get<GroupRepoImplementation>().getGroupAdmins(groupId);
+      // print(adminsResponse.admins);
+      final List<dynamic> groupRelevantUsers = await getit
+          .get<GroupRepoImplementation>()
+          .getGroupRelevantUsers(groupId);
+      ContactsResponse contactsResponse = groupRelevantUsers[0];
+      MembersResponse membersResponse = groupRelevantUsers[1];
+      AdminsResponse adminsResponse = groupRelevantUsers[2];
+
+      List<ContactData> contactsExcludingMembers = getNonMemberContacts(
+          contactsResponse.contacts, membersResponse.members);
+
+      List<MemberData> nonAdminMembers =
+          getNonAdminMembers(membersResponse.members, adminsResponse.admins);
+      // emit(GroupLoaded(
+      //   groupData: groupData,
+      //   contacts: contactsResponse.contacts,
+      //   admins: adminsResponse.admins,
+      //   members: membersResponse.members,
+      // ));
+
+      emit(GroupLoaded(
+        groupData: groupData,
+        contactsExcludingMembers: contactsExcludingMembers,
+        members: membersResponse.members,
+        admins: adminsResponse.admins,
+        nonAdminMembers: nonAdminMembers,
+      ));
     } catch (e) {
       emit(GroupError(errorMessage: e.toString()));
     }
@@ -85,6 +140,10 @@ class GroupCubit extends Cubit<GroupState> {
     print(result);
     groupData.groupSizeLimit = sizeLimit;
     emit(GroupLoaded(groupData: groupData));
+  }
+
+  Future<void> getGroupMembers(String groupId) async {
+    getit.get<GroupRepoImplementation>().getGroupMembers(groupId);
   }
 
   Future<void> addAdminToGroup() async {}
