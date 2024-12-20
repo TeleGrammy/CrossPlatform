@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:telegrammy/cores/services/draft_storage_service.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/notifications/data/handle_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -174,9 +175,18 @@ class ApiService {
       final response = await getit
           .get<Dio>()
           .post('$baseUrl2/auth/login', data: userLoginData);
-      print(response);
+      // print(response);
       setTokenInLocalStorage(response);
-      print(response);
+      final SecureDraftStorageService _storageService = SecureDraftStorageService();
+
+     if (response.data != null ) {
+  final isAdmin = response.data['data']['updatedUser']['isAdmin'];
+  // print('isAdmin: $isAdmin');
+  await _storageService.saveDraft(isAdmin); // Save isAdmin in storage
+
+} else {
+  print('Error: Invalid response format');
+}
       // print(userLoginData);
 
       return const Right(null);
