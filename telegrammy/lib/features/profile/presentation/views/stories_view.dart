@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/create_story_widget.dart';
-import 'package:telegrammy/features/profile/presentation/widgets/storyList_widget.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/other_users_stories.dart';
+
 import 'package:telegrammy/features/profile/presentation/widgets/stories_app_bar.dart';
 
 class StoriesView extends StatelessWidget {
@@ -30,8 +31,8 @@ class StoriesView extends StatelessWidget {
                 ),
                 SizedBox(height: 30),
                 CreateStoryWidget(),
-                // SizedBox(height: 50),
-                // StoryListWidget(),
+                SizedBox(height: 50),
+               ScrollableUserStoriesWidget(),
 
                 // PrivacyOptions(),
               ],

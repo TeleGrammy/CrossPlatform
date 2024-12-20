@@ -10,6 +10,10 @@ import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
+
+import '../../../../cores/services/groups_socket.dart';
+import '../../../../cores/services/service_locator.dart';
 
 class ChatsScreen extends StatefulWidget {
   final Message? forwardMessage;
@@ -20,26 +24,17 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class _ChatsScreenState extends State<ChatsScreen> {
-  initState() {
+  @override
+  void initState() {
     super.initState();
-    // _initializeSocketConnection();
+    getit.get<GroupSocketService>().connectToGroupServer();
   }
 
-  // Future<void> _initializeSocketConnection() async {
-  //   await getit.get<SocketService>().connect();
-
-  //   getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
-  //     print(response);
-  //     context.goNamed(RouteNames.incomingCall, extra: {
-  //       'name': 'mmmomo',
-  //       'photo': 'default.png',
-  //       'callId': response['_id'],
-  //       'remoteOffer': response['callObj']['offer'],
-  //       // 'chatId': widget.id,
-  //       'chatId': response['chatId']['_id'],
-  //     });
-  //   });
-  // }
+  @override
+  void dispose() {
+    //getit.get<GroupSocketService>().disconnectGroups();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +53,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
         context.goNamed(RouteNames.createGroup);
       } else if (value == 'New Channel') {
         context.goNamed(RouteNames.createChannel);
-      }
+      } else
+        context.goNamed(RouteNames.addContact);
     }
 
     return Scaffold(
@@ -72,6 +68,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
         title: Text('Chats'),
         backgroundColor: primaryColor,
         actions: [
+          IconButton(
+            key: const ValueKey('GlobalSearchButton'),
+            icon: Icon(Icons.search),
+            onPressed: () {
+              context.goNamed(RouteNames.globalSearch);
+            },
+          ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.add_circle_rounded),
             onSelected: onDropdownItemSelected,
@@ -109,16 +112,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 // final participant = chat.participants.firstWhere(
                 //   (p) => p.userId['_id'] != userId,
                 // );
-
-                final name = chat.name;
-                final photo = chat.photo ?? 'default.jpg';
-                // final draftMessage = '';
-                final lastMessage = chat.lastMessage?.content ?? '';
-                final String id = chat.id;
                 final lastMessageTime =
                     chat.lastMessage?.timestamp.toString() ?? '';
                 final String? draftMessage = chat.draftMessage;
-                final String lastSeen = chat.lastSeen ?? '';
                 // print(id);
                 // final name = participant.userId['screenName'] ?? 'Unknown';
                 // final photo = participant.userId['picture'] ?? 'default.jpg';
@@ -126,15 +122,11 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
                 return ContactPreview(
                   key: Key('contactItem_$index'),
-                  id: id,
-                  name: name,
-                  photo: photo,
-                  lastMessage: lastMessage,
-                  lastMessageTime: lastMessageTime,
+                  chat: chat,
                   forwardMessage: widget.forwardMessage,
                   draftMessage: draftMessage,
                   userId: userId,
-                  lastSeen: lastSeen,
+                  lastMessageTime: lastMessageTime,
                 );
               },
             );

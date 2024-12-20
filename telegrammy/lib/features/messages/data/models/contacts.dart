@@ -7,6 +7,12 @@ class ChatView {
   final LastMessage? lastMessage;
   final String draftMessage;
   final String? lastSeen;
+  final bool isChannel;
+  final bool isGroup;
+  final String? pinnedMessages;
+  final String? createdAt;
+  final String? channelId;
+  final String? groupId;
 
   ChatView( {
     required this.id,
@@ -15,18 +21,29 @@ class ChatView {
     this.lastMessage,
     required this.draftMessage,
     required this.lastSeen,
+    required this.isChannel,
+    this.pinnedMessages,
+    required this.isGroup,
+    this.createdAt,
+    this.channelId,
+    this.groupId,
   });
 
   factory ChatView.fromJson(Map<String, dynamic> json) {
     return ChatView(
       id: json['id'],
       name: json['name'],
-      photo: json['photo'],
+      photo: (json['photo']) ?? 'default.jpg',
       lastMessage: json['lastMessage'] != null
           ? LastMessage.fromJson(json['lastMessage'])
           : null,
-      draftMessage: json['draftMessage']==null ? '' : json['draftMessage'],
       lastSeen: json['lastSeen']==null ? '' : json['lastSeen'],
+      draftMessage: json['draftMessage'] == null ? '' : json['draftMessage'],
+      createdAt: json['createdAt'],
+      isChannel: json['isChannel'] ?? false,
+      isGroup: json['isGroup'] ?? false,
+      channelId: (json['isChannel'] == true) ? json['channelId'] : null,
+      groupId: (json['isGroup'] == true) ? json['groupId'] : null,
     );
   }
 
@@ -38,6 +55,7 @@ class ChatView {
       'lastMessage': lastMessage?.toJson(),
       'draftMessage': draftMessage,
       'lastSeen': lastSeen,
+      'isChannel': isChannel,
     };
   }
 }
@@ -115,12 +133,14 @@ class Participant {
   final User user;
   final String joinedAt;
   final String draftMessage;
+  final String role;
 
   Participant({
     required this.id,
     required this.user,
     required this.joinedAt,
     required this.draftMessage,
+    required this.role,
   });
 
   factory Participant.fromJson(Map<String, dynamic> json) {
@@ -129,6 +149,7 @@ class Participant {
       user: User.fromJson(json['userId']),
       joinedAt: json['joinedAt'],
       draftMessage: json['draft_message'],
+      role: json['role'],
     );
   }
 
@@ -138,6 +159,7 @@ class Participant {
       'userId': user.toJson(),
       'joinedAt': joinedAt,
       'draft_message': draftMessage,
+      'role': role
     };
   }
 }

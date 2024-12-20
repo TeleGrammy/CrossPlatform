@@ -13,14 +13,12 @@ class CreateChannelForm extends StatefulWidget {
     required this.formKey,
     required this.channelNameController,
     required this.channelDescriptionController,
-    required this.adminController,
     required this.onSubmit,
   });
 
   final GlobalKey<FormState> formKey;
   final TextEditingController channelNameController;
   final TextEditingController channelDescriptionController;
-  final TextEditingController adminController;
   final Function(Channel) onSubmit;
 
   @override
@@ -28,9 +26,6 @@ class CreateChannelForm extends StatefulWidget {
 }
 
 class _CreateChannelFormState extends State<CreateChannelForm> {
-  bool isChannelPublic = true;
-  List<String> admins = []; //should add this user id
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -60,89 +55,6 @@ class _CreateChannelFormState extends State<CreateChannelForm> {
           ),
           SizedBox(height: 16),
 
-          //Privacy Setting Radio Buttons
-          Row(
-            children: [
-              Text(
-                'Privacy Setting:',
-                style: textStyle16,
-              ),
-              Radio<bool>(
-                key: Key('publicChannelRadio'),
-                value: true,
-                groupValue: isChannelPublic,
-                onChanged: (value) {
-                  setState(() {
-                    isChannelPublic = value ?? true;
-                    print(isChannelPublic);
-                  });
-                },
-              ),
-              Text(
-                'Public',
-                style: textStyle16,
-              ),
-              Radio<bool>(
-                key: Key('privateChannelRadio'),
-                value: false,
-                groupValue: isChannelPublic,
-                onChanged: (value) {
-                  setState(() {
-                    isChannelPublic = value ?? false;
-                    print(isChannelPublic);
-                  });
-                },
-              ),
-              Text(
-                'Private',
-                style: textStyle16,
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-
-          //Text Field to Add Admins
-          Column(
-            children: [
-              CustomTextField(
-                inputFieldKey: Key('adminField'),
-                controller: widget.adminController,
-                hintText: 'Add Admin (Username)',
-                obsecureText: false,
-                validator: (value) => null,
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    if (widget.adminController.text.isNotEmpty &&
-                        !admins.contains(widget.adminController.text))
-                      setState(() {
-                        admins.add(widget.adminController.text);
-                      });
-                  },
-                  child: Icon(Icons.add))
-            ],
-          ),
-          SizedBox(height: 8),
-
-          // Displaying added admins as Chips
-          Wrap(
-            key: Key('adminAddedWrapper'),
-            spacing: 8.0,
-            children: admins.map((admin) {
-              return Chip(
-                key: Key('addedAdmin$admin'),
-                label: Text(admin),
-                deleteIcon: Icon(Icons.delete),
-                onDeleted: () {
-                  setState(() {
-                    admins.remove(admin);
-                  });
-                },
-              );
-            }).toList(),
-          ),
-          SizedBox(height: 20),
-
           //errors message box
           BlocBuilder<ChannelCubit, ChannelState>(
             builder: (context, state) {
@@ -164,17 +76,20 @@ class _CreateChannelFormState extends State<CreateChannelForm> {
             listener: (context, state) {
               //if success navigate to the channel screen
               //if loading show spinner
+              if (state is ChannelCreateSuccess) {
+                print(
+                    'channel created successfully-------------------------->');
+              }
             },
             child: RoundedButton(
               onPressed: () {
                 if (widget.formKey.currentState?.validate() ?? false) {
                   var newChannel = Channel(
                     name: widget.channelNameController.text,
-                    adminsId: admins,
                     description: widget.channelDescriptionController.text,
-                    isChannelPublic: isChannelPublic,
                     createdAt: DateTime.now(),
                     posts: [],
+                    isChannelPublic: true,
                   );
                   widget.onSubmit(newChannel);
                 }

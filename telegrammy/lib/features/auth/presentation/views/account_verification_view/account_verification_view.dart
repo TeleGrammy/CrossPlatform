@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
@@ -129,7 +128,7 @@ class _AccountVerificationViewState extends State<AccountVerificationView> {
               BlocListener<SignUpCubit, SignUpState>(
                 listener: (BuildContext context, SignUpState state) {
                   if (state is VerificationSuccess) {
-                    //todo:navigate to the main screen of the app
+                    context.goNamed(RouteNames.chats);
                   }
                   if (state is VerificationFailure) {
                     print(state.errorMessage);

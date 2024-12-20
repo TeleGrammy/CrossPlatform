@@ -5,6 +5,6 @@ class Media {
   const Media({ this.mediaKey, this.mediaUrl});
 
   factory Media.fromJson(Map<String, dynamic> json){
-    return Media(mediaKey: json['signedUrl'], mediaUrl: json['mediaKey']);
+    return Media(mediaUrl: json['signedUrl'], mediaKey: json['mediaKey']);
   }
 }

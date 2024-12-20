@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/widgets/app_bar.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/privacy_app_bar.dart';
 // import 'package:telegrammy/features/profile/presentation/widgets/security_options.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/privacy_options.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
@@ -34,7 +35,7 @@ class _PrivacyViewState extends State<PrivacyView> {
     return BlocProvider(
       create: (_) => _cubit,
       child: Scaffold(
-        appBar: GeneralAppBar(
+        appBar: PrivacyAppBar(
           titleBar: 'Privacy & Security',
           key: const ValueKey('PrivacyAndSecurityAppBar'),
         ),

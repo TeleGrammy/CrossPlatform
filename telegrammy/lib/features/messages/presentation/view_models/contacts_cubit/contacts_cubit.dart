@@ -13,8 +13,7 @@ class ContactsCubit extends Cubit<ContactsState> {
     emit(ContactsLoading());
 
     try {
-      final chats =
-          await getit.get<MessagesRepoImplementaion>().getChats();
+      final chats = await getit.get<MessagesRepoImplementaion>().getChats();
       emit(ContactsSuccess(chats: chats));
     } catch (error) {
       emit(ContactsFailture());

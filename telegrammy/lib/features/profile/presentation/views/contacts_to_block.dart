@@ -6,6 +6,7 @@ import 'package:telegrammy/cores/widgets/app_bar.dart';
 import 'package:telegrammy/features/profile/data/repos/profile_repo.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_state.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/block_users_app_bar,.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GeneralAppBar(
+      appBar: BlockAppBar(
         titleBar: 'Block User',
         key: const ValueKey('ContactsToBlockAppBar'),
       ),
@@ -41,7 +42,8 @@ class _ContactsPageState extends State<ContactsPage> {
           } else if (state is ContactsLoaded) {
             // Filter out blocked contacts
             final contacts = state.contacts
-                .where((contact) => contact.blockDetails.status == "not_blocked")
+                .where(
+                    (contact) => contact.blockDetails.status == "not_blocked")
                 .toList();
 
             return Column(
@@ -54,17 +56,19 @@ class _ContactsPageState extends State<ContactsPage> {
                           itemCount: contacts.length,
                           itemBuilder: (context, index) {
                             final contact = contacts[index];
-                            final isBlocked = contact.blockDetails.status == "not_blocked";
+                            final isBlocked =
+                                contact.blockDetails.status == "not_blocked";
 
                             return ListTile(
-                              tileColor: primaryColor, 
+                              tileColor: primaryColor,
                               leading: CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/logo.png'),
+                                backgroundImage:
+                                    AssetImage('assets/images/logo.png'),
                                 radius: 20,
                               ),
                               title: Text(
-                                contact.contactId,
-                                style: TextStyle(color: tileInfoHintColor), 
+                                contact.contactInfo.username,
+                                style: TextStyle(color: tileInfoHintColor),
                               ),
                               trailing: IconButton(
                                 icon: Icon(
@@ -74,14 +78,17 @@ class _ContactsPageState extends State<ContactsPage> {
                                 onPressed: () async {
                                   await context
                                       .read<ContactstoCubit>()
-                                      .blockUser(contact.contactId);
+                                      .blockUser(contact.contactInfo.id);
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          '${contact.contactId} has been ${isBlocked ? 'unblocked' : 'blocked'}.'),
-                                    ),
-                                  );
+                                  // Ensure context is still valid before attempting to show the snackbar
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            '${contact.contactInfo.username} has been ${isBlocked ? 'unblocked' : 'blocked'}.'),
+                                      ),
+                                    );
+                                  }
                                 },
                               ),
                             );

@@ -1,35 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:telegrammy/cores/routes/app_routes.dart';
-import 'package:telegrammy/cores/services/service_locator.dart';
-import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
-import 'package:telegrammy/features/messages/presentation/data/messages.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/bottom_bar.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/chat_appbar.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/chat_details_body.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/reply_preview.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/selected_message_appbar.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatWrapper extends StatefulWidget {
-  final String name;
-  final String id;
-  final String photo;
   final Message? forwardedMessage;
   final String userId;
-  final String lastSeen;
+    final ChatView chat;
   const ChatWrapper(
       {required this.userId,
       Key? key,
-      required this.lastSeen,
-      required this.name,
-      required this.id,
-      required this.photo,
-      this.forwardedMessage})
+      this.forwardedMessage,
+      required this.chat,
+      })
       : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -40,15 +25,11 @@ class ChatWrapperState extends State<ChatWrapper> {
   @override
   void initState() {
     super.initState();
-    // loadChatData();
-    // getit.get<SocketService>().connect();
-
-    // socketService.connect();
   }
 
   @override
   Widget build(BuildContext context) {
-    context.read<MessagesCubit>().fetchMessages(chatId: widget.id);
+    context.read<MessagesCubit>().fetchMessages(chatId: widget.chat.id);
     return BlocBuilder<MessagesCubit, MessagesState>(
       builder: (context, state) {
         if (state is MessagesLoading) {
@@ -56,24 +37,27 @@ class ChatWrapperState extends State<ChatWrapper> {
         } else if (state is Messagesfailture) {
           return Center(
               child: TextButton(
-            onPressed: () =>
-                context.read<MessagesCubit>().fetchMessages(chatId: widget.id),
+            onPressed: () => context
+                .read<MessagesCubit>()
+                .fetchMessages(chatId: widget.chat.id),
             child: const Text('Retry'),
           ));
         } else if (state is MessagesSuccess) {
           List<Participant> participants =
               state.chatData['participants'] as List<Participant>;
+          // String userRole=participants.firstWhere((element) => element.id==userId).role;
+          String userRole = 'Admin';
           List<Message> messages = state.chatData['messages'] as List<Message>;
           List<Message> reversedList = messages.reversed.toList();
           return ChatDetails(
-            name: widget.name,
-            id: widget.id,
-            photo: widget.photo,
-            lastSeen: widget.lastSeen,
-            messages: reversedList,
+            chatData: ChatData(
+              chat: widget.chat,
+              messages: reversedList,
+            ),
             forwardedMessage: widget.forwardedMessage,
             participants: participants,
             userId: widget.userId,
+            userRole: userRole,
           );
         } else {
           return Center(

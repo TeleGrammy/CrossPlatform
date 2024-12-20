@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +10,8 @@ import 'package:telegrammy/cores/styles/styles.dart';
 import 'package:telegrammy/cores/widgets/app_bar.dart';
 import 'package:telegrammy/features/profile/data/models/stories_model.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/story_cubit/story_cubit.dart';
-
+import 'dart:typed_data'; // For Uint8List
+import 'package:http_parser/http_parser.dart'; // For specifying content type in web
 class CreateStoryPage extends StatefulWidget {
   @override
   _CreateStoryPageState createState() => _CreateStoryPageState();
@@ -17,7 +19,8 @@ class CreateStoryPage extends StatefulWidget {
 
 class _CreateStoryPageState extends State<CreateStoryPage> {
   final ImagePicker _picker = ImagePicker();
-  String? _imageUrl; // This will store the image preview
+  Uint8List? _imageUrl; // This will store the image preview
+ String? _preview_imageUrl; // This will store the image preview
   final TextEditingController _captionController = TextEditingController();
 
   // Pick an image from the gallery
@@ -25,11 +28,23 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
     final XFile? selectedFile =
         await _picker.pickImage(source: ImageSource.gallery);
     if (selectedFile != null) {
-      final bytes = await selectedFile.readAsBytes();
-      final compressedImage = await _compressImage(bytes);
+           Uint8List fileBytes = await selectedFile.readAsBytes();
+      // final fileName = selectedFile.name;
+
+      // // Construct FormData
+      // final formData = FormData.fromMap({
+      //   "picture": MultipartFile.fromBytes(
+      //     fileBytes,
+      //     filename: fileName,
+      //     contentType: MediaType("image", "jpeg"), // Adjust based on file type
+      //   ),
+      // });
+        final compressedImage = await _compressImage(fileBytes);
       final base64Image = base64Encode(compressedImage); // Encode to Base64
+
       setState(() {
-        _imageUrl = base64Image; // Update the image preview
+        _imageUrl =fileBytes; // Update the image preview
+        _preview_imageUrl=base64Image;
       });
     }
   }
@@ -43,7 +58,8 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
       final compressedImage = await _compressImage(bytes);
       final base64Image = base64Encode(compressedImage); // Encode to Base64
       setState(() {
-        _imageUrl = base64Image; // Update the image preview
+        _imageUrl = bytes; // Update the image preview
+        _preview_imageUrl=base64Image;
       });
     }
   }
@@ -69,9 +85,13 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
   // Post the story (Base64 image and caption)
   void _postStory() {
     final story = StoryCreation(
+      mediaType: 'picture',
       content: _captionController.text, // Caption
       media: _imageUrl, // Base64 encoded image (can be null)
     );
+    print(_captionController.text);
+    // print(_imageUrl);
+
     // Call API to send the story data to the backend
     context.read<StoriesCubit>().updateStory(story);
 
@@ -126,7 +146,7 @@ class _CreateStoryPageState extends State<CreateStoryPage> {
                             color: tileInfoHintColor)))
                 : Image.memory(
                     base64Decode(
-                        _imageUrl!), // Display the Base64 image preview
+                        _preview_imageUrl!), // Display the Base64 image preview
                     fit: BoxFit.cover,
                   ),
           ),

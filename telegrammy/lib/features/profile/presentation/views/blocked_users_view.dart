@@ -8,6 +8,7 @@ import 'package:telegrammy/cores/widgets/app_bar.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/blocked_users_cubit/blocked_users_state.dart';
 import 'package:telegrammy/features/profile/presentation/views/contacts_to_block.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/block_users_app_bar,.dart';
 
 class BlockingPage extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _BlockingPageState extends State<BlockingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Colors.black, // Set background to black
-      appBar: GeneralAppBar(
+      appBar: BlockAppBar(
         titleBar: 'Blocked Users',
         key: const ValueKey('BlockedUsersAppBar'),
       ),
