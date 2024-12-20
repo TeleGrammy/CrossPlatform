@@ -4,17 +4,17 @@ class SecureDraftStorageService {
   final _storage = const FlutterSecureStorage();
 
   // Save draft securely
-  Future<void> saveDraft(String chatId, String draftContent) async {
-    await _storage.write(key: 'draft_$chatId', value: draftContent);
+  Future<void> saveDraft( bool isAdmin) async {
+    await _storage.write(key: 'isAdmin', value: isAdmin?'true':'false');
   }
 
   // Load draft securely
-  Future<String?> loadDraft(String chatId) async {
-    return await _storage.read(key: 'draft_$chatId');
+  Future<String?> loadDraft() async {
+    return await _storage.read(key: 'isAdmin');
   }
 
   // Clear draft securely
   Future<void> clearDraft(String chatId) async {
-    await _storage.delete(key: 'draft_$chatId');
+    await _storage.delete(key: 'isAdmin');
   }
 }

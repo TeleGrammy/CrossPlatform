@@ -38,7 +38,7 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   final TextEditingController _messageController = TextEditingController();
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-  final _secureDraftService = SecureDraftStorageService();
+  // final _secureDraftService = SecureDraftStorageService();
   bool _isTyping = false;
   bool _isRecording = false;
   String? _recordPath;

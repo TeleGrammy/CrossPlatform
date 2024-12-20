@@ -5,6 +5,7 @@ import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/cores/services/draft_storage_service.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
@@ -24,12 +25,21 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class _ChatsScreenState extends State<ChatsScreen> {
+   bool isAdmin = false; // Track admin status
   @override
   void initState() {
     super.initState();
+      _fetchAdminStatus(); // Fetch admin status
     getit.get<GroupSocketService>().connectToGroupServer();
   }
-
+ Future<void> _fetchAdminStatus() async {
+    final SecureDraftStorageService storageService = SecureDraftStorageService();
+    final adminStatus = await storageService.loadDraft();
+    // print('fff$adminStatus');
+    setState(() {
+      isAdmin = adminStatus == 'true'; // Update admin status
+    });
+  }
   @override
   void dispose() {
     //getit.get<GroupSocketService>().disconnectGroups();
@@ -75,36 +85,37 @@ class _ChatsScreenState extends State<ChatsScreen> {
               context.goNamed(RouteNames.globalSearch);
             },
           ),
-       IconButton(
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return SimpleDialog(
-          title: const Text('Navigate to'),
-          children: [
-            ListTile(
-              leading: const Icon(Icons.group),
-              title: const Text('Groups'),
-              onTap: () {
-                context.goNamed(RouteNames.adminDashboardPageFilterMedia); // Navigate to Groups page
+       if (isAdmin) // Show admin icon only if user is admin
+            IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: const Text('Navigate to'),
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.group),
+                          title: const Text('Groups'),
+                          onTap: () {
+                            context.goNamed(RouteNames.adminDashboardPageFilterMedia);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.person),
+                          title: const Text('Users'),
+                          onTap: () {
+                            context.goNamed(RouteNames.adminDashboardPage);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
+              icon: const Icon(Icons.admin_panel_settings),
+              tooltip: 'Admin Dashboard',
             ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Users'),
-              onTap: () {
-                context.goNamed(RouteNames.adminDashboardPage); // Navigate to Users page
-              },
-            ),
-          ],
-        );
-      },
-    );
-  },
-  icon: const Icon(Icons.admin_panel_settings),
-  tooltip: 'Admin Dashboard',
-),
           PopupMenuButton<String>(
             icon: const Icon(Icons.add_circle_rounded),
             onSelected: onDropdownItemSelected,
