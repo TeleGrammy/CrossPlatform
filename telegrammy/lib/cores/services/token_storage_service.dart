@@ -1,40 +1,43 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenStorageService {
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-
-  // Keys used for secure storage
+  // Keys used for SharedPreferences
   static const String _tokenKey = 'accessToken';
-  static const String _emailKey = 'emil';
+  static const String _emailKey = 'email';
 
-  // Save token to secure storage
+  // Save token to SharedPreferences
   Future<void> saveToken(String token) async {
-    await _secureStorage.write(key: _tokenKey, value: token);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
   }
 
-  // Save captcha token to secure storage
+  // Save email to SharedPreferences
   Future<void> saveEmail(String email) async {
-    await _secureStorage.write(key: _emailKey, value: email);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_emailKey, email);
   }
 
-  // Retrieve token from secure storage
+  // Retrieve token from SharedPreferences
   Future<String?> getToken() async {
-    return await _secureStorage.read(key: _tokenKey);
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_tokenKey);
   }
 
-  // Retrieve captcha token from secure storage
+  // Retrieve email from SharedPreferences
   Future<String?> getEmail() async {
-    return await _secureStorage.read(key: _emailKey);
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_emailKey);
   }
 
-  // Delete token from secure storage
+  // Delete token from SharedPreferences
   Future<void> deleteToken() async {
-    await _secureStorage.delete(key: _tokenKey);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
   }
 
-  // Delete captcha token from secure storage
+  // Delete email from SharedPreferences
   Future<void> deleteEmail() async {
-    await _secureStorage.delete(key: _emailKey);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_emailKey);
   }
 }

@@ -6,6 +6,13 @@ class Chat {
   final String? photo;
   final LastMessage? lastMessage;
   final String draftMessage;
+  final bool isChannel;
+  final bool isGroup;
+  final List<Participant> participants;
+  final String? pinnedMessages;
+  final String? createdAt;
+  final String? channelId;
+  final String? groupId;
 
   Chat({
     required this.id,
@@ -13,17 +20,30 @@ class Chat {
     this.photo,
     this.lastMessage,
     required this.draftMessage,
+    required this.isChannel,
+    this.pinnedMessages,
+    required this.participants,
+    required this.isGroup,
+    this.createdAt,
+    this.channelId,
+    this.groupId,
   });
 
   factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
       id: json['id'],
       name: json['name'],
-      photo: json['photo'],
+      photo: (json['photo']) ?? 'default.jpg',
       lastMessage: json['lastMessage'] != null
           ? LastMessage.fromJson(json['lastMessage'])
           : null,
-      draftMessage: json['draftMessage']==null ? '' : json['draftMessage'],
+      draftMessage: json['draftMessage'] == null ? '' : json['draftMessage'],
+      createdAt: json['createdAt'],
+      isChannel: json['isChannel'] ?? false,
+      isGroup: json['isGroup'] ?? false,
+      participants: json['participants'] ?? [],
+      channelId: (json['isChannel'] == true) ? json['channelId'] : null,
+      groupId: (json['isGroup'] == true) ? json['groupId'] : null,
     );
   }
 
@@ -34,6 +54,7 @@ class Chat {
       'photo': photo,
       'lastMessage': lastMessage?.toJson(),
       'draftMessage': draftMessage,
+      'isChannel': isChannel,
     };
   }
 }
@@ -111,12 +132,14 @@ class Participant {
   final User user;
   final String joinedAt;
   final String draftMessage;
+  final String role;
 
   Participant({
     required this.id,
     required this.user,
     required this.joinedAt,
     required this.draftMessage,
+    required this.role,
   });
 
   factory Participant.fromJson(Map<String, dynamic> json) {
@@ -125,6 +148,7 @@ class Participant {
       user: User.fromJson(json['userId']),
       joinedAt: json['joinedAt'],
       draftMessage: json['draft_message'],
+      role: json['role'],
     );
   }
 
@@ -134,6 +158,7 @@ class Participant {
       'userId': user.toJson(),
       'joinedAt': joinedAt,
       'draft_message': draftMessage,
+      'role': role
     };
   }
 }

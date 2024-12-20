@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
+import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
-import 'package:telegrammy/features/messages/presentation/data/messages.dart';
-import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/bottom_bar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_appbar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_details_body.dart';
+import 'package:telegrammy/features/messages/presentation/widgets/pinned_message_bar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/reply_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_appbar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatDetails extends StatefulWidget {
+  final String lastSeen;
+  final Message? forwardedMessage;
+  final String userId;
+  final String userRole;
+  final ChatData chatData;
+  final List<Message> messages;
   final String name;
   final String id;
   final String photo;
-  final String lastSeen;
-  final List<Message> messages;
-  final Message? forwardedMessage;
 
   const ChatDetails({
     Key? key,
@@ -31,6 +34,9 @@ class ChatDetails extends StatefulWidget {
     required this.lastSeen,
     required this.messages,
     this.forwardedMessage,
+    required this.chatData,
+    required this.userRole,
+    required this.userId,
   }) : super(key: key);
 
   @override
@@ -41,6 +47,11 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? selectedMessage;
   Message? repliedMessage;
   Message? editedMessage;
+  Message? lastPinnedMessage;
+  Message? SearchedMessage;
+  late List<Participant> participants;
+  bool isPinned = false;
+  final ScrollController _scrollController = ScrollController();
   bool isSocketInitialized = false; // Tracks whether the socket is ready
 
   @override
@@ -51,6 +62,9 @@ class ChatDetailsState extends State<ChatDetails> {
 
   Future<void> _initializeSocketConnection() async {
     await getit.get<SocketService>().connect();
+    if (widget.chatData.chat.isChannel) {
+      getit.get<ChannelSocketService>().connect();
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.forwardedMessage != null) {
@@ -63,7 +77,7 @@ class ChatDetailsState extends State<ChatDetails> {
           },
         );
       }
-      
+
       getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
         context.goNamed(RouteNames.incomingCall, extra: {
           'name': 'mmmomo',
@@ -78,9 +92,24 @@ class ChatDetailsState extends State<ChatDetails> {
     });
   }
 
+  bool checkPinning() {
+    if (lastPinnedMessage != null) {
+      if (selectedMessage?.id == lastPinnedMessage?.id) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return false;
+  }
+
   void onMessageTap(Message message) {
+    // print(message.isPinned);
     setState(() {
       selectedMessage = message;
+
+      isPinned = checkPinning();
     });
   }
 
@@ -116,6 +145,103 @@ class ChatDetailsState extends State<ChatDetails> {
     }
   }
 
+  void onClickPin() {
+    // print(selectedMessage!.content);
+    getit.get<SocketService>().pinMessage(
+      'message:pin',
+      {'messageId': selectedMessage!.id, 'chatId': widget.chatData.chat.id},
+    );
+
+// comming from server
+    getit.get<SocketService>().pinMessagerecived('message:pin', (data) {
+      if (data != null && data['isPinned'] == true) {
+        // Find the message by its ID and replace replyOn with the message object
+        print(data);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text("Message pinned: ${lastPinnedMessage?.content ?? ''}"),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    });
+
+    setState(() {
+      lastPinnedMessage = selectedMessage;
+      selectedMessage = null;
+    });
+  }
+
+  void goToPinnedMessage() {
+    if (lastPinnedMessage != null) {
+      final index = widget.chatData.messages
+          .indexWhere((msg) => msg.id == lastPinnedMessage!.id);
+      // print(lastPinnedMessage?.content);
+      // print(index);
+
+      if (index != -1) {
+        final messagePosition = index * 72.0; // Approximate height per message
+        // _scrollController.animateTo(
+        //   messagePosition,
+        //   duration: Duration(milliseconds: 4300),
+        //   curve: Curves.easeInOut,
+        // );
+        print("salmmma");
+      } else {
+        print('Message not found in the list.');
+      }
+    }
+  }
+
+  void onClickUnpin() {
+    getit.get<SocketService>().unpinMessage(
+      'message:unpin',
+      {'messageId': selectedMessage!.id, 'chatId': widget.chatData.chat.id},
+    );
+
+    getit.get<SocketService>().unpinMessagerecived('message:unpin', (data) {
+      if (data != null && data['isPinned'] == false) {
+        // Find the message by its ID and replace replyOn with the message object
+        //  print(data);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Message unpinned: ${data['content'] ?? ''}"),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    });
+    setState(() {
+      lastPinnedMessage = null;
+      selectedMessage = null;
+    });
+  }
+
+  void createDraft(String draftContent) {
+    getit.get<SocketService>().draftMessage(
+      'draft',
+      {'chatId': widget.id},
+    );
+
+    getit.get<SocketService>().draftMessagerecived('draft', (data) {
+      if (data != null) {
+        // Find the message by its ID and replace replyOn with the message object
+        //  print(data);
+        //    ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text("Message unpinned: ${data['content']?? ''}"),
+        //     duration: const Duration(seconds: 2),
+        //   ),
+        // );
+      }
+    });
+    setState(() {
+      // lastPinnedMessage=null;
+      // selectedMessage = null;
+    });
+  }
+
   void onReply() {
     if (selectedMessage != null) {
       onMessageSwipe(selectedMessage!);
@@ -123,6 +249,97 @@ class ChatDetailsState extends State<ChatDetails> {
         selectedMessage = null;
       });
     }
+  }
+
+  void onPin() {
+    // onMessageSwipe(selectedMessage!);
+    // setState(() {
+    //   selectedMessage = null;
+    // });
+    print('salma');
+  }
+
+  void onSearch() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        TextEditingController searchController = TextEditingController();
+        List<Message> filteredMessages = [];
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text("Search Messages"),
+              content: SizedBox(
+                width: double
+                    .maxFinite, // Ensures the dialog adapts to content size
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Search Input Field
+                    TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        labelText: "Search",
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            searchController.clear();
+                            setState(() {
+                              filteredMessages = [];
+                            });
+                          },
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          filteredMessages = widget.chatData.messages
+                              .where((message) =>
+                                  RegExp(value, caseSensitive: false)
+                                      .hasMatch(message.content))
+                              .toList();
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    // Scrollable List of Filtered Messages
+                    filteredMessages.isNotEmpty
+                        ? Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: filteredMessages.length,
+                              itemBuilder: (context, index) {
+                                final message = filteredMessages[index];
+                                return ListTile(
+                                  title: Text(message.content),
+                                  onTap: () {
+                                    setState(() {
+                                      SearchedMessage = message;
+                                      print(SearchedMessage!.content);
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              },
+                            ),
+                          )
+                        : const Text("No results found."),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Close"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -142,9 +359,12 @@ class ChatDetailsState extends State<ChatDetails> {
               appBar: selectedMessage == null
                   ? ChatAppbar(
                       key: const Key('chatAppBar'),
+                      lastSeen: widget.lastSeen,
+                      userRole: widget.userRole,
+                      chat: widget.chatData.chat,
+                      onSearch: onSearch,
                       name: widget.name,
                       photo: widget.photo,
-                      lastSeen: widget.lastSeen,
                       id: widget.id,
                     )
                   : SelectedMessageAppbar(
@@ -154,17 +374,25 @@ class ChatDetailsState extends State<ChatDetails> {
                       },
                       onClickEdit: onClickEdit,
                       onClickDelete: onClickDelete,
+                      onClickPin: onClickPin,
+                      onClickUnpin: onClickUnpin,
+                      isPinned: isPinned,
                     ),
               body: Column(
                 children: [
+                  // Show pinned message bar if a message is pinned
+
                   Expanded(
                     child: ChatDetailsBody(
                       key: const Key('chatDetailsBody'),
-                      messages: widget.messages,
+                      messages: widget.chatData.messages,
                       onMessageTap: onMessageTap,
                       onMessageSwipe: onMessageSwipe,
                       selectedMessage: selectedMessage,
-                      userId: widget.id,
+                      userId: widget.userId,
+                      searchedMessage: SearchedMessage,
+                      havePin: lastPinnedMessage != null,
+                      lastPinnedMessage: lastPinnedMessage,
                     ),
                   ),
                   if (repliedMessage != null)
@@ -182,11 +410,14 @@ class ChatDetailsState extends State<ChatDetails> {
                           clearReply: clearReply,
                           editedMessage: editedMessage,
                           repliedMessage: repliedMessage,
-                          chatId: widget.id,
+                          chatId: widget.chatData.chat.id,
+                          isChannel: widget.chatData.chat.isChannel,
                         )
                       : SelectedMessageBottomBar(
                           key: const Key('selectedMessageBottomBar'),
-                          onReply: onReply,
+                          onReply: () {
+                            onReply();
+                          },
                           selectedMessage: selectedMessage!,
                         ),
                 ],
