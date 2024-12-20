@@ -41,11 +41,11 @@ class ChannelSearchResult extends SearchResult {
   }
 }
 
-class MessageSearchResult extends SearchResult {
-  MessageSearchResult(id, title, subtitle, picture)
+class MessageGlobalSearchResult extends SearchResult {
+  MessageGlobalSearchResult(id, title, subtitle, picture)
       : super(id: id, title: title, subtitle: subtitle, picture: picture);
 
-  factory MessageSearchResult.fromJson(Map<String, dynamic> json) {
+  factory MessageGlobalSearchResult.fromJson(Map<String, dynamic> json) {
     String subtitle, img;
     if (json['groupId'] != null) {
       subtitle = json['groupName'];
@@ -54,7 +54,8 @@ class MessageSearchResult extends SearchResult {
       subtitle = json['channelName'];
       img = json['channelImage'];
     }
-    return MessageSearchResult(json['_id'], json['content'], subtitle, img);
+    return MessageGlobalSearchResult(
+        json['_id'], json['content'], subtitle, img);
   }
 }
 
@@ -86,7 +87,7 @@ class GlobalSearchResponse {
     } else {
       return GlobalSearchResponse(
         results: (json['message'] as List<dynamic>)
-            .map((item) => MessageSearchResult.fromJson(item))
+            .map((item) => MessageGlobalSearchResult.fromJson(item))
             .toList(),
       );
     }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/services/global_search_api_service.dart';
 import 'package:telegrammy/cores/styles/styles.dart';
-import 'package:telegrammy/features/search/data/models/search_model.dart';
+import 'package:telegrammy/features/search/data/models/global_search_model.dart';
 
 import '../../../../cores/constants/app_colors.dart';
 import '../../../../cores/routes/route_names.dart';
@@ -24,7 +24,7 @@ class _GlobalSearchViewState extends State<GlobalSearchView> {
     'Global': ['user', 'group', 'channel', 'message'],
     'Messages': ['all', 'text', 'image', 'video', 'link'],
   };
-  final Map<String, String> _attributes = {
+  final Map<String, String> _globalAttributes = {
     'user': 'uuid',
     'group': 'name',
     'channel': 'name',
@@ -33,7 +33,7 @@ class _GlobalSearchViewState extends State<GlobalSearchView> {
 
   void search(String category, String subCategory, String query) async {
     if (category == 'Global') {
-      String attribute = _attributes[subCategory]!;
+      String attribute = _globalAttributes[subCategory]!;
       final response = await getit
           .get<GlobalSearchApiService>()
           .globalSearch(subCategory, attribute, query);
@@ -41,6 +41,10 @@ class _GlobalSearchViewState extends State<GlobalSearchView> {
       setState(() {
         results = response.results;
       });
+    } else {
+      final respone = await getit
+          .get<GlobalSearchApiService>()
+          .searchMessages(query, subCategory);
     }
   }
 

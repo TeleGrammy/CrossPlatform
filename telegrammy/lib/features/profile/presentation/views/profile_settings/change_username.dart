@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../../cores/routes/route_names.dart';
 import '../../widgets/profile_settings/profile_settings_app_bar.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import '../../view_models/profile_settings_cubit/profile_state.dart';
@@ -47,7 +48,8 @@ class _ChangeUsernameViewState extends State<ChangeUsernameView> {
                         SnackBar(
                             content: Text('Username updated successfully!')),
                       );
-                      context.pop();
+                      //context.pop();
+                      context.goNamed(RouteNames.login);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
