@@ -6,15 +6,14 @@ import 'package:telegrammy/features/messages/presentation/view_models/messages_c
 import 'package:telegrammy/features/messages/presentation/views/chat_details.dart';
 
 class ChatWrapper extends StatefulWidget {
-  final String lastSeen;
   final Message? forwardedMessage;
-  final Chat chat;
-
+  final String userId;
+  final ChatView chat;
   const ChatWrapper({
+    required this.userId,
     Key? key,
-    required this.chat,
-    required this.lastSeen,
     this.forwardedMessage,
+    required this.chat,
   }) : super(key: key); // Key for ChatDetails widget
 
   @override
@@ -48,16 +47,16 @@ class ChatWrapperState extends State<ChatWrapper> {
           // String userRole=participants.firstWhere((element) => element.id==userId).role;
           String userRole = 'Admin';
           List<Message> messages = state.chatData['messages'] as List<Message>;
-          messages = messages.reversed.toList();
+          List<Message> reversedList = messages.reversed.toList();
           return ChatDetails(
             chatData: ChatData(
               chat: widget.chat,
-              messages: messages,
+              messages: reversedList,
             ),
-            lastSeen: widget.lastSeen,
             forwardedMessage: widget.forwardedMessage,
+            participants: participants,
+            userId: widget.userId,
             userRole: userRole,
-            userId: '',
           );
         } else {
           return Center(

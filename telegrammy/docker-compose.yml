@@ -1,7 +1,7 @@
 services:
   backend:
     # image: telegrammy/backend:group-channel-management # telegrammy/backend:[module_name] (check with the backend repo)
-    image: telegrammy/backend:admin-dashboard # telegrammy/backend:[module_name] (check with the backend repo)
+    image: telegrammy/backend:voice-call # telegrammy/backend:[module_name] (check with the backend repo)
     ports:
       - "8080:${PORT}"
     env_file: 

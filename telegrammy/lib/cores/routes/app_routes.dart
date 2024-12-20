@@ -147,39 +147,35 @@ class AppRoutes {
         },
       ),
       GoRoute(
-        name: RouteNames.chatWrapper,
-        path: '/chatWrapper',
-        builder: (context, state) {
-          final List<dynamic> extras = state.extra as List<dynamic>;
-          // String name = extras[0];
-          // String id = extras[1];
-          // String photo = extras[2];
-          // bool isChannel = extras[4];
-          Chat chat = extras[0];
-          String lastSeen = extras[1];
-          Message? forwardMessage;
-          if (extras.length == 3) forwardMessage = extras[5];
+          name: RouteNames.chatWrapper,
+          path: '/chatWrapper',
+          builder: (context, state) {
+            final List<dynamic> extras = state.extra as List<dynamic>;
+            // String name = extras[0];
+            // String id = extras[1];
+            // String photo = extras[2];
+            // bool isChannel = extras[4];
+            ChatView chat = extras[0];
+            String userId = extras[1];
+            Message? forwardMessage;
+            if (extras.length == 3) forwardMessage = extras[2];
 
-          return BlocProvider(
-            create: (context) => MessagesCubit(),
-            child: ChatWrapper(
-              chat: chat,
-              lastSeen: lastSeen,
-              forwardedMessage: forwardMessage,
-            ),
-          );
-        },
-      ),
+            return BlocProvider(
+                create: (context) => MessagesCubit(),
+                child: ChatWrapper(
+                  chat: chat,
+                  forwardedMessage: forwardMessage,
+                  userId: userId,
+                ));
+          }),
+
       GoRoute(
-        name: RouteNames.emailVerification,
-        path: '/email-verification',
-        builder: (context, state) {
-          return BlocProvider(
-            create: (context) => SignUpCubit(),
-            child: AccountVerificationView(),
-          );
-        },
-      ),
+          name: RouteNames.emailVerification,
+          path: '/email-verification',
+          builder: (context, state) => BlocProvider(
+                create: (context) => SignUpCubit(),
+                child: AccountVerificationView(),
+              )),
       GoRoute(
         name: RouteNames.login,
         path: '/',
@@ -418,9 +414,9 @@ class AppRoutes {
           builder: (context, state) {
             Map<String, dynamic>? params = state.extra as Map<String, dynamic>?;
             return OutgoingCallScreen(
-                name: params!['name'],
-                photoUrl: params['photo'],
-                chatId: params['id']);
+              chat: params!['chat'],
+              userId: params['userId'],
+            );
           }),
       GoRoute(
           name: RouteNames.incomingCall,
@@ -438,6 +434,8 @@ class AppRoutes {
                 params['remoteOffer']
                     ['type'], // Type string from the JSON (e.g., "offer")
               ),
+              chat: params['chat'],
+              userId: params['userId'],
             );
           }),
       GoRoute(
@@ -445,7 +443,7 @@ class AppRoutes {
         path: '/group-settings',
         builder: (context, state) {
           final List<dynamic> extras = state.extra as List<dynamic>;
-          Chat chat = extras[0];
+          ChatView chat = extras[0];
           String lastSeen = extras[1];
           return BlocProvider(
             create: (context) => GroupCubit(),

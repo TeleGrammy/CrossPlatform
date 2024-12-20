@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
@@ -124,7 +127,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
               key: ValueKey('loading_contacts'),
             ));
           } else if (state is ContactsSuccess) {
-            final chats = state.chats;
+            final chats = state.chats['chats'] as List<ChatView>;
+            final userId = state.chats['userId'] as String;
             // final userId=result['userId'];
             // final userId = state.userId; // Current user's ID
 
@@ -138,15 +142,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 // final participant = chat.participants.firstWhere(
                 //   (p) => p.userId['_id'] != userId,
                 // );
-
-                final name = chat.name;
-                final photo = chat.photo ?? 'default.jpg';
-                // final draftMessage = '';
-                final lastMessage = chat.lastMessage?.content ?? '';
-                final String id = chat.id;
                 final lastMessageTime =
                     chat.lastMessage?.timestamp.toString() ?? '';
-                final lastSeen = '';
+                final String? draftMessage = chat.draftMessage;
                 // print(id);
                 // final name = participant.userId['screenName'] ?? 'Unknown';
                 // final photo = participant.userId['picture'] ?? 'default.jpg';
@@ -155,8 +153,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 return ContactPreview(
                   key: Key('contactItem_$index'),
                   chat: chat,
-                  lastSeen: lastSeen,
                   forwardMessage: widget.forwardMessage,
+                  draftMessage: draftMessage,
+                  userId: userId,
+                  lastMessageTime: lastMessageTime,
                 );
               },
             );

@@ -16,7 +16,7 @@ class EditGroupSettingsView extends StatefulWidget {
       required this.chat,
       required this.lastSeen});
   final String groupId;
-  final Chat chat;
+  final ChatView chat;
   final String lastSeen;
 
   @override

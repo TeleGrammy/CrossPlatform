@@ -2,14 +2,14 @@ import 'package:meta/meta.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 class ChatData {
-  final Chat chat;
+  final ChatView chat;
   final List<Message> messages;
 
   ChatData({required this.chat, required this.messages});
 
   factory ChatData.fromJson(Map<String, dynamic> json) {
     return ChatData(
-      chat: Chat.fromJson(json['chat']),
+      chat: ChatView.fromJson(json['chat']),
       messages: json['messages'],
     );
   }

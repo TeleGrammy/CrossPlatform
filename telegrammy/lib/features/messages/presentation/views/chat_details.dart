@@ -16,11 +16,12 @@ import 'package:telegrammy/features/messages/presentation/widgets/selected_messa
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatDetails extends StatefulWidget {
-  final String lastSeen;
   final Message? forwardedMessage;
   final String userId;
+  // final List<Participant> participants;
   final String userRole;
   final ChatData chatData;
+  final List<Participant> participants;
   // final List<Message> messages;
   // final String name;
   // final String id;
@@ -28,15 +29,16 @@ class ChatDetails extends StatefulWidget {
 
   const ChatDetails({
     Key? key,
+    required this.participants,
     // required this.name,
     // required this.id,
     // required this.photo,
-    required this.lastSeen,
+    // required this.lastSeen,
     // required this.messages,
     this.forwardedMessage,
+    required this.userId,
     required this.chatData,
     required this.userRole,
-    required this.userId,
   }) : super(key: key);
 
   @override
@@ -49,7 +51,7 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? editedMessage;
   Message? lastPinnedMessage;
   Message? SearchedMessage;
-  late List<Participant> participants;
+  // late List<Participant> participants;
   bool isPinned = false;
   final ScrollController _scrollController = ScrollController();
   bool isSocketInitialized = false; // Tracks whether the socket is ready
@@ -58,6 +60,13 @@ class ChatDetailsState extends State<ChatDetails> {
   void initState() {
     super.initState();
     _initializeSocketConnection();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    getit.get<SocketService>().removeCallListener('call:incomingCall');
+    // getit.get<SocketService>().disconnect();
   }
 
   Future<void> _initializeSocketConnection() async {
@@ -79,12 +88,16 @@ class ChatDetailsState extends State<ChatDetails> {
       }
 
       getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
-        context.goNamed(RouteNames.incomingCall, extra: {
-          'name': 'mmmomo',
-          'photo': 'default.png',
-          'callId': response['_id'],
-          'remoteOffer': response['callObj']['offer'],
-        });
+        if (mounted) {
+          context.goNamed(RouteNames.incomingCall, extra: {
+            'name': 'mmmomo',
+            'photo': 'default.png',
+            'callId': response['_id'],
+            'remoteOffer': response['callObj']['offer'],
+            'chat': widget.chatData.chat,
+            'userId': widget.userId,
+          });
+        }
       });
       setState(() {
         isSocketInitialized = true; // Mark socket as initialized
@@ -359,8 +372,9 @@ class ChatDetailsState extends State<ChatDetails> {
               appBar: selectedMessage == null
                   ? ChatAppbar(
                       key: const Key('chatAppBar'),
-                      lastSeen: widget.lastSeen,
+                      lastSeen: widget.chatData.chat.lastSeen!,
                       userRole: widget.userRole,
+                      userId: widget.userId,
                       chat: widget.chatData.chat,
                       onSearch: onSearch,
                       name: widget.chatData.chat.name,
@@ -390,6 +404,7 @@ class ChatDetailsState extends State<ChatDetails> {
                       onMessageSwipe: onMessageSwipe,
                       selectedMessage: selectedMessage,
                       userId: widget.userId,
+                      participants: widget.participants,
                       searchedMessage: SearchedMessage,
                       havePin: lastPinnedMessage != null,
                       lastPinnedMessage: lastPinnedMessage,

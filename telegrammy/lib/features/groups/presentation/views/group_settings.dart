@@ -17,7 +17,7 @@ class GroupSettingsView extends StatefulWidget {
   GroupSettingsView({super.key, required this.chat, required this.lastSeen}) {
     groupId = chat.groupId!;
   }
-  final Chat chat;
+  final ChatView chat;
   final String lastSeen;
   late String groupId;
 

@@ -222,7 +222,7 @@ class ApiService {
     }
   }
 
-  Future<List<Chat>> fetchChats() async {
+  Future<Map<String,dynamic>> fetchChats() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
       final response = await getit.get<Dio>().get(
@@ -236,8 +236,13 @@ class ApiService {
       if (response.statusCode == 200) {
         List<dynamic> chats = response.data['chats'];
         print(chats);
-        // final String userId = response.data['userId'];
-        return chats.map((chat) => Chat.fromJson(chat)).toList();
+        final String userId = response.data['userId'];
+        List<ChatView> chatsobjects = chats.map((chat) => ChatView.fromJson(chat)).toList();
+        return {
+          "chats": chatsobjects,
+          "userId": userId,
+        };
+        // return chats.map((chat) => Chat.fromJson(chat)).toList();
       } else {
         throw Exception('Failed to fetch contacts');
       }
