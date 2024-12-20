@@ -45,6 +45,7 @@ class MessagesCubit extends Cubit<MessagesState> {
       final result = await getit
           .get<MessagesRepoImplementaion>()
           .getMessages(chatId: chatId);
+      print(result);
       if (result.containsKey('error')) {
         emit(Messagesfailture(error: result['error'])); // Emit failure state
       } else {

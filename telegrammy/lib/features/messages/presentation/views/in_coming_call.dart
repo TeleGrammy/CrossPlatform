@@ -6,6 +6,8 @@ import 'package:telegrammy/cores/services/call_manager.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 
+import '../../data/models/contacts.dart';
+
 class IncomingCallScreen extends StatefulWidget {
   final String name;
   final String photoUrl;
@@ -14,16 +16,15 @@ class IncomingCallScreen extends StatefulWidget {
   final ChatView chat;
   final String userId;
 
-  const IncomingCallScreen({
-    Key? key,
-    required this.name,
-    required this.photoUrl,
-    required this.userId,
-    required this.lastSeen,
-    required this.callId,
-    required this.remoteOffer,
-    required this.chatId,
-  }) : super(key: key);
+  const IncomingCallScreen(
+      {Key? key,
+      required this.name,
+      required this.photoUrl,
+      required this.userId,
+      required this.callId,
+      required this.remoteOffer,
+      required this.chat})
+      : super(key: key);
 
   @override
   _IncomingCallScreenState createState() => _IncomingCallScreenState();
@@ -42,8 +43,8 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
       'callId': widget.callId,
       'status': 'ended',
     });
-    context.goNamed(RouteNames.chatWrapper,
-        extra: [chat,widget.userId]);
+    context
+        .goNamed(RouteNames.chatWrapper, extra: [widget.chat, widget.userId]);
     setState(() {
       _localRenderer.srcObject = null;
       _remoteRenderer.srcObject = null;
@@ -126,8 +127,8 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
     getit.get<SocketService>().endcall('call:reject', {
       'callId': widget.callId,
     });
-    context.goNamed(RouteNames.chatWrapper,
-        extra: [widget.name, widget.chatId, widget.photoUrl]);
+    context
+        .goNamed(RouteNames.chatWrapper, extra: [widget.chat, widget.userId]);
   }
 
   void _toggleMute() {
