@@ -28,11 +28,12 @@ class GroupSettingsView extends StatefulWidget {
 class _GroupSettingsViewState extends State<GroupSettingsView> {
   // String groupId = '6761f0048a2111362183137a';
   bool isAdmin = true; //TODO: use this to enable/disable admin functions
-
   @override
   void initState() {
     super.initState();
-    context.read<GroupCubit>().getGroupInfo(widget.groupId);
+    context
+        .read<GroupCubit>()
+        .getGroupInfo(widget.groupId, widget.chat, widget.lastSeen);
 
     getit.get<GroupSocketService>().connectToGroupServer();
     // getit.get<GroupSocketService>().listenGroupDeleted();
@@ -112,9 +113,13 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                 title: Text('View group members'),
                                 trailing: Icon(Icons.arrow_forward),
                                 onTap: () {
-                                  // TODO: show members
                                   context.goNamed(RouteNames.viewGroupMembers,
-                                      extra: [widget.groupId, state.members]);
+                                      extra: [
+                                        widget.groupId,
+                                        state.members,
+                                        widget.chat,
+                                        widget.lastSeen
+                                      ]);
                                 }),
                           ],
                         ),
@@ -129,6 +134,8 @@ class _GroupSettingsViewState extends State<GroupSettingsView> {
                                     state.contactsExcludingMembers!,
                                 membersToMakeAdmins: state.nonAdminMembers!,
                                 nonAdminMembers: state.nonAdminMembers!,
+                                chat: widget.chat,
+                                lastSeen: widget.lastSeen,
                               ),
                         SizedBox(height: 20),
                         RoundedButton(

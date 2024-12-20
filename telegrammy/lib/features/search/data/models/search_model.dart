@@ -46,8 +46,15 @@ class MessageSearchResult extends SearchResult {
       : super(id: id, title: title, subtitle: subtitle, picture: picture);
 
   factory MessageSearchResult.fromJson(Map<String, dynamic> json) {
-    return MessageSearchResult(
-        json['_id'], json['name'], json['description'], null);
+    String subtitle, img;
+    if (json['groupId'] != null) {
+      subtitle = json['groupName'];
+      img = json['groupImage'];
+    } else {
+      subtitle = json['channelName'];
+      img = json['channelImage'];
+    }
+    return MessageSearchResult(json['_id'], json['content'], subtitle, img);
   }
 }
 

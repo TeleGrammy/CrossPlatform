@@ -5,12 +5,19 @@ import 'package:telegrammy/features/profile/presentation/widgets/profile_setting
 import '../../../../cores/routes/route_names.dart';
 import '../../../../cores/services/groups_socket.dart';
 import '../../../../cores/services/service_locator.dart';
+import '../../../messages/data/models/contacts.dart';
 import '../../data/models/group.dart';
 
 class AddGroupMembersView extends StatefulWidget {
-  AddGroupMembersView({required this.groupId, required this.contactsToAddFrom});
+  AddGroupMembersView(
+      {required this.groupId,
+      required this.contactsToAddFrom,
+      required this.chat,
+      required this.lastSeen});
   final String groupId;
   final List<ContactData> contactsToAddFrom;
+  Chat chat;
+  String lastSeen;
   @override
   _AddGroupMembersViewState createState() => _AddGroupMembersViewState();
 }
@@ -26,7 +33,8 @@ class _AddGroupMembersViewState extends State<AddGroupMembersView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ProfileSettingsAppBar(
-        backButtonOnPressed: () => context.goNamed(RouteNames.groupSettings),
+        backButtonOnPressed: () => context.goNamed(RouteNames.groupSettings,
+            extra: [widget.chat, widget.lastSeen]),
         title: 'Add members to group',
         key: const ValueKey('AddGroupMembersAppBar'),
       ),

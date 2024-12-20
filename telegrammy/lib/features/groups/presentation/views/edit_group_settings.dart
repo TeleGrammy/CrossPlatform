@@ -40,7 +40,9 @@ class _EditGroupSettingsViewState extends State<EditGroupSettingsView> {
   @override
   void initState() {
     super.initState();
-    context.read<GroupCubit>().getGroupInfo(widget.groupId);
+    context
+        .read<GroupCubit>()
+        .getGroupInfo(widget.groupId, widget.chat, widget.lastSeen);
   }
 
   @override

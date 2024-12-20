@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../messages/data/models/contacts.dart';
 import '../../data/models/group.dart';
 import '../../../../cores/routes/route_names.dart';
 import '../../../profile/presentation/widgets/profile_settings/settings_box.dart';
@@ -14,13 +15,17 @@ class GroupAdminSettings extends StatelessWidget {
       required this.groupSizeLimit,
       required this.contactsToAddFrom,
       required this.membersToMakeAdmins,
-      required this.nonAdminMembers});
+      required this.nonAdminMembers,
+      required this.chat,
+      required this.lastSeen});
   final String groupId;
   final String groupPrivacy;
   final int groupSizeLimit;
   final List<ContactData> contactsToAddFrom;
   final List<MemberData> membersToMakeAdmins;
   final List<MemberData> nonAdminMembers;
+  Chat chat;
+  String lastSeen;
 
   final List<String> _privacyOptions = const ["Public", "Private"];
   final List<String> _sizeLimits = const ['200', '500', '1000', '200000'];
@@ -72,10 +77,8 @@ class GroupAdminSettings extends StatelessWidget {
           title: Text('Add members to group'),
           trailing: Icon(Icons.arrow_forward),
           onTap: () => {
-            context.goNamed(RouteNames.addGroupMembers, extra: [
-              groupId,
-              contactsToAddFrom,
-            ]),
+            context.goNamed(RouteNames.addGroupMembers,
+                extra: [groupId, contactsToAddFrom, chat, lastSeen]),
           },
         ),
         ListTile(
@@ -83,10 +86,8 @@ class GroupAdminSettings extends StatelessWidget {
           title: Text('Remove members from group'),
           trailing: Icon(Icons.arrow_forward),
           onTap: () => {
-            context.goNamed(RouteNames.removeGroupMembers, extra: [
-              groupId,
-              nonAdminMembers,
-            ]),
+            context.goNamed(RouteNames.removeGroupMembers,
+                extra: [groupId, nonAdminMembers, chat, lastSeen]),
           },
         ),
         ListTile(
@@ -94,10 +95,8 @@ class GroupAdminSettings extends StatelessWidget {
           title: Text('Add admins to group'),
           trailing: Icon(Icons.arrow_forward),
           onTap: () => {
-            context.goNamed(RouteNames.addGroupAdmin, extra: [
-              groupId,
-              membersToMakeAdmins,
-            ]),
+            context.goNamed(RouteNames.addGroupAdmin,
+                extra: [groupId, membersToMakeAdmins, chat, lastSeen]),
           },
         ),
       ],

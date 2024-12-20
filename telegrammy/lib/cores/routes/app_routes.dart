@@ -447,6 +447,8 @@ class AppRoutes {
           return AddGroupMembersView(
             groupId: extras[0],
             contactsToAddFrom: extras[1],
+            chat: extras[2],
+            lastSeen: extras[3],
           );
         },
       ),
@@ -458,6 +460,8 @@ class AppRoutes {
           return GroupMembersView(
             groupId: extras[0],
             members: extras[1],
+            chat: extras[2],
+            lastSeen: extras[3],
           );
         },
       ),
@@ -469,6 +473,8 @@ class AppRoutes {
           return RemoveGroupMembersView(
             groupId: extras[0],
             membersToRemoveFrom: extras[1],
+            chat: extras[2],
+            lastSeen: extras[3],
           );
         },
       ),
@@ -482,6 +488,8 @@ class AppRoutes {
               child: AddGroupAdminView(
                 groupId: extras[0],
                 usersToMakeAdmins: extras[1],
+                chat: extras[2],
+                lastSeen: extras[3],
               ));
         },
       ),

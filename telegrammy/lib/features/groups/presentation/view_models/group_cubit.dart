@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:telegrammy/features/groups/data/repos/group_repo_implementation.dart';
 
 import '../../../../cores/services/service_locator.dart';
+import '../../../messages/data/models/contacts.dart';
 import '../../data/models/group.dart';
 
 part 'group_state.dart';
@@ -37,23 +38,12 @@ class GroupCubit extends Cubit<GroupState> {
         .toList();
   }
 
-  Future<void> getGroupInfo(String groupId) async {
+  Future<void> getGroupInfo(String groupId, Chat chat, String lastSeen) async {
     try {
       emit(GroupLoading());
       final Group groupData =
           await getit.get<GroupRepoImplementation>().getGroupInfo(groupId);
 
-      // final contactsResponse =
-      //     await getit.get<GroupRepoImplementation>().getContacts();
-      // print(contactsResponse.contacts);
-      //
-      // final membersResponse =
-      //     await getit.get<GroupRepoImplementation>().getGroupMembers(groupId);
-      // print(membersResponse.members);
-      //
-      // final adminsResponse =
-      //     await getit.get<GroupRepoImplementation>().getGroupAdmins(groupId);
-      // print(adminsResponse.admins);
       final List<dynamic> groupRelevantUsers = await getit
           .get<GroupRepoImplementation>()
           .getGroupRelevantUsers(groupId);
@@ -66,12 +56,6 @@ class GroupCubit extends Cubit<GroupState> {
 
       List<MemberData> nonAdminMembers =
           getNonAdminMembers(membersResponse.members, adminsResponse.admins);
-      // emit(GroupLoaded(
-      //   groupData: groupData,
-      //   contacts: contactsResponse.contacts,
-      //   admins: adminsResponse.admins,
-      //   members: membersResponse.members,
-      // ));
 
       emit(GroupLoaded(
         groupData: groupData,
@@ -108,7 +92,9 @@ class GroupCubit extends Cubit<GroupState> {
         result.fold((failure) {
           emit(GroupError(errorMessage: failure.errorMessage));
         }, (groupData) {
-          emit(GroupLoaded(groupData: groupData));
+          emit(GroupLoaded(
+            groupData: groupData,
+          ));
         });
       }
     }
@@ -122,24 +108,43 @@ class GroupCubit extends Cubit<GroupState> {
 
   Future<void> updateGroupPrivacy(String privacyOption) async {
     Group groupData = (state as GroupLoaded).groupData;
+    List<MemberData>? members = (state as GroupLoaded).members;
+    List<MemberData>? admins = (state as GroupLoaded).admins;
+    List<ContactData>? contactsExcludingMembers =
+        (state as GroupLoaded).contactsExcludingMembers;
+    List<MemberData>? nonAdminMembers = (state as GroupLoaded).nonAdminMembers;
     String groupId = groupData.groupId;
     final result = await getit
         .get<GroupRepoImplementation>()
         .updateGroupPrivacy(groupId, privacyOption);
-    print(result);
     groupData.groupPrivacy = privacyOption;
-    emit(GroupLoaded(groupData: groupData));
+    emit(GroupLoaded(
+        groupData: groupData,
+        members: members,
+        admins: admins,
+        contactsExcludingMembers: contactsExcludingMembers,
+        nonAdminMembers: nonAdminMembers));
   }
 
   Future<void> updateGroupSizeLimit(int sizeLimit) async {
     Group groupData = (state as GroupLoaded).groupData;
     String groupId = groupData.groupId;
+    List<MemberData>? members = (state as GroupLoaded).members;
+    List<MemberData>? admins = (state as GroupLoaded).admins;
+    List<ContactData>? contactsExcludingMembers =
+        (state as GroupLoaded).contactsExcludingMembers;
+    List<MemberData>? nonAdminMembers = (state as GroupLoaded).nonAdminMembers;
     final result = await getit
         .get<GroupRepoImplementation>()
         .updateGroupSizeLimit(groupId, sizeLimit);
     print(result);
     groupData.groupSizeLimit = sizeLimit;
-    emit(GroupLoaded(groupData: groupData));
+    emit(GroupLoaded(
+        groupData: groupData,
+        members: members,
+        admins: admins,
+        contactsExcludingMembers: contactsExcludingMembers,
+        nonAdminMembers: nonAdminMembers));
   }
 
   Future<void> getGroupMembers(String groupId) async {

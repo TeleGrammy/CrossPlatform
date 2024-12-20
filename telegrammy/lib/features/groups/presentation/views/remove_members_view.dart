@@ -5,13 +5,19 @@ import 'package:telegrammy/features/profile/presentation/widgets/profile_setting
 import '../../../../cores/routes/route_names.dart';
 import '../../../../cores/services/groups_socket.dart';
 import '../../../../cores/services/service_locator.dart';
+import '../../../messages/data/models/contacts.dart';
 import '../../data/models/group.dart';
 
 class RemoveGroupMembersView extends StatefulWidget {
   RemoveGroupMembersView(
-      {required this.groupId, required this.membersToRemoveFrom});
+      {required this.groupId,
+      required this.membersToRemoveFrom,
+      required this.chat,
+      required this.lastSeen});
   final String groupId;
   final List<MemberData> membersToRemoveFrom;
+  Chat chat;
+  String lastSeen;
   @override
   _RemoveGroupMembersViewState createState() => _RemoveGroupMembersViewState();
 }
@@ -27,7 +33,8 @@ class _RemoveGroupMembersViewState extends State<RemoveGroupMembersView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ProfileSettingsAppBar(
-        backButtonOnPressed: () => context.goNamed(RouteNames.groupSettings),
+        backButtonOnPressed: () => context.goNamed(RouteNames.groupSettings,
+            extra: [widget.chat, widget.lastSeen]),
         title: 'Remove members from group',
         key: const ValueKey('RemoveGroupMembersAppBar'),
       ),

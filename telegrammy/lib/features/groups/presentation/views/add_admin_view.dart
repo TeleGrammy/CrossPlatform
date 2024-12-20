@@ -6,16 +6,20 @@ import 'package:telegrammy/features/profile/presentation/widgets/profile_setting
 import '../../../../cores/routes/route_names.dart';
 import '../../../../cores/services/groups_socket.dart';
 import '../../../../cores/services/service_locator.dart';
+import '../../../messages/data/models/contacts.dart';
 import '../../data/models/group.dart';
 import '../view_models/group_cubit.dart';
 
 class AddGroupAdminView extends StatefulWidget {
-  AddGroupAdminView({
-    required this.groupId,
-    required this.usersToMakeAdmins,
-  });
+  AddGroupAdminView(
+      {required this.groupId,
+      required this.usersToMakeAdmins,
+      required this.chat,
+      required this.lastSeen});
   final String groupId;
   final List<MemberData> usersToMakeAdmins;
+  Chat chat;
+  String lastSeen;
 
   @override
   _AddGroupAdminViewState createState() => _AddGroupAdminViewState();
@@ -25,14 +29,17 @@ class _AddGroupAdminViewState extends State<AddGroupAdminView> {
   @override
   void initState() {
     super.initState();
-    context.read<GroupCubit>().getGroupInfo(widget.groupId);
+    context
+        .read<GroupCubit>()
+        .getGroupInfo(widget.groupId, widget.chat, widget.lastSeen);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ProfileSettingsAppBar(
-        backButtonOnPressed: () => context.goNamed(RouteNames.groupSettings),
+        backButtonOnPressed: () => context.goNamed(RouteNames.groupSettings,
+            extra: [widget.chat, widget.lastSeen]),
         title: 'Add admins to group',
         key: const ValueKey('AddGroupAdminsAppBar'),
       ),
