@@ -11,8 +11,7 @@ class IncomingCallScreen extends StatefulWidget {
   final String photoUrl;
   final String callId;
   final RTCSessionDescription remoteOffer;
-  final String chatId;
-  final String lastSeen;
+  final ChatView chat;
   final String userId;
 
   const IncomingCallScreen({
@@ -44,7 +43,7 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
       'status': 'ended',
     });
     context.goNamed(RouteNames.chatWrapper,
-        extra: [widget.name, widget.chatId, widget.photoUrl,widget.userId,widget.lastSeen]);
+        extra: [chat,widget.userId]);
     setState(() {
       _localRenderer.srcObject = null;
       _remoteRenderer.srcObject = null;

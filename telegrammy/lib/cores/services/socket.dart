@@ -32,7 +32,7 @@ class SocketService {
   }
 
   void removeCallListener(String event) {
-    socket.off(event);
+    socket?.off(event);
   }
 
   void sendMessage(String event, dynamic data) {

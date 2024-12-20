@@ -6,22 +6,17 @@ import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/call_manager.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 class OutgoingCallScreen extends StatefulWidget {
-  final String name;
-  final String photoUrl;
-  final String chatId; // Add the chatId for the call
-  final String lastSeen;
   final String userId;
+  final ChatView chat;
   // final VoidCallback onCallEnded;
 
   const OutgoingCallScreen({
     Key? key,
-    required this.name,
-    required this.photoUrl,
+    required this.chat,
     required this.userId,
-    required this.chatId,
-    required this.lastSeen,
     // required this.onCallEnded,
   }) : super(key: key);
 
@@ -78,7 +73,7 @@ class _OutgoingCallScreenState extends State<OutgoingCallScreen> {
     // _remoteRenderer.srcObject = callManager.rtcSignaling.remoteStream;
     callId = await getit
         .get<SocketService>()
-        .createCall('call:createCall', {"chatId": widget.chatId});
+        .createCall('call:createCall', {"chatId": widget.chat.id});
 
     dynamic offer = await callManager.rtcSignaling.createOffer();
     getit.get<SocketService>().newCall('call:newCall', {
@@ -148,7 +143,7 @@ class _OutgoingCallScreenState extends State<OutgoingCallScreen> {
       'status': 'ended',
     });
     context.goNamed(RouteNames.chatWrapper,
-        extra: [widget.name, widget.chatId, widget.photoUrl,widget.userId,widget.lastSeen]);
+        extra: [widget.chat,widget.userId]);
     // setState(() {
     //   _localRenderer.srcObject = null;
     //   _remoteRenderer.srcObject = null;
