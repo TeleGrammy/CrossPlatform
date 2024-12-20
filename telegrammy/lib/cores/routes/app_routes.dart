@@ -3,8 +3,12 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/helpers/routes_helper.dart';
 import 'package:telegrammy/features/Home/presentation/views/home_view.dart';
+import 'package:telegrammy/features/admin_dashboard/data/models/groups_dashboard_model.dart';
 import 'package:telegrammy/features/admin_dashboard/data/models/registered_users_model.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/view_model/admin_dashboard/admin_dashboard_cubit.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/view_model/admin_dashboard/groups_dashboard_cubit.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_group_view.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_groups_view.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_user_view.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_users_view.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
@@ -105,6 +109,16 @@ class AppRoutes {
           final RegisteredUsersData user = state.extra as RegisteredUsersData;
 
           return UserDetailView(user: user); // Pass the user to the view
+        },
+      ),
+       GoRoute(
+        name: RouteNames.singleRegeisterGroupPage,
+        path: '/singleRegeisterGroupPage',
+        builder: (context, state) {
+          // Retrieve the user from the 'extra' parameter
+          final GroupData group = state.extra as GroupData;
+
+          return GroupDetailView(group:group); // Pass the user to the view
         },
       ),
       // GoRoute(
@@ -390,6 +404,14 @@ class AppRoutes {
           create: (context) => RegisteredUsersCubit(),
           child: RegisteredUsersView(),
         )),
+          GoRoute(
+        name: RouteNames.adminDashboardPageFilterMedia,
+        path: '/adminDashboardPageFilterMedia',
+        builder: (context, state) => BlocProvider(
+          create: (context) => RegisteredGroupsCubit(),
+          child: GroupsView(),
+        )),
+      
       GoRoute(
           name: RouteNames.onGoingCall,
           path: '/onGoingCall',

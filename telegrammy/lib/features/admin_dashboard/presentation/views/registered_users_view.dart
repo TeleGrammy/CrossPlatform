@@ -11,7 +11,6 @@ import 'package:telegrammy/features/admin_dashboard/presentation/view_model/admi
 import 'package:telegrammy/features/admin_dashboard/presentation/widgets/admin_board_bar.dart';
 // import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_user_view.dart';
 
-
 class RegisteredUsersView extends StatefulWidget {
   @override
   _RegisteredUsersViewState createState() => _RegisteredUsersViewState();
@@ -35,6 +34,7 @@ class _RegisteredUsersViewState extends State<RegisteredUsersView> {
         appBar: AdminboardAppBar(
           titleBar: 'Registered Users',
           key: const ValueKey('Registered_Users'),
+          signn:'0'
         ),
         body: BlocBuilder<RegisteredUsersCubit, RegisteredUsersState>(
           builder: (context, state) {
@@ -55,77 +55,84 @@ class _RegisteredUsersViewState extends State<RegisteredUsersView> {
                   final user = state.registeredUsers[index];
                   return ListTile(
                     leading: CircleAvatar(
-  backgroundImage: user.picture != null && user.picture!.isNotEmpty
-      ? NetworkImage(user.picture!) as ImageProvider
-      : AssetImage('assets/images/logo.png'),
-  child: (user.picture == null || user.picture!.isEmpty)
-      ? const Icon(Icons.person, color: Colors.grey)
-      : null, // No child if a valid picture exists
-),
-
+                      backgroundImage:
+                          user.picture != null && user.picture!.isNotEmpty
+                              ? NetworkImage(user.picture!) as ImageProvider
+                              : AssetImage('assets/images/logo.png'),
+                      child: (user.picture == null || user.picture!.isEmpty)
+                          ? const Icon(Icons.person, color: Colors.grey)
+                          : null, // No child if a valid picture exists
+                    ),
                     title: Text(
                       user.username,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(user.username),
-                    trailing:  Row(
-    mainAxisSize: MainAxisSize.min, // Ensures the row adjusts to content
-    children: [
-       Text(
-      user.status, // Display the current user status
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-        color: user.status == 'active'
-            ? Colors.green
-            : user.status == 'inactive'
-                ? Colors.orange
-                : Colors.red, // Dynamic color based on status
-      )),
-      IconButton(
-        icon: const Icon(Icons.check_circle, color: Colors.green),
-        onPressed: () {
-          if (user.status != 'active') {
-            _cubit.banorUnbanUser('active', user.id);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('User activated successfully')),
-            );
-          }
-        },
-      ),
-      IconButton(
-        icon: const Icon(Icons.cancel, color: Colors.orange),
-        onPressed: () {
-          if (user.status != 'inactive') {
-            _cubit.banorUnbanUser('inactive', user.id);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('User deactivated successfully')),
-            );
-          }
-          
-        },
-      ),
-      IconButton(
-        icon: const Icon(Icons.block, color: Colors.red),
-        onPressed: () {
-          // _cubit.banorUnbanUser('banned', user.id);
-          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //   content: Text(user.status == 'banned'
-          //       ? 'User unbanned successfully'
-          //       : 'User banned successfully'),
-          // ));
-              if (user.status != 'banned') {
-            _cubit.banorUnbanUser('banned', user.id);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('User banned successfully')),
-            );
-          }
-        },
-      ),
-    ],
-  ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize
+                          .min, // Ensures the row adjusts to content
+                      children: [
+                        Text(user.status, // Display the current user status
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: user.status == 'active'
+                                  ? Colors.green
+                                  : user.status == 'inactive'
+                                      ? Colors.orange
+                                      : Colors
+                                          .red, // Dynamic color based on status
+                            )),
+                        IconButton(
+                          icon: const Icon(Icons.check_circle,
+                              color: Colors.green),
+                          onPressed: () {
+                            if (user.status != 'active') {
+                              _cubit.banorUnbanUser('active', user.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('User activated successfully')),
+                              );
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.cancel, color: Colors.orange),
+                          onPressed: () {
+                            if (user.status != 'inactive') {
+                              _cubit.banorUnbanUser('inactive', user.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('User deactivated successfully')),
+                              );
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.block, color: Colors.red),
+                          onPressed: () {
+                            // _cubit.banorUnbanUser('banned', user.id);
+                            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            //   content: Text(user.status == 'banned'
+                            //       ? 'User unbanned successfully'
+                            //       : 'User banned successfully'),
+                            // ));
+                            if (user.status != 'banned') {
+                              _cubit.banorUnbanUser('banned', user.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('User banned successfully')),
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                     onTap: () {
-                      context.goNamed(RouteNames.singleRegeisterUserPage, extra: user );
+                      context.goNamed(RouteNames.singleRegeisterUserPage,
+                          extra: user);
                     },
                   );
                 },

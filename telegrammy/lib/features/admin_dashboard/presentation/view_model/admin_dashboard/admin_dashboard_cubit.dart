@@ -49,27 +49,6 @@ class RegisteredUsersCubit extends Cubit<RegisteredUsersState> {
     }
   }
 
-    /// Block a user and reload the contacts
-  Future<void> banorUnbanGroup(String isBanned,String groupId) async {
-    try {
-      print(groupId);
-      emit(RegisteredUsersLoading()); // Optional: Indicate loading when blocking
-      final Either<Failure, void> response =
-          await adminDashboardRepo.filterMediaGroup(isBanned, groupId);  // Example of banning a user
-
-      response.fold(
-        (failure) {
-          emit(RegisteredUsersError(message: _mapFailureToMessage(failure)));
-        },
-        (_) async {
-          // After successful block, reload the contacts and indicate the action
-          await loadRegisteredUsers(); // Reload users after block action
-        },
-      );
-    } catch (e) {
-      emit(RegisteredUsersError(message: "An unexpected error occurred."));
-    }
-  }
 
   // Utility to map Failure to a human-readable message
   String _mapFailureToMessage(Failure failure) {

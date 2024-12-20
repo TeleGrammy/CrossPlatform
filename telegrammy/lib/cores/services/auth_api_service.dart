@@ -12,6 +12,7 @@ import 'package:telegrammy/cores/services/token_storage_service.dart';
 class ApiService {
   ApiService({required this.dio});
   final Dio dio;
+  String? deviceToken; 
 
   Future<Either<String, void>> signInWithGoogle() async {
     try {
@@ -164,9 +165,12 @@ class ApiService {
   Future<Either<String, void>> login(userLoginData) async {
     try {
       print(userLoginData);
-      // final tokenn=await HandleNotifications().getToken();
-      // print(tokenn);
-      print('$baseUrl/auth/login');
+    //   deviceToken=await HandleNotifications().getToken();
+    //   print('tokenmmmmmmm$deviceToken');
+    //      if (deviceToken != null && deviceToken!.isNotEmpty) {
+    //   userLoginData['token'] = deviceToken;
+    // }
+
       final response = await getit
           .get<Dio>()
           .post('$baseUrl2/auth/login', data: userLoginData);
@@ -243,10 +247,19 @@ class ApiService {
     }
   }
 
-  void logout() async {
-    await getit.get<FlutterSecureStorage>().delete(key: 'accessToken');
-    await getit.get<Dio>().get(
-          '$baseUrl/api/v1/auth/logout',
-        );
+void logout() async {
+  await getit.get<FlutterSecureStorage>().delete(key: 'accessToken');
+  
+  if (deviceToken != null) {
+    await getit.get<Dio>().post(
+      '$baseUrl/api/v1/auth/logout',
+      data: {"token": deviceToken},
+    );
+  }else{
+    await getit.get<Dio>().post(
+      '$baseUrl/api/v1/auth/logout',
+      
+    );
   }
+}
 }
