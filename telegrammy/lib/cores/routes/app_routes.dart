@@ -115,9 +115,11 @@ class AppRoutes {
           String name = extras[0];
           String id = extras[1];
           String photo = extras[2];
-          String lastSeen = extras[3];
+          String userId = extras[3];
+          String lastSeen = extras[4];
           Message? forwardMessage;
-          if (extras.length == 5) forwardMessage = extras[4];
+
+          if (extras.length == 6) forwardMessage = extras[5];
 
           return BlocProvider(
             create: (context) => MessagesCubit(),
@@ -125,8 +127,9 @@ class AppRoutes {
               name: name,
               id: id,
               photo: photo,
-              lastSeen: lastSeen,
               forwardedMessage: forwardMessage,
+              userId: userId,
+              lastSeen: lastSeen,
             ),
           );
         },
@@ -345,9 +348,12 @@ class AppRoutes {
           builder: (context, state) {
             Map<String, dynamic>? params = state.extra as Map<String, dynamic>?;
             return OutgoingCallScreen(
-                name: params!['name'],
-                photoUrl: params['photo'],
-                chatId: params['id']);
+              name: params!['name'],
+              photoUrl: params['photo'],
+              chatId: params['id'],
+              userId: params['userId'],
+              lastSeen: params['lastSeen'],
+            );
           }),
       GoRoute(
           name: RouteNames.incomingCall,
@@ -365,6 +371,9 @@ class AppRoutes {
                 params['remoteOffer']
                     ['type'], // Type string from the JSON (e.g., "offer")
               ),
+              chatId: params['chatId'],
+              userId: params['userId'],
+              lastSeen: params['lastSeen'],
             );
           }),
     ],

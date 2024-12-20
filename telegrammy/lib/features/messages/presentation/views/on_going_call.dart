@@ -11,13 +11,17 @@ class OutgoingCallScreen extends StatefulWidget {
   final String name;
   final String photoUrl;
   final String chatId; // Add the chatId for the call
+  final String lastSeen;
+  final String userId;
   // final VoidCallback onCallEnded;
 
   const OutgoingCallScreen({
     Key? key,
     required this.name,
     required this.photoUrl,
+    required this.userId,
     required this.chatId,
+    required this.lastSeen,
     // required this.onCallEnded,
   }) : super(key: key);
 
@@ -38,6 +42,21 @@ class _OutgoingCallScreenState extends State<OutgoingCallScreen> {
     // _localRenderer.initialize();
     // _remoteRenderer.initialize();
     _startCall();
+
+    getit.get<SocketService>().recieveEndedCall('call:endedCall', (data) {
+      List<dynamic>? d = data['participants'];
+
+      if (d != null && d?.length == 1) {
+        _endCall();
+      }
+    });
+    getit.get<SocketService>().receiveRejectedCall('call:rejectedCall', (data) {
+      List<dynamic>? d = data['participants'];
+
+      if (d != null && d?.length == 1) {
+        _endCall();
+      }
+    });
   }
 
   @override
@@ -128,6 +147,8 @@ class _OutgoingCallScreenState extends State<OutgoingCallScreen> {
       'callId': callId,
       'status': 'ended',
     });
+    context.goNamed(RouteNames.chatWrapper,
+        extra: [widget.name, widget.chatId, widget.photoUrl,widget.userId,widget.lastSeen]);
     // setState(() {
     //   _localRenderer.srcObject = null;
     //   _remoteRenderer.srcObject = null;
@@ -153,10 +174,12 @@ class _OutgoingCallScreenState extends State<OutgoingCallScreen> {
               IconButton(
                 icon: Icon(_isMuted ? Icons.mic_off : Icons.mic),
                 onPressed: _toggleMute,
+                color: _isMuted ? Colors.red : Colors.black,
               ),
               IconButton(
                 icon: Icon(Icons.call_end),
                 onPressed: _endCall,
+                color: Colors.red,
               ),
             ],
           ),

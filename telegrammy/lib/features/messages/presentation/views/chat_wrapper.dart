@@ -19,16 +19,18 @@ class ChatWrapper extends StatefulWidget {
   final String name;
   final String id;
   final String photo;
-  final String lastSeen;
   final Message? forwardedMessage;
-  const ChatWrapper({
-    Key? key,
-    required this.name,
-    required this.id,
-    required this.photo,
-    required this.lastSeen,
-    this.forwardedMessage
-  }) : super(key: key); // Key for ChatDetails widget
+  final String userId;
+  final String lastSeen;
+  const ChatWrapper(
+      {required this.userId,
+      Key? key,
+      required this.lastSeen,
+      required this.name,
+      required this.id,
+      required this.photo,
+      this.forwardedMessage})
+      : super(key: key); // Key for ChatDetails widget
 
   @override
   State<ChatWrapper> createState() => ChatWrapperState();
@@ -62,13 +64,16 @@ class ChatWrapperState extends State<ChatWrapper> {
           List<Participant> participants =
               state.chatData['participants'] as List<Participant>;
           List<Message> messages = state.chatData['messages'] as List<Message>;
+          List<Message> reversedList = messages.reversed.toList();
           return ChatDetails(
             name: widget.name,
             id: widget.id,
             photo: widget.photo,
             lastSeen: widget.lastSeen,
-            messages: messages,
-            forwardedMessage:widget.forwardedMessage,
+            messages: reversedList,
+            forwardedMessage: widget.forwardedMessage,
+            participants: participants,
+            userId: widget.userId,
           );
         } else {
           return Center(

@@ -10,14 +10,15 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String photo;
   final String lastSeen;
   final String id;
+  final String userId;
 
   const ChatAppbar(
       {required this.name,
       super.key,
       required this.photo,
       required this.lastSeen,
-      required this.id
-      });
+      required this.userId,
+      required this.id});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -67,7 +68,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         key: const Key('back_button'),
         icon: Icon(Icons.arrow_back),
         onPressed: () {
-          getit.get<SocketService>().disconnect();
+          // getit.get<SocketService>().disconnect();
           context.goNamed(RouteNames.chats);
         },
       ),
@@ -76,7 +77,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           CircleAvatar(
             key: const Key('profile_picture'),
-            backgroundImage: AssetImage(photo),
+            backgroundImage: NetworkImage(photo) as ImageProvider,
             radius: 20,
           ),
           const SizedBox(width: 10),
@@ -102,10 +103,12 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           key: const Key('call_button'),
           icon: const Icon(Icons.call),
           onPressed: () {
-            context.goNamed(RouteNames.onGoingCall,extra: {
+            context.goNamed(RouteNames.onGoingCall, extra: {
               'name': name,
               'photo': photo,
               'id': id,
+              'userId': userId,
+              'lastSeen': lastSeen,
             });
           },
         ),

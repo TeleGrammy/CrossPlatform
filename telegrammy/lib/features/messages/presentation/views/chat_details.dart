@@ -22,6 +22,8 @@ class ChatDetails extends StatefulWidget {
   final String lastSeen;
   final List<Message> messages;
   final Message? forwardedMessage;
+  final String userId;
+  final List<Participant> participants;
 
   const ChatDetails({
     Key? key,
@@ -31,6 +33,8 @@ class ChatDetails extends StatefulWidget {
     required this.lastSeen,
     required this.messages,
     this.forwardedMessage,
+    required this.userId,
+    required this.participants,
   }) : super(key: key);
 
   @override
@@ -49,6 +53,13 @@ class ChatDetailsState extends State<ChatDetails> {
     _initializeSocketConnection();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    getit.get<SocketService>().removeCallListener('call:incomingCall');
+    // getit.get<SocketService>().disconnect();
+  }
+
   Future<void> _initializeSocketConnection() async {
     await getit.get<SocketService>().connect();
 
@@ -63,14 +74,19 @@ class ChatDetailsState extends State<ChatDetails> {
           },
         );
       }
-      
+
       getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
-        context.goNamed(RouteNames.incomingCall, extra: {
-          'name': 'mmmomo',
-          'photo': 'default.png',
-          'callId': response['_id'],
-          'remoteOffer': response['callObj']['offer'],
-        });
+        if(mounted) {
+          context.goNamed(RouteNames.incomingCall, extra: {
+            'name': 'mmmomo',
+            'photo': 'default.png',
+            'callId': response['_id'],
+            'remoteOffer': response['callObj']['offer'],
+            'chatId': widget.id,
+            'lastSeen': widget.lastSeen,
+            'userId': widget.userId,
+          });
+        }
       });
       setState(() {
         isSocketInitialized = true; // Mark socket as initialized
@@ -146,6 +162,7 @@ class ChatDetailsState extends State<ChatDetails> {
                       photo: widget.photo,
                       lastSeen: widget.lastSeen,
                       id: widget.id,
+                      userId: widget.userId,
                     )
                   : SelectedMessageAppbar(
                       key: const Key('selectedMessageAppBar'),
@@ -164,7 +181,8 @@ class ChatDetailsState extends State<ChatDetails> {
                       onMessageTap: onMessageTap,
                       onMessageSwipe: onMessageSwipe,
                       selectedMessage: selectedMessage,
-                      userId: widget.id,
+                      userId: widget.userId,
+                      participants: widget.participants,
                     ),
                   ),
                   if (repliedMessage != null)

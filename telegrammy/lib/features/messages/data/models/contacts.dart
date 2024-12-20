@@ -1,22 +1,24 @@
 import 'dart:convert';
 
-class Chat {
+class ChatView {
   final String id;
   final String name;
   final String? photo;
   final LastMessage? lastMessage;
   final String draftMessage;
+  final String? lastSeen;
 
-  Chat({
+  ChatView( {
     required this.id,
     required this.name,
     this.photo,
     this.lastMessage,
     required this.draftMessage,
+    required this.lastSeen,
   });
 
-  factory Chat.fromJson(Map<String, dynamic> json) {
-    return Chat(
+  factory ChatView.fromJson(Map<String, dynamic> json) {
+    return ChatView(
       id: json['id'],
       name: json['name'],
       photo: json['photo'],
@@ -24,6 +26,7 @@ class Chat {
           ? LastMessage.fromJson(json['lastMessage'])
           : null,
       draftMessage: json['draftMessage']==null ? '' : json['draftMessage'],
+      lastSeen: json['lastSeen']==null ? '' : json['lastSeen'],
     );
   }
 
@@ -34,6 +37,7 @@ class Chat {
       'photo': photo,
       'lastMessage': lastMessage?.toJson(),
       'draftMessage': draftMessage,
+      'lastSeen': lastSeen,
     };
   }
 }

@@ -3,14 +3,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
-class ChatsScreen extends StatelessWidget {
+class ChatsScreen extends StatefulWidget {
   final Message? forwardMessage;
   const ChatsScreen({Key? key, this.forwardMessage}) : super(key: key);
+
+  @override
+  State<ChatsScreen> createState() => _ChatsScreenState();
+}
+
+class _ChatsScreenState extends State<ChatsScreen> {
+  initState() {
+    super.initState();
+    // _initializeSocketConnection();
+  }
+
+  // Future<void> _initializeSocketConnection() async {
+  //   await getit.get<SocketService>().connect();
+
+  //   getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
+  //     print(response);
+  //     context.goNamed(RouteNames.incomingCall, extra: {
+  //       'name': 'mmmomo',
+  //       'photo': 'default.png',
+  //       'callId': response['_id'],
+  //       'remoteOffer': response['callObj']['offer'],
+  //       // 'chatId': widget.id,
+  //       'chatId': response['chatId']['_id'],
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +94,8 @@ class ChatsScreen extends StatelessWidget {
               key: ValueKey('loading_contacts'),
             ));
           } else if (state is ContactsSuccess) {
-            final chats = state.chats;
+            final chats = state.chats['chats'] as List<ChatView>;
+            final userId = state.chats['userId'] as String;
             // final userId=result['userId'];
             // final userId = state.userId; // Current user's ID
 
@@ -87,21 +117,25 @@ class ChatsScreen extends StatelessWidget {
                 final String id = chat.id;
                 final lastMessageTime =
                     chat.lastMessage?.timestamp.toString() ?? '';
-                final lastSeen = '';
+                final String? draftMessage = chat.draftMessage;
+                final String lastSeen = chat.lastSeen ?? '';
                 // print(id);
                 // final name = participant.userId['screenName'] ?? 'Unknown';
                 // final photo = participant.userId['picture'] ?? 'default.jpg';
                 // final draftMessage = participant['draft_message'] ?? '';
 
                 return ContactPreview(
-                    key: Key('contactItem_$index'),
-                    id: id,
-                    name: name,
-                    photo: photo,
-                    lastMessage: lastMessage,
-                    lastMessageTime: lastMessageTime,
-                    lastSeen: lastSeen,
-                    forwardMessage: forwardMessage);
+                  key: Key('contactItem_$index'),
+                  id: id,
+                  name: name,
+                  photo: photo,
+                  lastMessage: lastMessage,
+                  lastMessageTime: lastMessageTime,
+                  forwardMessage: widget.forwardMessage,
+                  draftMessage: draftMessage,
+                  userId: userId,
+                  lastSeen: lastSeen,
+                );
               },
             );
           } else if (state is ContactsFailture) {

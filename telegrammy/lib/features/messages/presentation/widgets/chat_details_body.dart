@@ -1,14 +1,9 @@
 import 'package:audioplayers/audioplayers.dart'; // Add this package for audio playback
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:telegrammy/cores/routes/app_routes.dart';
-import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
-import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
-import 'package:telegrammy/features/messages/presentation/data/messages.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/audio_player_widget.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 class ChatDetailsBody extends StatefulWidget {
   final void Function(Message message) onMessageTap;
@@ -16,14 +11,15 @@ class ChatDetailsBody extends StatefulWidget {
   final List<Message> messages;
   final Message? selectedMessage;
   final String userId;
-
+  final List<Participant> participants;
   const ChatDetailsBody(
       {super.key,
       required this.onMessageTap,
       required this.onMessageSwipe,
       required this.selectedMessage,
       required this.messages,
-      required this.userId});
+      required this.userId,
+      required this.participants});
 
   @override
   State<ChatDetailsBody> createState() => _ChatDetailsBodyState();
@@ -38,7 +34,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
     super.initState();
     // Initialize the local messages list
     messages = List.from(widget.messages);
-    
+
     getit.get<SocketService>().receiveMessage('message:sent', (data) {
       // Check if replyOn is not null
       if (data['replyOn'] != null) {
@@ -52,11 +48,16 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
       // Create the Message object
       Message message = Message.fromJson(data);
 
-        setState(() {
+      setState(() {
         messages.add(message);
         _scrollToBottom(); // Automatically scroll to the bottom
       });
-    }); 
+    });
+
+    dispose() {
+      super.dispose();
+      scrollController.dispose();
+    }
 
     getit.get<SocketService>().receiveEditedMessage('message:updated', (data) {
       if (data['replyOn'] != null) {
@@ -84,9 +85,9 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
         }
       }
 
-    getit.get<SocketService>().recieveCall('call:incomingCall', (data){
-      context.goNamed(RouteNames.incomingCall,extra: data);
-    });
+      // getit.get<SocketService>().recieveCall('call:incomingCall', (data){
+      //   context.goNamed(RouteNames.incomingCall,extra: data);
+      // });
 
       Message message = Message.fromJson(data);
       int index = messages.indexWhere((m) => m.id == message.id);
@@ -134,7 +135,11 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
         final message = messages[index];
         final isSentByUser = message.sender == widget.userId;
         final isSelected = message == widget.selectedMessage;
-
+        DateTime dateTime = DateTime.parse(message.timestamp);
+        // Format the DateTime to a readable string
+        String formattedTime =
+            "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} "
+            "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
         return GestureDetector(
           key: Key('message_$index'),
           onHorizontalDragEnd: (details) {
@@ -194,7 +199,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                         ),
                         const SizedBox(height: 4.0),
                         Text(
-                          'Sent at ${message.timestamp}',
+                          'Sent at ${formattedTime}',
                           style: const TextStyle(
                             color: Colors.black45,
                             fontSize: 12.0,

@@ -11,8 +11,10 @@ class ContactPreview extends StatelessWidget {
   final String lastMessage;
   final String id;
   final String lastMessageTime;
-  final String lastSeen;
   final Message? forwardMessage;
+  final String? draftMessage;
+  final String userId;
+  final String lastSeen;
 
   const ContactPreview(
       {Key? key,
@@ -21,8 +23,9 @@ class ContactPreview extends StatelessWidget {
       required this.photo,
       required this.lastMessage,
       required this.lastMessageTime,
+      this.forwardMessage, this.draftMessage
+      , required this.userId,
       required this.lastSeen,
-      this.forwardMessage
       })
       : super(key: key);
 
@@ -41,7 +44,8 @@ class ContactPreview extends StatelessWidget {
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
-        lastMessage.isNotEmpty ? lastMessage : '',
+        draftMessage!=null? "draft:$draftMessage"
+        :lastMessage.isNotEmpty ? lastMessage : '',
         style: const TextStyle(fontSize: 14, color: Colors.grey),
       ),
       onTap: () {
@@ -54,7 +58,7 @@ class ContactPreview extends StatelessWidget {
         }
         context.goNamed(
           RouteNames.chatWrapper,
-          extra: [name, id, userPhoto, lastSeen,],
+          extra: [name, id, userPhoto,userId,lastSeen],
         );
       },
     );
