@@ -23,6 +23,8 @@ void main() async {
     print('Error during initialization: $e\n$stack');
   }
 }
+  
+
 
 
 class MyApp extends StatelessWidget {

@@ -5,11 +5,11 @@ class ChannelState {}
 
 final class ChannelInitial extends ChannelState {}
 
-final class ChannelCreationLoading extends ChannelState {}
+final class ChannelCreateLoading extends ChannelState {}
 
 final class getChannelPostsLoading extends ChannelState {}
 
-final class ChannelCreatedSuccess extends ChannelState {}
+final class ChannelCreateSuccess extends ChannelState {}
 
 final class ChannelCreateFailure extends ChannelState {
   final String errorMessage;
@@ -29,6 +29,4 @@ final class getChannelPostsFailure extends ChannelState {
   getChannelPostsFailure({required this.errorMessage});
 }
 
-final class addPostSuccess extends ChannelState {
-
-}
+final class addPostSuccess extends ChannelState {}

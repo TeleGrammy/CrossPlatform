@@ -2,15 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dartz/dartz.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-
 import 'package:dio/dio.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/messages/data/models/media.dart';
 
 import 'package:telegrammy/cores/constants/api_constants.dart';
-// import 'package:flutter_web_auth_plus/flutter_web_auth_plus.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 
@@ -32,6 +29,7 @@ class MessagesApiService {
               },
             ),
           );
+      print(response.data);
       // Check response status
       if (response.statusCode == 200) {
         final data = response.data;
@@ -44,7 +42,7 @@ class MessagesApiService {
         List<Message> messages = (data['messages']['data'] as List)
             .map((m) => Message.fromJson(m))
             .toList();
-        print(messages);
+        // print(messages);
         // Return success with parsed data
         return Right({
           'participants': participants,

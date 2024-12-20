@@ -7,10 +7,31 @@ import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/presentation/view_models/contacts_cubit/contacts_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/contact_preview.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
-class ChatsScreen extends StatelessWidget {
+import '../../../../cores/services/groups_socket.dart';
+import '../../../../cores/services/service_locator.dart';
+
+class ChatsScreen extends StatefulWidget {
   final Message? forwardMessage;
   const ChatsScreen({Key? key, this.forwardMessage}) : super(key: key);
+
+  @override
+  State<ChatsScreen> createState() => _ChatsScreenState();
+}
+
+class _ChatsScreenState extends State<ChatsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getit.get<GroupSocketService>().connectToGroupServer();
+  }
+
+  @override
+  void dispose() {
+    //getit.get<GroupSocketService>().disconnectGroups();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,41 +50,49 @@ class ChatsScreen extends StatelessWidget {
         context.goNamed(RouteNames.createGroup);
       } else if (value == 'New Channel') {
         context.goNamed(RouteNames.createChannel);
-      }
+      } else
+        context.goNamed(RouteNames.addContact);
     }
 
     return Scaffold(
-     appBar: AppBar(
-  leading: IconButton(
-    onPressed: () {
-      context.goNamed(RouteNames.profileInfo);
-    },
-    icon: Icon(Icons.person),
-  ),
-  title: Text('Chats'),
-  backgroundColor: primaryColor,
-  actions: [
-    PopupMenuButton<String>(
-      icon: const Icon(Icons.add_circle_rounded),
-      onSelected: onDropdownItemSelected,
-      itemBuilder: (BuildContext context) {
-        return addListOptions.map((String option) {
-          return PopupMenuItem<String>(
-            value: option,
-            child: Text(option),
-          );
-        }).toList();
-      },
-    ),
-    IconButton(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.goNamed(RouteNames.profileInfo);
+          },
+          icon: Icon(Icons.person),
+        ),
+        title: Text('Chats'),
+        backgroundColor: primaryColor,
+        actions: [
+          IconButton(
+            key: const ValueKey('GlobalSearchButton'),
+            icon: Icon(Icons.search),
+            onPressed: () {
+              context.goNamed(RouteNames.globalSearch);
+            },
+          ),
+          IconButton(
       onPressed: () {
         context.goNamed(RouteNames.adminDashboardPage); // Replace with your admin dashboard route
       },
       icon: Icon(Icons.admin_panel_settings), // Use appropriate icon for the dashboard
       tooltip: 'Admin Dashboard', // Tooltip for accessibility
     ),
-  ],
-),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.add_circle_rounded),
+            onSelected: onDropdownItemSelected,
+            itemBuilder: (BuildContext context) {
+              return addListOptions.map((String option) {
+                return PopupMenuItem<String>(
+                  value: option,
+                  child: Text(option),
+                );
+              }).toList();
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<ContactsCubit, ContactsState>(
         builder: (context, state) {
           if (state is ContactsLoading) {
@@ -101,14 +130,11 @@ class ChatsScreen extends StatelessWidget {
                 // final draftMessage = participant['draft_message'] ?? '';
 
                 return ContactPreview(
-                    key: Key('contactItem_$index'),
-                    id: id,
-                    name: name,
-                    photo: photo,
-                    lastMessage: lastMessage,
-                    lastMessageTime: lastMessageTime,
-                    lastSeen: lastSeen,
-                    forwardMessage: forwardMessage);
+                  key: Key('contactItem_$index'),
+                  chat: chat,
+                  lastSeen: lastSeen,
+                  forwardMessage: widget.forwardMessage,
+                );
               },
             );
           } else if (state is ContactsFailture) {

@@ -1,11 +1,11 @@
-import 'package:audioplayers/audioplayers.dart'; // Add this package for audio playback
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
-import 'package:telegrammy/features/channels/presentation/views/channel_view/channel.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
-import 'package:telegrammy/features/messages/presentation/data/messages.dart';
-import 'package:telegrammy/features/messages/presentation/widgets/audio_player_widget.dart';
+import 'package:telegrammy/features/messages/presentation/widgets/message_attachment.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/pinned_message_bar.dart';
 
 class ChatDetailsBody extends StatefulWidget {
@@ -42,7 +42,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
     super.initState();
     // Initialize the local messages list
     messages = List.from(widget.messages);
-
+    
     getit.get<SocketService>().receiveMessage('message:sent', (data) {
       // Check if replyOn is not null
       if (data['replyOn'] != null) {
@@ -56,11 +56,11 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
       // Create the Message object
       Message message = Message.fromJson(data);
 
-      setState(() {
+        setState(() {
         messages.add(message);
         _scrollToBottom(); // Automatically scroll to the bottom
       });
-    });
+    }); 
 
     getit.get<SocketService>().receiveEditedMessage('message:updated', (data) {
       if (data['replyOn'] != null) {
@@ -82,75 +82,76 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
     getit.get<SocketService>().deliveredMessage('message:delivered', (data) {
       print('inside delivered');
       if (data != null && data is Map<String, dynamic>) {
-    try {
-      // Safely parse the received JSON data into a Message object
-      Message isDeliveredMessage = Message.fromJson(data['message']);
+        try {
+          // Safely parse the received JSON data into a Message object
+          Message isDeliveredMessage = Message.fromJson(data['message']);
 
-      int index = messages.indexWhere((m) => m.id == isDeliveredMessage.id);
+          int index = messages.indexWhere((m) => m.id == isDeliveredMessage.id);
 
-      if (index != -1) {
-        setState(() {
-          messages[index].status = isDeliveredMessage.status;
-        });
+          if (index != -1) {
+            setState(() {
+              messages[index].status = isDeliveredMessage.status;
+            });
+          } else {
+            print(
+                'Message with id ${isDeliveredMessage.id} not found in the list');
+          }
+        } catch (e) {
+          print('Error parsing Message from JSON: $e');
+        }
       } else {
-        print('Message with id ${isDeliveredMessage.id} not found in the list');
+        print('Invalid or null data received');
       }
-    } catch (e) {
-      print('Error parsing Message from JSON: $e');
-    }
-  } else {
-    print('Invalid or null data received');
-  }
     });
 
-getit.get<SocketService>().isSentMessage('message:isSent', (data) {
-  // print('isSent');
-  // print('Received data: $data'); // Debugging: See what data looks like
+    getit.get<SocketService>().isSentMessage('message:isSent', (data) {
+      // print('isSent');
+      // print('Received data: $data'); // Debugging: See what data looks like
 
-  if (data != null && data is Map<String, dynamic>) {
-    try {
-      // Safely parse the received JSON data into a Message object
-      Message isSentMessage = Message.fromJson(data['message']);
+      if (data != null && data is Map<String, dynamic>) {
+        try {
+          // Safely parse the received JSON data into a Message object
+          Message isSentMessage = Message.fromJson(data['message']);
 
-      int index = messages.indexWhere((m) => m.id == isSentMessage.id);
+          int index = messages.indexWhere((m) => m.id == isSentMessage.id);
 
-      if (index != -1) {
-        setState(() {
-          messages[index].status = isSentMessage.status;
-        });
+          if (index != -1) {
+            setState(() {
+              messages[index].status = isSentMessage.status;
+            });
+          } else {
+            print('Message with id ${isSentMessage.id} not found in the list');
+          }
+        } catch (e) {
+          print('Error parsing Message from JSON: $e');
+        }
       } else {
-        print('Message with id ${isSentMessage.id} not found in the list');
+        print('Invalid or null data received');
       }
-    } catch (e) {
-      print('Error parsing Message from JSON: $e');
-    }
-  } else {
-    print('Invalid or null data received');
-  }
-});
+    });
 
     getit.get<SocketService>().seenMessage('message:seen', (data) {
       print('isSeen');
- if (data != null && data is Map<String, dynamic>) {
-    try {
-      // Safely parse the received JSON data into a Message object
-      Message isSeenMessage = Message.fromJson(data['message']);
+      if (data != null && data is Map<String, dynamic>) {
+        try {
+          // Safely parse the received JSON data into a Message object
+          Message isSeenMessage = Message.fromJson(data['message']);
 
-      int index = messages.indexWhere((m) => m.id == isSeenMessage.id);
+          int index = messages.indexWhere((m) => m.id == isSeenMessage.id);
 
-      if (index != -1) {
-        setState(() {
-          messages[index].status = isSeenMessage.status;
-        });
+          if (index != -1) {
+            setState(() {
+              messages[index].status = isSeenMessage.status;
+            });
+          } else {
+            print('Message with id ${isSeenMessage.id} not found in the list');
+          }
+        } catch (e) {
+          print('Error parsing Message from JSON: $e');
+        }
       } else {
-        print('Message with id ${isSeenMessage.id} not found in the list');
+        print('Invalid or null data received');
       }
-    } catch (e) {
-      print('Error parsing Message from JSON: $e');
-    }
-  } else {
-    print('Invalid or null data received');
-  }
     });
 
     getit.get<SocketService>().receiveDeletedMessage('message:deleted', (data) {
@@ -161,6 +162,10 @@ getit.get<SocketService>().isSentMessage('message:isSent', (data) {
           data['replyOn'] = messages[index].toJson();
         }
       }
+
+    getit.get<SocketService>().recieveCall('call:incomingCall', (data){
+      context.goNamed(RouteNames.incomingCall,extra: data);
+    });
 
       Message message = Message.fromJson(data);
       int index = messages.indexWhere((m) => m.id == message.id);
@@ -300,8 +305,10 @@ getit.get<SocketService>().isSentMessage('message:isSent', (data) {
                                     ),
                                   ),
                                 ),
+                              MessageAttachmentWidget(message: message),
                               Text(
                                 message.content,
+                                key: Key('message_text_${message.id}'),
                                 style: const TextStyle(
                                   color: Colors.black87,
                                   fontSize: 16.0,
@@ -333,5 +340,11 @@ getit.get<SocketService>().isSentMessage('message:isSent', (data) {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 }

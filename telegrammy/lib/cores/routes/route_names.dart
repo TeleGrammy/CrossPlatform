@@ -26,7 +26,16 @@ class RouteNames {
   static String blockingView = 'blockingView';
   static String ContactsToBlockFromView = 'contactsToBlockFromView';
   static String createGroup = 'createGroup';
+  static String onGoingCall = 'onGoingCall';
+  static String incomingCall = 'incomingCall';
+  static String groupSettings = 'groupSettings';
+  static String editGroupSettings = 'editGroupSettings';
+  static String addGroupMembers = 'addGroupMembers';
   static String adminDashboardPage = 'adminDashboardPage';
   static String singleRegeisterUserPage = 'singleRegeisterUserPage';
-
+  static String viewGroupMembers = 'viewGroupMembers';
+  static String removeGroupMembers = 'removeGroupMembers';
+  static String addGroupAdmin = 'addGroupAdmin';
+  static String addContact = 'addContact';
+  static String globalSearch = 'globalSearch';
 }

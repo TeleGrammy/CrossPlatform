@@ -76,7 +76,7 @@ class AuthRepoImplemention extends AuthRepo {
   Future<Either<Failure, void>> resendEmailVerification(String email) async {
     try {
       await apiService.resendEmailVerification(email);
-      return const Right(null); // Successful verification
+      return const Right(null); // Successful resend verification
     } catch (error) {
       return Left(ServerError(errorMessage: error.toString()));
     }
@@ -102,4 +102,7 @@ class AuthRepoImplemention extends AuthRepo {
   //     return Left(ServerError(errorMessage: error.toString()));
   //   }
   // }
+  void logout() {
+    apiService.logout();
+  }
 }

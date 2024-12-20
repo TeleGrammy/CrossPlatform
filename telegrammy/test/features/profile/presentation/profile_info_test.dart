@@ -15,7 +15,7 @@ import 'package:telegrammy/features/profile/data/repos/profile_repo_implemention
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/profile_settings_cubit/profile_state.dart';
 import 'package:telegrammy/features/profile/presentation/views/profile_settings/profile_info_view.dart';
-import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_picture_circle.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/picture_circle.dart';
 
 class MockProfileApiService extends Mock implements ProfileApiService {}
 
@@ -154,6 +154,6 @@ void main() {
     expect(find.text('cool bio'), findsOneWidget);
     expect(find.text('user123'), findsOneWidget);
     expect(find.text('@test_user'), findsOneWidget);
-    expect(find.byType(ProfilePictureCircle), findsOneWidget);
+    expect(find.byType(PictureCircle), findsOneWidget);
   });
 }

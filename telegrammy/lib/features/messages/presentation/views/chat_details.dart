@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
+import 'package:telegrammy/cores/services/channel_socket.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
-import 'package:telegrammy/features/messages/presentation/data/messages.dart';
-import 'package:telegrammy/features/messages/presentation/view_models/messages_cubit/messages_cubit.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/bottom_bar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_appbar.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/chat_details_body.dart';
@@ -16,21 +16,28 @@ import 'package:telegrammy/features/messages/presentation/widgets/selected_messa
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatDetails extends StatefulWidget {
-  final String name;
-  final String id;
-  final String photo;
   final String lastSeen;
-  final List<Message> messages;
   final Message? forwardedMessage;
-  const ChatDetails(
-      {Key? key,
-      required this.name,
-      required this.id,
-      required this.photo,
-      required this.lastSeen,
-      required this.messages,
-      this.forwardedMessage})
-      : super(key: key); // Key for ChatDetails widget
+  final String userId;
+  final String userRole;
+  final ChatData chatData;
+  // final List<Message> messages;
+  // final String name;
+  // final String id;
+  // final String photo;
+
+  const ChatDetails({
+    Key? key,
+    // required this.name,
+    // required this.id,
+    // required this.photo,
+    required this.lastSeen,
+    // required this.messages,
+    this.forwardedMessage,
+    required this.chatData,
+    required this.userRole,
+    required this.userId,
+  }) : super(key: key);
 
   @override
   State<ChatDetails> createState() => ChatDetailsState();
@@ -44,28 +51,45 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? SearchedMessage;
   late List<Participant> participants;
   bool isPinned = false;
-  final ScrollController _scrollController =
-      ScrollController(); // Scroll controller for chat
+  final ScrollController _scrollController = ScrollController();
+  bool isSocketInitialized = false; // Tracks whether the socket is ready
+
   @override
   void initState() {
     super.initState();
-    // loadChatData();
+    _initializeSocketConnection();
+  }
 
-    getit.get<SocketService>().connect();
+  Future<void> _initializeSocketConnection() async {
+    await getit.get<SocketService>().connect();
+    if (widget.chatData.chat.isChannel) {
+      getit.get<ChannelSocketService>().connect();
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.forwardedMessage != null) {
         getit.get<SocketService>().sendMessage(
           'message:send',
           {
             'messageId': widget.forwardedMessage!.id,
-            'chatId': widget.id,
-            'isForwarded': true
+            'chatId': widget.chatData.chat.id,
+            'isForwarded': true,
           },
         );
       }
-    });
 
-    // socketService.connect();
+      getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
+        context.goNamed(RouteNames.incomingCall, extra: {
+          'name': 'mmmomo',
+          'photo': 'default.png',
+          'callId': response['_id'],
+          'remoteOffer': response['callObj']['offer'],
+        });
+      });
+      setState(() {
+        isSocketInitialized = true; // Mark socket as initialized
+      });
+    });
   }
 
   bool checkPinning() {
@@ -81,10 +105,10 @@ class ChatDetailsState extends State<ChatDetails> {
   }
 
   void onMessageTap(Message message) {
-      // print(message.isPinned);
+    // print(message.isPinned);
     setState(() {
       selectedMessage = message;
-      
+
       isPinned = checkPinning();
     });
   }
@@ -101,45 +125,31 @@ class ChatDetailsState extends State<ChatDetails> {
     });
   }
 
-  // void onSendAudio(Message message) {
-  //   setState(() {
-  //     messages.add(message);
-  //   });
-  // }
-
   void onClickEdit() {
     setState(() {
       editedMessage = selectedMessage;
-      repliedMessage = selectedMessage!.replyOn;
+      repliedMessage = selectedMessage?.replyOn;
       selectedMessage = null;
     });
   }
 
   void onClickDelete() {
-    getit.get<SocketService>().deleteMessage(
-      'message:delete',
-      {'messageId': selectedMessage!.id},
-    );
-    setState(() {
-      selectedMessage = null;
-    });
-    // setState(() {
-    //   messages.add(Message(
-    //     text: "message has been deleted",
-    //     time: DateTime.now().toString(),
-    //     isSentByUser: true,
-    //     repliedTo: null,
-    //   )
-    //   );
-    // clearReply();
-    // });
+    if (selectedMessage != null) {
+      getit.get<SocketService>().deleteMessage(
+        'message:delete',
+        {'messageId': selectedMessage!.id},
+      );
+      setState(() {
+        selectedMessage = null;
+      });
+    }
   }
 
   void onClickPin() {
     // print(selectedMessage!.content);
     getit.get<SocketService>().pinMessage(
       'message:pin',
-      {'messageId': selectedMessage!.id, 'chatId': widget.id},
+      {'messageId': selectedMessage!.id, 'chatId': widget.chatData.chat.id},
     );
 
 // comming from server
@@ -158,7 +168,6 @@ class ChatDetailsState extends State<ChatDetails> {
     });
 
     setState(() {
-    
       lastPinnedMessage = selectedMessage;
       selectedMessage = null;
     });
@@ -166,8 +175,8 @@ class ChatDetailsState extends State<ChatDetails> {
 
   void goToPinnedMessage() {
     if (lastPinnedMessage != null) {
-      final index =
-          widget.messages.indexWhere((msg) => msg.id == lastPinnedMessage!.id);
+      final index = widget.chatData.messages
+          .indexWhere((msg) => msg.id == lastPinnedMessage!.id);
       // print(lastPinnedMessage?.content);
       // print(index);
 
@@ -188,7 +197,7 @@ class ChatDetailsState extends State<ChatDetails> {
   void onClickUnpin() {
     getit.get<SocketService>().unpinMessage(
       'message:unpin',
-      {'messageId': selectedMessage!.id, 'chatId': widget.id},
+      {'messageId': selectedMessage!.id, 'chatId': widget.chatData.chat.id},
     );
 
     getit.get<SocketService>().unpinMessagerecived('message:unpin', (data) {
@@ -208,70 +217,38 @@ class ChatDetailsState extends State<ChatDetails> {
       selectedMessage = null;
     });
   }
-  //        void createDraft(String draftContent) {
-  // getit.get<SocketService>().draftMessage(
-  //   'draft',
-  //   {'chatId':widget.id},
-  // );
 
-  //  getit.get<SocketService>().draftMessagerecived('draft', (data) {
-  //   if (data!= null ) {
-  //     // Find the message by its ID and replace replyOn with the message object
-  //   //  print(data);
-  // //    ScaffoldMessenger.of(context).showSnackBar(
-  // //   SnackBar(
-  // //     content: Text("Message unpinned: ${data['content']?? ''}"),
-  // //     duration: const Duration(seconds: 2),
-  // //   ),
-  // // );
-  //   }
+  void createDraft(String draftContent) {
+    getit.get<SocketService>().draftMessage(
+      'draft',
+      {'chatId': widget.chatData.chat.id},
+    );
 
-  // });
-  // setState(() {
-  //   // lastPinnedMessage=null;
-  //   // selectedMessage = null;
-
-  // });
-
-  // }
-  // void onSend(String text) {
-  //   if (text.trim().isNotEmpty) {
-  //     getit.get<SocketService>().sendMessage(
-  //       'message:send',
-  //       {'content': text, 'chatId': widget.id, 'messageType': 'text'},
-  //     );
-  //     // socketService.sendMessage('event', "data");
-  //     // setState(() {
-  //     //   messages.add(Message(
-  //     //     text: text,
-  //     //     time: DateTime.now().toString(),
-  //     //     isSentByUser: true,
-  //     //     repliedTo: repliedMessage,
-  //     //   ));
-  //     // }
-  //     // );
-  //   }
-  // }
-
-  // void onEdit(Message message, String editedString) {
-  //   if (editedString.trim().isNotEmpty) {
-  //     final index = messages.indexOf(message);
-  //     setState(() {
-  //       messages[index] = Message(
-  //         text: editedString,
-  //         time: DateTime.now().toString(),
-  //         isSentByUser: true,
-  //         repliedTo: message.repliedTo,
-  //       );
-  //     });
-  //   }
-  // }
+    getit.get<SocketService>().draftMessagerecived('draft', (data) {
+      if (data != null) {
+        // Find the message by its ID and replace replyOn with the message object
+        //  print(data);
+        //    ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text("Message unpinned: ${data['content']?? ''}"),
+        //     duration: const Duration(seconds: 2),
+        //   ),
+        // );
+      }
+    });
+    setState(() {
+      // lastPinnedMessage=null;
+      // selectedMessage = null;
+    });
+  }
 
   void onReply() {
-    onMessageSwipe(selectedMessage!);
-    setState(() {
-      selectedMessage = null;
-    });
+    if (selectedMessage != null) {
+      onMessageSwipe(selectedMessage!);
+      setState(() {
+        selectedMessage = null;
+      });
+    }
   }
 
   void onPin() {
@@ -316,7 +293,7 @@ class ChatDetailsState extends State<ChatDetails> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          filteredMessages = widget.messages
+                          filteredMessages = widget.chatData.messages
                               .where((message) =>
                                   RegExp(value, caseSensitive: false)
                                       .hasMatch(message.content))
@@ -376,75 +353,81 @@ class ChatDetailsState extends State<ChatDetails> {
           });
         }
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: selectedMessage == null
-            ? ChatAppbar(
-                key: const Key('chatAppBar'), // Key for ChatAppbar
-                name: widget.name,
-                photo: widget.photo,
-                lastSeen: widget.lastSeen, onSearch: onSearch,
-              )
-            : SelectedMessageAppbar(
-                key: const Key(
-                    'selectedMessageAppBar'), // Key for SelectedMessageAppbar
-                onMessageUnTap: () {
-                  setState(() => selectedMessage = null);
-                },
-                onClickEdit: onClickEdit,
-                onClickDelete: onClickDelete,
-                onClickPin: onClickPin,
-                onClickUnpin: onClickUnpin,
-                isPinned: isPinned,
-              ),
-        body: Column(
-          children: [
-            // Show pinned message bar if a message is pinned
+      child: isSocketInitialized
+          ? Scaffold(
+              backgroundColor: Colors.white,
+              appBar: selectedMessage == null
+                  ? ChatAppbar(
+                      key: const Key('chatAppBar'),
+                      lastSeen: widget.lastSeen,
+                      userRole: widget.userRole,
+                      chat: widget.chatData.chat,
+                      onSearch: onSearch,
+                      name: widget.chatData.chat.name,
+                      photo: widget.chatData.chat.photo ?? 'default.jpg',
+                      id: widget.chatData.chat.id,
+                    )
+                  : SelectedMessageAppbar(
+                      key: const Key('selectedMessageAppBar'),
+                      onMessageUnTap: () {
+                        setState(() => selectedMessage = null);
+                      },
+                      onClickEdit: onClickEdit,
+                      onClickDelete: onClickDelete,
+                      onClickPin: onClickPin,
+                      onClickUnpin: onClickUnpin,
+                      isPinned: isPinned,
+                    ),
+              body: Column(
+                children: [
+                  // Show pinned message bar if a message is pinned
 
-            Expanded(
-              child: ChatDetailsBody(
-                key: const Key('chatDetailsBody'),
-                messages: widget.messages,
-                onMessageTap: onMessageTap,
-                onMessageSwipe: onMessageSwipe,
-                selectedMessage: selectedMessage,
-                userId: widget.id,
-                havePin: lastPinnedMessage != null,
-                lastPinnedMessage: lastPinnedMessage,
-                searchedMessage: SearchedMessage,
+                  Expanded(
+                    child: ChatDetailsBody(
+                      key: const Key('chatDetailsBody'),
+                      messages: widget.chatData.messages,
+                      onMessageTap: onMessageTap,
+                      onMessageSwipe: onMessageSwipe,
+                      selectedMessage: selectedMessage,
+                      userId: widget.userId,
+                      searchedMessage: SearchedMessage,
+                      havePin: lastPinnedMessage != null,
+                      lastPinnedMessage: lastPinnedMessage,
+                    ),
+                  ),
+                  if (repliedMessage != null)
+                    Padding(
+                      key: const Key('replyPreview'),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ReplyPreview(
+                        repliedMessage: repliedMessage!,
+                        onCancel: clearReply,
+                      ),
+                    ),
+                  selectedMessage == null
+                      ? BottomBar(
+                          key: const Key('bottomBar'),
+                          clearReply: clearReply,
+                          editedMessage: editedMessage,
+                          repliedMessage: repliedMessage,
+                          chatId: widget.chatData.chat.id,
+                          isChannel: widget.chatData.chat.isChannel,
+                        )
+                      : SelectedMessageBottomBar(
+                          key: const Key('selectedMessageBottomBar'),
+                          onReply: () {
+                            onReply();
+                          },
+                          selectedMessage: selectedMessage!,
+                        ),
+                ],
+              ),
+            )
+          : const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(), // Loading indicator
               ),
             ),
-            if (repliedMessage != null)
-              Padding(
-                key: const Key('replyPreview'), // Key for ReplyPreview
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ReplyPreview(
-                  repliedMessage: repliedMessage!,
-                  onCancel: clearReply,
-                ),
-              ),
-            selectedMessage == null
-                ? BottomBar(
-                    key: const Key('bottomBar'), // Key for BottomBar
-                    // onSend: onSend,
-                    // onSendAudio: onSendAudio,
-                    // onEdit: onEdit,
-                    clearReply: clearReply,
-                    editedMessage: editedMessage,
-                    repliedMessage: repliedMessage,
-                    chatId: widget.id,
-                  )
-                : SelectedMessageBottomBar(
-                    key: const Key(
-                        'selectedMessageBottomBar'), // Key for SelectedMessageBottomBar
-                    onReply: () {
-                      onReply();
-                    },
-                    selectedMessage: selectedMessage!,
-                  ),
-          ],
-        ),
-      ),
     );
   }
 }

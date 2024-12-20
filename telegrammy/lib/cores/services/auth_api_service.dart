@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:dio/dio.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/notifications/data/handle_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:telegrammy/cores/constants/api_constants.dart';
-// import 'package:flutter_web_auth_plus/flutter_web_auth_plus.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/token_storage_service.dart';
 
@@ -75,7 +73,6 @@ class ApiService {
 
   Future<void> signUpUser(Map<String, dynamic> userData) async {
     try {
-      print(userData);
       final signUpResponse = await dio.post(
         '$baseUrl$registerPath',
         options: Options(
@@ -103,9 +100,8 @@ class ApiService {
         throw Exception('error occured while signing you up');
       }
     } on DioException catch (dioError) {
-      print('Dio error occurred: ${dioError.message}'); // Log the error message
-      print(
-          'Response: ${dioError.response?.data}'); // Log the response data if available
+      print('Dio error occurred: ${dioError.message}');
+      print('Response: ${dioError.response?.data}');
       throw Exception(
           'Error: ${dioError.response?.data['error'] ?? 'An error occurred'}');
     }
@@ -159,6 +155,9 @@ class ApiService {
     await getit
         .get<FlutterSecureStorage>()
         .write(key: 'accessToken', value: response.data['data']['accessToken']);
+    await getit
+        .get<TokenStorageService>()
+        .saveToken(response.data['data']['accessToken']);
     print(response.data['data']['accessToken']);
   }
 
@@ -219,46 +218,9 @@ class ApiService {
     }
   }
 
-  // Future<void> forgetPassword(email) async {
-  //   try {
-  //     final response = await getit.get<Dio>().post(
-  //         'http://10.0.2.2:8080/api/v1/forget-password',
-  //         data: {'email': email});
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
-  // Future<void> resetPassword(password, newPassword) async {
-  //   try {
-  //     // final userLoginData = {'UUID': email, 'password': password};
-  //     final response = await getit
-  //         .get<Dio>()
-  //         .post('http://10.0.2.2:8080/api/v1/auth/login', data: userLoginData);
-
-  //     await getit.get<FlutterSecureStorage>().write(
-  //         key: 'accessToken', value: response.data['data']['accessToken']);
-
-  //     // context.goNamed(RouteNames.home);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   Future<List<Chat>> fetchChats() async {
     try {
-      //const String token =
-      //    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjEyOWFlN2ZmMjZlOGZjNzk5MGQ1ZSIsIm5hbWUiOiJtb2hhbWVkMjIiLCJlbWFpbCI6Im1rMDAxNTI2NEBnbWFpbC5jb20iLCJwaG9uZSI6IjAxMDEwMTAxMDExMSIsImxvZ2dlZE91dEZyb21BbGxEZXZpY2VzQXQiOm51bGwsImlhdCI6MTczMjkwMzMyNiwiZXhwIjoxNzMyOTA2OTI2LCJhdWQiOiJteWFwcC11c2VycyIsImlzcyI6Im15YXBwIn0.5VPSWqkgIdW6KVRBPQP0yaUTezIm1yeXxz6NUooSvC0';
       String? token = await getit.get<TokenStorageService>().getToken();
-      // print(token);
-      // final response = await getit.get<Dio>().get(
-      //       'http://10.0.2.2:8080/api/v1/chats/all-chats?page=1&limit=50',
-      //       options: Options(
-      //         headers: {
-      //           'Authorization': 'Bearer $token',
-      //         },
-      //       ),
-      //     );
       final response = await getit.get<Dio>().get(
             '$baseUrl/chats/all-chats?page=1&limit=50',
             options: Options(
@@ -267,9 +229,9 @@ class ApiService {
               },
             ),
           );
-      // print(response);
       if (response.statusCode == 200) {
-        final List<dynamic> chats = response.data['chats'];
+        List<dynamic> chats = response.data['chats'];
+        print(chats);
         // final String userId = response.data['userId'];
         return chats.map((chat) => Chat.fromJson(chat)).toList();
       } else {
@@ -279,5 +241,12 @@ class ApiService {
       print(e);
       throw Exception('Error: $e');
     }
+  }
+
+  void logout() async {
+    await getit.get<FlutterSecureStorage>().delete(key: 'accessToken');
+    await getit.get<Dio>().get(
+          '$baseUrl/api/v1/auth/logout',
+        );
   }
 }
