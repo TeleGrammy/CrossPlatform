@@ -14,7 +14,6 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:telegrammy/cores/errors/Failture.dart';
-import 'package:telegrammy/cores/models/user_model.dart';
 
 abstract class AuthRepo {
   Future<Either<String, void>> signInWithGoogle();
@@ -25,6 +24,7 @@ abstract class AuthRepo {
       String email, String verificationCode);
   Future<Either<Failure, void>> resendEmailVerification(String email);
   Future<Either<Failure, void>> forgetPassword(String email);
+    void logout();
   // Future<Either<Failure, void>> resetPassword(
   //     String password, String newPassword);
 }

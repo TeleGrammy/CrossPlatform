@@ -1,63 +1,33 @@
 import 'package:meta/meta.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 class ChatData {
-  final Chat chat;
-  final Messages messages;
+  final ChatView chat;
+  final List<Message> messages;
 
   ChatData({required this.chat, required this.messages});
 
   factory ChatData.fromJson(Map<String, dynamic> json) {
     return ChatData(
-      chat: Chat.fromJson(json['chat']),
-      messages: Messages.fromJson(json['messages']),
+      chat: ChatView.fromJson(json['chat']),
+      messages: json['messages'],
     );
   }
 }
 
-class Chat {
-  final String id;
-  final List<Participant> participants;
-  final bool isGroup;
-  final bool isChannel;
-  final String createdAt;
-  final List<dynamic> pinnedMessages;
-
-  Chat({
-    required this.id,
-    required this.participants,
-    required this.isGroup,
-    required this.isChannel,
-    required this.createdAt,
-    required this.pinnedMessages,
-  });
-
-  factory Chat.fromJson(Map<String, dynamic> json) {
-    return Chat(
-      id: json['_id'],
-      participants: (json['participants'] as List)
-          .map((participant) => Participant.fromJson(participant))
-          .toList(),
-      isGroup: json['isGroup'],
-      isChannel: json['isChannel'],
-      createdAt: json['createdAt'],
-      pinnedMessages: json['pinnedMessages'] ?? [],
-    );
-  }
-}
-
-class Participant {
+class Participantt {
   final User user;
   final String joinedAt;
   final String draftMessage;
 
-  Participant({
+  Participantt({
     required this.user,
     required this.joinedAt,
     required this.draftMessage,
   });
 
-  factory Participant.fromJson(Map<String, dynamic> json) {
-    return Participant(
+  factory Participantt.fromJson(Map<String, dynamic> json) {
+    return Participantt(
       user: User.fromJson(json['userId']),
       joinedAt: json['joinedAt'],
       draftMessage: json['draft_message'],
@@ -100,38 +70,19 @@ class User {
   }
 }
 
-class Messages {
-  final int totalMessages;
-  final int currentPage;
-  final int totalPages;
-  final List<Message> data;
-
-  Messages({
-    required this.totalMessages,
-    required this.currentPage,
-    required this.totalPages,
-    required this.data,
-  });
-
-  factory Messages.fromJson(Map<String, dynamic> json) {
-    return Messages(
-      totalMessages: json['totalMessages'],
-      currentPage: json['currentPage'],
-      totalPages: json['totalPages'],
-      data: (json['data'] as List)
-          .map((message) => Message.fromJson(message))
-          .toList(),
-    );
-  }
-}
-
 class Message {
   final String id;
-  final Sender sender;
+  final String sender;
   final String messageType;
-  final List<Mention> mentions;
-  final String content;
+  final List<Mention>? mentions;
+  String content;
   final String timestamp;
+  final Message? replyOn; // Nullable to handle null values
+  final bool isForwarded;
+  final bool isEdited;
+  String status;
+  String? mediaUrl;
+  String? mediaKey;
 
   Message({
     required this.id,
@@ -140,18 +91,50 @@ class Message {
     required this.mentions,
     required this.content,
     required this.timestamp,
+    this.replyOn,
+    required this.isForwarded,
+    required this.isEdited,
+    required this.status,
+    this.mediaUrl,
+    this.mediaKey,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'senderId': sender,
+      'messageType': messageType,
+      'mentions': mentions?.map((mention) => mention.toJson()).toList(),
+      'content': content,
+      'timestamp': timestamp,
+      'replyOn': replyOn?.toJson(), // Convert nested message to JSON
+      'isForwarded': isForwarded,
+      'isEdited': isEdited,
+      'status': status,
+      'mediaUrl': mediaUrl,
+      'mediaKey': mediaKey,
+    };
+  }
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
       id: json['_id'],
-      sender: Sender.fromJson(json['senderId']),
+      sender: json['senderId'] is Map<String, dynamic>
+          ? json['senderId']['_id']
+          : json['senderId'],
       messageType: json['messageType'],
       mentions: (json['mentions'] as List)
           .map((mention) => Mention.fromJson(mention))
           .toList(),
       content: json['content'],
       timestamp: json['timestamp'],
+      replyOn: json['replyOn'] != null
+          ? Message.fromJson(json['replyOn'])
+          : null, // May be null
+      isForwarded: json['isForwarded'],
+      isEdited: json['isEdited'],
+      status: json['status'],
+      mediaUrl: json['mediaUrl'],
+      mediaKey: json['mediaKey'],
     );
   }
 }
@@ -181,5 +164,12 @@ class Mention {
       id: json['_id'],
       username: json['username'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'username': username,
+    };
   }
 }

@@ -96,9 +96,9 @@ class _PrivacyOptionsState extends State<PrivacyOptions> {
   String _privacyOptionText(String option) {
     switch (option.toLowerCase()) {
       case 'everyone':
-        return 'Everyone';
+        return 'EveryOne';
       case 'contacts':
-        return 'My Contacts';
+        return 'Contacts';
       case 'nobody':
         return 'Nobody';
       default:

@@ -15,22 +15,38 @@ class PrivacySettingsCubit extends Cubit<PrivacyState> {
   }
 
   // Fetch privacy settings from the API
-  Future<void> fetchPrivacySettings() async {
-    try {
-      emit(PrivacyLoading()); // Emit loading state while fetching
+  // Future<void> fetchPrivacySettings() async {
+  //   try {
+  //     emit(PrivacyLoading()); // Emit loading state while fetching
 
-      final result = await profileRepo.getUserSettings();
-      result.fold(
-        (failure) => emit(PrivacyOptionsError(message: failure.errorMessage)),
-        (userSettings) {
-          final privacyOptions = _mapUserPrivacySettingsToProfileVisibility(userSettings);
-          emit(PrivacyOptionsLoaded(privacyOptions: privacyOptions)); // Emit loaded state with privacy options
-        },
-      );
-    } catch (e) {
-      emit(PrivacyOptionsError(message: "Failed to load privacy settings.")); // Handle unexpected errors
-    }
+  //     final result = await profileRepo.getUserSettings();
+  //     result.fold(
+  //       (failure) => emit(PrivacyOptionsError(message: failure.errorMessage)),
+  //       (userSettings) {
+  //         final privacyOptions = _mapUserPrivacySettingsToProfileVisibility(userSettings);
+  //         emit(PrivacyOptionsLoaded(privacyOptions: privacyOptions)); // Emit loaded state with privacy options
+  //       },
+  //     );
+  //   } catch (e) {
+  //     emit(PrivacyOptionsError(message: "Failed to load privacy settings.")); // Handle unexpected errors
+  //   }
+  // }
+  Future<void> fetchPrivacySettings() async {
+  try {
+    if (!isClosed) emit(PrivacyLoading());
+    final result = await profileRepo.getUserSettings();
+    result.fold(
+      (failure) => { if (!isClosed) emit(PrivacyOptionsError(message: failure.errorMessage)) },
+      (userSettings) {
+        final privacyOptions = _mapUserPrivacySettingsToProfileVisibility(userSettings);
+        if (!isClosed) emit(PrivacyOptionsLoaded(privacyOptions: privacyOptions));
+      },
+    );
+  } catch (e) {
+    if (!isClosed) emit(PrivacyOptionsError(message: "Failed to load privacy settings."));
   }
+}
+
 
   // Map the UserPrivacySettingsResponse to ProfileVisibility model
   ProfileVisibility _mapUserPrivacySettingsToProfileVisibility(UserPrivacySettingsResponse userSettings) {

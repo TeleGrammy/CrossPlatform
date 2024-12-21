@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/models/channel_model.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
 import 'package:telegrammy/features/channels/presentation/widgets/create_channel_form.dart';
-
-import '../../../../../cores/routes/route_names.dart';
 
 class CreateChannelView extends StatelessWidget {
   CreateChannelView({super.key});
@@ -16,17 +15,16 @@ class CreateChannelView extends StatelessWidget {
   final channelDescriptionController = TextEditingController();
   final adminController = TextEditingController();
 
-  final Function(Channel) onSubmit = (Channel newChannel) {
-    //call the cubit function to create channel here
-  };
-
   @override
   Widget build(BuildContext context) {
+    final Function(Channel) onSubmit = (Channel newChannel) {
+      context.read<ChannelCubit>().createChannel(newChannel);
+    };
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           key: const ValueKey('CreateChannelBackButton'),
-          onPressed: () => context.goNamed(RouteNames.contacts),
+          onPressed: () => context.goNamed(RouteNames.chats),
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         title: Text('Create Channel'),
@@ -46,7 +44,6 @@ class CreateChannelView extends StatelessWidget {
                       channelNameController: channelNameController,
                       channelDescriptionController:
                           channelDescriptionController,
-                      adminController: adminController,
                       onSubmit: onSubmit),
                 ),
               ],

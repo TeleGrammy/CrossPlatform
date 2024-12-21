@@ -1,12 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:telegrammy/cores/services/channel_socket.dart';
+import 'package:telegrammy/cores/services/service_locator.dart';
+import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 import '../../../../cores/routes/route_names.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final String participantNames;
+  final ChatView chat;
+  final String lastSeen;
+  final String userRole;
+  final Function() onSearch;
+  final String name;
+  final String photo;
+  final String id;
+  final String userId;
 
-  const ChatAppbar({required this.participantNames, super.key});
+  const ChatAppbar(
+      {super.key,
+      required this.name,
+      required this.photo,
+      required this.lastSeen,
+      required this.userId,
+      required this.chat,
+      required this.userRole,
+      required this.onSearch,
+      required this.id});
 
   void _showSettingsMenu(BuildContext context) {
     showModalBottomSheet(
@@ -17,9 +37,52 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             ListTile(
               key: const Key('settings_mute_option'),
+              leading: Icon(
+                Icons.volume_mute_rounded,
+                color: Colors.black,
+              ),
               title: const Text('Mute'),
               onTap: () => _showMuteOptions(context),
             ),
+            ListTile(
+              key: const Key('settings_mute_option'),
+              leading: Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              title: const Text('Search'),
+              onTap: () => {},
+            ),
+            if (chat.isChannel)
+              ListTile(
+                key: const Key('settings_mute_option'),
+                leading: Icon(
+                  Icons.exit_to_app_outlined,
+                  color: Colors.red,
+                ),
+                title: const Text('leave Channel'),
+                onTap: () => {},
+              ),
+            if (chat.isChannel &&
+                (userRole == "Creator" ||
+                    userRole ==
+                        "Admin")) //should add if the user is admin condition
+              ListTile(
+                key: const Key('settings_mute_option'),
+                leading: Icon(
+                  Icons.delete_rounded,
+                  color: Colors.red,
+                ),
+                title: const Text('delete Channel'),
+                onTap: () {
+                  getit
+                      .get<ChannelSocketService>()
+                      .removeChannel({'channelId': chat.channelId});
+                  getit
+                      .get<ChannelSocketService>()
+                      .errorChannelMessage((dynamic callback) {});
+                },
+              ),
           ],
         );
       },
@@ -55,27 +118,30 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         key: const Key('back_button'),
         icon: Icon(Icons.arrow_back),
-        onPressed: () => context.goNamed(RouteNames.contacts),
+        onPressed: () {
+          // getit.get<SocketService>().disconnect();
+          context.goNamed(RouteNames.chats);
+        },
       ),
       title: Row(
         key: const Key('appbar_title_row'),
         children: [
           CircleAvatar(
             key: const Key('profile_picture'),
-            backgroundImage: const AssetImage('assets/images/logo.png'),
+            backgroundImage: NetworkImage(photo) as ImageProvider,
             radius: 20,
           ),
           const SizedBox(width: 10),
           Column(
             key: const Key('participant_info_column'),
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'person name',
+                chat.name,
                 key: Key('participant_name'),
               ),
               Text(
-                'Last seen: 10 minutes ago',
+                lastSeen,
                 key: Key('last_seen_info'),
                 style: TextStyle(fontSize: 12),
               ),
@@ -87,12 +153,30 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           key: const Key('call_button'),
           icon: const Icon(Icons.call),
-          onPressed: () {},
+          onPressed: () {
+            context.goNamed(RouteNames.onGoingCall, extra: {
+              'chat':chat,
+              'userId': userId,
+            });
+          },
         ),
         IconButton(
           key: const Key('settings_button'),
           icon: const Icon(Icons.more_vert),
           onPressed: () => _showSettingsMenu(context),
+        ),
+        IconButton(
+            key: const Key('chat_info_button'),
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              if (chat.isGroup)
+                context
+                    .goNamed(RouteNames.groupSettings, extra: [chat, lastSeen]);
+            }),
+        IconButton(
+          key: const Key('search_settings_button'),
+          icon: const Icon(Icons.search),
+          onPressed: onSearch,
         ),
       ],
     );

@@ -53,7 +53,7 @@ Future<UserPrivacySettingsResponse> getUserSettings() async {
 Future<void> updateProfileVisibility(ProfileVisibility profileVisibility) async {
   try {
     String? token = await getit.get<TokenStorageService>().getToken();
-
+    print(token); 
     await dio.patch(
       '$baseUrl2/privacy/settings/profile-visibility',
       options: Options(
@@ -96,7 +96,7 @@ Future<void> updateProfileVisibility(ProfileVisibility profileVisibility) async 
           'Authorization': 'Bearer $token',
         }),
       );
-      print(response);
+      // print(response);
       return ContactsResponse.fromJson(response.data);
     } on DioException catch (dioError) {
       // print('error');
@@ -213,6 +213,54 @@ Future<void> updateReadReceiptsStatus(bool isEnabled) async {
     }
   }
 
+Future<MultiUserStoryResponse> getOtherUserStories(int page, int limit) async {
+  try {
+    String? token = await getit.get<TokenStorageService>().getToken();
+    
+    final response = await dio.get(
+      '$baseUrl2/user/stories/contacts',
+      queryParameters: {
+        'page': page,
+        'limit': limit,
+      },
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    print('Multi User Story Response: ${response.data}');
+    
+    // Parse the response into MultiUserStoryResponse
+    return MultiUserStoryResponse.fromJson(response.data);
+    
+  } on DioException catch (dioError) {
+    print('Dio Error: $dioError');
+    throw Exception('Error fetching multi-user stories: ${dioError.message}');
+  }
+}
+/////////////////////////////////////
+Future<void> markStoryAsViewed(String storyId) async {
+  try {
+    String? token = await getit.get<TokenStorageService>().getToken();
+
+    await dio.patch(
+      '$baseUrl2/user/stories/$storyId/view',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    print('Story marked as viewed successfully');
+  } on DioException catch (dioError) {
+    throw Exception('Error marking story as viewed: ${dioError.message}');
+  }
+}
+
+//////////////////////////
 Future<void> createStory(StoryCreation storyCreation) async {
   try {
     final String? token = await getit.get<TokenStorageService>().getToken();

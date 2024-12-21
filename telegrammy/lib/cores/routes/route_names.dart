@@ -8,11 +8,12 @@ class RouteNames {
   static String verifyOTP = 'verifyOTP';
   static String profilePrivacyPage = 'privacy';
   static String storiesPage = 'story';
+  static String otherUserStoryPage = 'otherUserStoryPage';
   static String privacyAllowablePage = 'privacyAllowable';
   static String userStoryPage = 'userStoryPage';
   static String createStoryPage = 'createStoryPage';
   static String sentResetPasswordSuccessfully = 'sentResetPasswordSuccessfully';
-  static String oneToOneMessaging = 'oneToOneMessaging';
+  static String chatWrapper = 'chatWrapper';
   static String forwardToPage = 'forwardToPage';
   static String profileInfo = 'profileInfo';
   static String editProfileInfo = 'editProfileInfo';
@@ -21,8 +22,22 @@ class RouteNames {
   static String changeUsername = 'changeUsername';
   static String changeEmail = 'changeEmail';
   static String changePhoneNumber = 'changePhoneNumber';
-  static String contacts = 'contacts';
+  static String chats = 'chats';
   static String blockingView = 'blockingView';
   static String ContactsToBlockFromView = 'contactsToBlockFromView';
   static String createGroup = 'createGroup';
+  static String onGoingCall = 'onGoingCall';
+  static String incomingCall = 'incomingCall';
+  static String groupSettings = 'groupSettings';
+  static String editGroupSettings = 'editGroupSettings';
+  static String addGroupMembers = 'addGroupMembers';
+  static String adminDashboardPage = 'adminDashboardPage';
+  static String adminDashboardPageFilterMedia = 'adminDashboardPageFilterMedia';
+  static String singleRegeisterGroupPage = 'singleRegeisterGroupPage';
+  static String singleRegeisterUserPage = 'singleRegeisterUserPage';
+  static String viewGroupMembers = 'viewGroupMembers';
+  static String removeGroupMembers = 'removeGroupMembers';
+  static String addGroupAdmin = 'addGroupAdmin';
+  static String addContact = 'addContact';
+  static String globalSearch = 'globalSearch';
 }

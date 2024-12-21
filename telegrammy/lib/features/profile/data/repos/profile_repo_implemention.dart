@@ -30,8 +30,6 @@ class ProfileRepoImplementation extends ProfileRepo {
   //   }
   // }
 
-
-
   @override
   Future<Either<Failure, BlockedUsersResponse>> getBlockedUser() async {
     try {
@@ -62,34 +60,36 @@ class ProfileRepoImplementation extends ProfileRepo {
     }
   }
 
-@override
-Future<Either<Failure, void>> updateBlockingStatus(String action, String userId) async {
-  try {
-    // Call the API service to update the blocking status
-    await profileApiService.updateBlockingStatus(action, userId);
+  @override
+  Future<Either<Failure, void>> updateBlockingStatus(
+      String action, String userId) async {
+    try {
+      // Call the API service to update the blocking status
+      await profileApiService.updateBlockingStatus(action, userId);
 
-    // Return success (void) as a Right value
-    return const Right(null);
-  } catch (error) {
-    // Handle the error and return a failure
-   
-    return Left(ServerError(errorMessage: error.toString()));
-  }
-}
-@override
-Future<Either<Failure, void>> updateReadReceiptsStatus(bool isEnabled) async {
-  try {
-    // Call the API service to update the blocking status
-    await profileApiService.updateReadReceiptsStatus(isEnabled);
+      // Return success (void) as a Right value
+      return const Right(null);
+    } catch (error) {
+      // Handle the error and return a failure
 
-    // Return success (void) as a Right value
-    return const Right(null);
-  } catch (error) {
-    // Handle the error and return a failure
-   
-    return Left(ServerError(errorMessage: error.toString()));
+      return Left(ServerError(errorMessage: error.toString()));
+    }
   }
-}
+
+  @override
+  Future<Either<Failure, void>> updateReadReceiptsStatus(bool isEnabled) async {
+    try {
+      // Call the API service to update the blocking status
+      await profileApiService.updateReadReceiptsStatus(isEnabled);
+
+      // Return success (void) as a Right value
+      return const Right(null);
+    } catch (error) {
+      // Handle the error and return a failure
+
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
 
 ///////////////////////////////////////////
   @override
@@ -104,30 +104,57 @@ Future<Either<Failure, void>> updateReadReceiptsStatus(bool isEnabled) async {
     }
   }
 
-@override
-Future<Either<Failure, UserPrivacySettingsResponse>> getUserSettings() async {
-  try {
-    // Call the API service to get user privacy settings
-    final userSettingsResponse = await profileApiService.getUserSettings();
-    return Right(userSettingsResponse); // Successful response
-  } catch (error) {
-    // Handle the error and return a failure
-    return Left(ServerError(errorMessage: error.toString()));
+  @override
+  Future<Either<Failure, MultiUserStoryResponse>> getOtherUserStories(
+      int page, int limit) async {
+    try {
+      // Call the API service to get user stories
+      final otherStoryResponse =
+          await profileApiService.getOtherUserStories(page, limit);
+      return Right(otherStoryResponse); // Successful response
+    } catch (error) {
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
   }
-}
 
-@override
-Future<Either<Failure, void>> updateProfileVisibility(ProfileVisibility profileVisibility) async {
-  try {
-    // Call the API service to update the user profile visibility
-    await profileApiService.updateProfileVisibility(profileVisibility);
-    return const Right(null); // Successful response (void)
-  } catch (error) {
-    // Handle the error and return a failure
-    return Left(ServerError(errorMessage: error.toString()));
+
+    @override
+  Future<Either<Failure, void>> markStoryAsViewed(String storyId) async {
+       try {
+      // Call the API service to update the user profile visibility
+      await profileApiService.markStoryAsViewed(storyId);
+      return const Right(null); // Successful response (void)
+    } catch (error) {
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
   }
-}
 
+  @override
+  Future<Either<Failure, UserPrivacySettingsResponse>> getUserSettings() async {
+    try {
+      // Call the API service to get user privacy settings
+      final userSettingsResponse = await profileApiService.getUserSettings();
+      return Right(userSettingsResponse); // Successful response
+    } catch (error) {
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateProfileVisibility(
+      ProfileVisibility profileVisibility) async {
+    try {
+      // Call the API service to update the user profile visibility
+      await profileApiService.updateProfileVisibility(profileVisibility);
+      return const Right(null); // Successful response (void)
+    } catch (error) {
+      // Handle the error and return a failure
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
 
   Future<Either<Failure, void>> createStory(StoryCreation storyCreation) async {
     try {

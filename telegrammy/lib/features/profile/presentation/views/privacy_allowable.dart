@@ -6,6 +6,7 @@ import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/widgets/app_bar.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_cubit.dart';
 import 'package:telegrammy/features/profile/presentation/view_models/privacy_cubit/privacy_state.dart';
+import 'package:telegrammy/features/profile/presentation/widgets/privacy_app_bar.dart';
 
 class PrivacyAllowablePage extends StatelessWidget {
   final String title;
@@ -16,11 +17,11 @@ class PrivacyAllowablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GeneralAppBar(
+      appBar: PrivacyAppBar(
         titleBar: title,
         key: const ValueKey('PrivacyAllowableAppBar'),
       ),
-      backgroundColor: secondaryColor,
+      // backgroundColor: secondaryColor,
       body: BlocListener<PrivacySettingsCubit, PrivacyState>(
         listener: (context, state) {
           if (state is PrivacyOptionsError) {
@@ -47,9 +48,9 @@ class PrivacyAllowablePage extends StatelessWidget {
                 children: [
                   const SizedBox(height: 50),
                   buildPrivacyAllowableTile(
-                    context, 'Everybody', PrivacyOption.everyone, selectedOption),
+                    context, 'EveryOne', PrivacyOption.everyone, selectedOption),
                   buildPrivacyAllowableTile(
-                    context, 'My Contacts', PrivacyOption.contacts, selectedOption),
+                    context, 'Contacts', PrivacyOption.contacts, selectedOption),
                   buildPrivacyAllowableTile(
                     context, 'Nobody', PrivacyOption.nobody, selectedOption),
                 ],
@@ -76,7 +77,7 @@ class PrivacyAllowablePage extends StatelessWidget {
   Widget buildPrivacyAllowableTile(
       BuildContext context, String title, PrivacyOption value, String? selectedOption) {
     return Container(
-      color: appBarDarkMoodColor,
+      color: primaryColor,
       child: RadioListTile<PrivacyOption>(
         title: Text(
           title,
@@ -99,9 +100,9 @@ class PrivacyAllowablePage extends StatelessWidget {
 
   PrivacyOption? _getPrivacyOptionFromName(String? selectedOption) {
     switch (selectedOption) {
-      case 'Everybody':
+      case 'EveryOne':
         return PrivacyOption.everyone;
-      case 'My Contacts':
+      case 'Contacts':
         return PrivacyOption.contacts;
       case 'Nobody':
         return PrivacyOption.nobody;

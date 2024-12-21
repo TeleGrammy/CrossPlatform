@@ -7,7 +7,7 @@ import 'package:telegrammy/features/profile/presentation/widgets/profile_setting
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/change_profile_picture_button.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/profile_settings_app_bar.dart';
 import '../../view_models/profile_settings_cubit/profile_state.dart';
-import '../../widgets/profile_settings/profile_picture_circle.dart';
+import '../../widgets/profile_settings/picture_circle.dart';
 import 'package:telegrammy/features/profile/presentation/widgets/profile_settings/settings_box.dart';
 import 'dart:io';
 
@@ -91,8 +91,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(height: 20),
-                      ProfilePictureCircle(
-                          imageUrl: state.profileInfo.profilePic),
+                      PictureCircle(imageUrl: state.profileInfo.profilePic),
                       ChangeProfilePictureButton(),
                       SizedBox(height: 20),
                       Form(
