@@ -16,7 +16,7 @@ class RemoveGroupMembersView extends StatefulWidget {
       required this.lastSeen});
   final String groupId;
   final List<MemberData> membersToRemoveFrom;
-  Chat chat;
+  ChatView chat;
   String lastSeen;
   @override
   _RemoveGroupMembersViewState createState() => _RemoveGroupMembersViewState();

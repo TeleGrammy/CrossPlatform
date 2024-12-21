@@ -16,7 +16,7 @@ class GroupMembersView extends StatefulWidget {
       required this.lastSeen});
   final String groupId;
   final List<MemberData> members;
-  Chat chat;
+  ChatView chat;
   String lastSeen;
   @override
   _GroupMembersViewState createState() => _GroupMembersViewState();

@@ -24,7 +24,7 @@ class GroupAdminSettings extends StatelessWidget {
   final List<ContactData> contactsToAddFrom;
   final List<MemberData> membersToMakeAdmins;
   final List<MemberData> nonAdminMembers;
-  Chat chat;
+  ChatView chat;
   String lastSeen;
 
   final List<String> _privacyOptions = const ["Public", "Private"];

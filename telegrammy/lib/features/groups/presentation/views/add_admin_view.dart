@@ -18,7 +18,7 @@ class AddGroupAdminView extends StatefulWidget {
       required this.lastSeen});
   final String groupId;
   final List<MemberData> usersToMakeAdmins;
-  Chat chat;
+  ChatView chat;
   String lastSeen;
 
   @override

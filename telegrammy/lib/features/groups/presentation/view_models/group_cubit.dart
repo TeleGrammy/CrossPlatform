@@ -38,7 +38,7 @@ class GroupCubit extends Cubit<GroupState> {
         .toList();
   }
 
-  Future<void> getGroupInfo(String groupId, Chat chat, String lastSeen) async {
+  Future<void> getGroupInfo(String groupId, ChatView chat, String lastSeen) async {
     try {
       emit(GroupLoading());
       final Group groupData =
