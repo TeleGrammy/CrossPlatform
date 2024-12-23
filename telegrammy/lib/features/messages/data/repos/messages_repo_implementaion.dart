@@ -64,6 +64,7 @@ class MessagesRepoImplementaion extends MessagesRepo {
 
   Future<Map<String, dynamic>> getMessages({required String chatId}) async {
     final result = await getit.get<MessagesApiService>().getMessages(chatId);
+    
     return result.fold(
       (error) {
         // Handle the error case

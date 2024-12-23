@@ -27,10 +27,11 @@ class MessagesApiService {
               },
             ),
           );
-      print(response.data);
       // Check response status
       if (response.statusCode == 200) {
         final data = response.data;
+        print(response.data);
+
         // Parse participants
         List<Participant> participants = (data['chat']['participants'] as List)
             .map((p) => Participant.fromJson(p))
@@ -45,6 +46,7 @@ class MessagesApiService {
         return Right({
           'participants': participants,
           'messages': messages,
+          'deleted': data['chat']['deleted'],
         });
       } else {
         // Return error for non-200 status codes
@@ -90,43 +92,40 @@ class MessagesApiService {
       return Media(mediaKey: null, mediaUrl: null);
     }
   }
-  Future<void>muteChat(String chatId) async {
-  try {
-    String? token = await getit.get<TokenStorageService>().getToken();
 
-    await dio.patch(
-      '$baseUrl2/notification/mute',
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      ),
-      data:{'chatId'}
-    );
+  Future<void> muteChat(String chatId) async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
 
-    print('chat muted  successfully');
-  } on DioException catch (dioError) {
-    throw Exception('Error marking story as viewed: ${dioError.message}');
+      await dio.patch('$baseUrl2/notification/mute',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+            },
+          ),
+          data: {'chatId'});
+
+      print('chat muted  successfully');
+    } on DioException catch (dioError) {
+      throw Exception('Error marking story as viewed: ${dioError.message}');
+    }
   }
-}
 
-  Future<void>unmuteChat(String chatId) async {
-  try {
-    String? token = await getit.get<TokenStorageService>().getToken();
+  Future<void> unmuteChat(String chatId) async {
+    try {
+      String? token = await getit.get<TokenStorageService>().getToken();
 
-    await dio.patch(
-      '$baseUrl2/notification/unmute',
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      ),
-      data:{'chatId'}
-    );
+      await dio.patch('$baseUrl2/notification/unmute',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+            },
+          ),
+          data: {'chatId'});
 
-    print('chat unmuted  successfully');
-  } on DioException catch (dioError) {
-    throw Exception('Error marking story as viewed: ${dioError.message}');
+      print('chat unmuted  successfully');
+    } on DioException catch (dioError) {
+      throw Exception('Error marking story as viewed: ${dioError.message}');
+    }
   }
-}
 }

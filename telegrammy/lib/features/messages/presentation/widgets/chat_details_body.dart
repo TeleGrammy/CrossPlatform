@@ -4,6 +4,7 @@ import 'package:telegrammy/cores/routes/app_routes.dart';
 import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/services/service_locator.dart';
 import 'package:telegrammy/cores/services/socket.dart';
+import 'package:telegrammy/features/channels/presentation/widgets/add_comment_button.dart';
 import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/message_attachment.dart';
 import 'package:telegrammy/features/messages/presentation/widgets/pinned_message_bar.dart';
@@ -17,6 +18,7 @@ class ChatDetailsBody extends StatefulWidget {
   final bool? havePin;
   final Message? lastPinnedMessage;
   final Message? searchedMessage;
+  final bool isChannel;
 
   const ChatDetailsBody(
       {super.key,
@@ -27,7 +29,8 @@ class ChatDetailsBody extends StatefulWidget {
       required this.userId,
       required this.havePin,
       required this.lastPinnedMessage,
-      required this.searchedMessage});
+      required this.searchedMessage,
+      required this.isChannel});
 
   @override
   State<ChatDetailsBody> createState() => _ChatDetailsBodyState();
@@ -42,7 +45,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
     super.initState();
     // Initialize the local messages list
     messages = List.from(widget.messages);
-    
+
     getit.get<SocketService>().receiveMessage('message:sent', (data) {
       // Check if replyOn is not null
       if (data['replyOn'] != null) {
@@ -56,11 +59,11 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
       // Create the Message object
       Message message = Message.fromJson(data);
 
-        setState(() {
+      setState(() {
         messages.add(message);
         _scrollToBottom(); // Automatically scroll to the bottom
       });
-    }); 
+    });
 
     getit.get<SocketService>().receiveEditedMessage('message:updated', (data) {
       if (data['replyOn'] != null) {
@@ -163,9 +166,9 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
         }
       }
 
-    getit.get<SocketService>().recieveCall('call:incomingCall', (data){
-      context.goNamed(RouteNames.incomingCall,extra: data);
-    });
+      getit.get<SocketService>().recieveCall('call:incomingCall', (data) {
+        context.goNamed(RouteNames.incomingCall, extra: data);
+      });
 
       Message message = Message.fromJson(data);
       int index = messages.indexWhere((m) => m.id == message.id);
@@ -327,6 +330,7 @@ class _ChatDetailsBodyState extends State<ChatDetailsBody> {
                                 size: 16.0,
                                 color: _getStatusColor(message.status),
                               ),
+                              if (widget.isChannel) AddCommentButton(),
                             ],
                           ),
                         ),

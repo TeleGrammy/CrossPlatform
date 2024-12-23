@@ -16,4 +16,22 @@ class ChannelsRepoImplementaion extends ChannelsRepo {
       return Left(ServerError(errorMessage: error.toString()));
     }
   }
+
+  Future<Either<Failure, dynamic>> getChannelInfo(String channelId) async {
+    try {
+      final channelData=await apiService.getChannelInfo(channelId);
+      return Right(channelData);
+    } catch (error) {
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
+
+  Future<Either<Failure, dynamic>> updateChannelInfo(String channelId, String name, String description) async {
+    try {
+      final channelData=await apiService.updateChannelInfo(channelId,name,description);
+      return Right(channelData);
+    } catch (error) {
+      return Left(ServerError(errorMessage: error.toString()));
+    }
+  }
 }

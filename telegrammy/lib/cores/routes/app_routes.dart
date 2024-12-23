@@ -15,6 +15,8 @@ import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/r
 import 'package:telegrammy/features/auth/presentation/views/resetpassword_view/verify_otp.dart';
 import 'package:telegrammy/features/auth/presentation/views/signup_view/signup_view.dart';
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
+import 'package:telegrammy/features/channels/presentation/views/channel_settings_view/channel_settings.dart';
+import 'package:telegrammy/features/channels/presentation/views/channel_settings_view/edit_channel_settings.dart';
 import 'package:telegrammy/features/channels/presentation/views/create_channel_view/create_channel_view.dart';
 import 'package:telegrammy/features/groups/presentation/view_models/group_cubit.dart';
 import 'package:telegrammy/features/groups/presentation/views/add_admin_view.dart';
@@ -427,6 +429,24 @@ class AppRoutes {
         },
       ),
       GoRoute(
+        name: RouteNames.channelSettings,
+        path: '/channel-settings',
+        builder: (context, state) {
+          final List<dynamic> extras = state.extra as List<dynamic>;
+          Chat chat = extras[0];
+          String lastSeen = extras[1];
+          String userId = extras[2];
+          return BlocProvider(
+            create: (context) => ChannelCubit(),
+            child: ChannelSettingsView(
+              chat: chat,
+              lastSeen: lastSeen,
+              userId: userId,
+            ),
+          );
+        },
+      ),
+      GoRoute(
           name: RouteNames.editGroupSettings,
           path: '/edit-group-settings',
           builder: (context, state) {
@@ -437,6 +457,20 @@ class AppRoutes {
                   groupId: extras[0],
                   chat: extras[1],
                   lastSeen: extras[2],
+                ));
+          }),
+      GoRoute(
+          name: RouteNames.editChannelSettings,
+          path: '/edit-channel-settings',
+          builder: (context, state) {
+            final List<dynamic> extras = state.extra as List<dynamic>;
+            return BlocProvider(
+                create: (context) => ChannelCubit(),
+                child: EditChannelSettingsView(
+                  channelId: extras[0],
+                  chat: extras[1],
+                  lastSeen: extras[2],
+                  userId: extras[3],
                 ));
           }),
       GoRoute(

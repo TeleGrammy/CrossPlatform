@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class Chat {
   final String id;
-  final String name;
+  String name;
   final String? photo;
   final LastMessage? lastMessage;
   final String draftMessage;
@@ -13,6 +13,7 @@ class Chat {
   final String? createdAt;
   final String? channelId;
   final String? groupId;
+  bool deleted;
 
   Chat({
     required this.id,
@@ -27,6 +28,7 @@ class Chat {
     this.createdAt,
     this.channelId,
     this.groupId,
+    required this.deleted,
   });
 
   factory Chat.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class Chat {
       participants: json['participants'] ?? [],
       channelId: (json['isChannel'] == true) ? json['channelId'] : null,
       groupId: (json['isGroup'] == true) ? json['groupId'] : null,
+      deleted: json['deleted'] ?? false,
     );
   }
 

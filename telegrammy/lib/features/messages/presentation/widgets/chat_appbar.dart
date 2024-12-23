@@ -51,36 +51,6 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
               title: const Text('Search'),
               onTap: () => {},
             ),
-            if (chat.isChannel)
-              ListTile(
-                key: const Key('settings_mute_option'),
-                leading: Icon(
-                  Icons.exit_to_app_outlined,
-                  color: Colors.red,
-                ),
-                title: const Text('leave Channel'),
-                onTap: () => {},
-              ),
-            if (chat.isChannel &&
-                (userRole == "Creator" ||
-                    userRole ==
-                        "Admin")) //should add if the user is admin condition
-              ListTile(
-                key: const Key('settings_mute_option'),
-                leading: Icon(
-                  Icons.delete_rounded,
-                  color: Colors.red,
-                ),
-                title: const Text('delete Channel'),
-                onTap: () {
-                  getit
-                      .get<ChannelSocketService>()
-                      .removeChannel({'channelId': chat.channelId});
-                  getit
-                      .get<ChannelSocketService>()
-                      .errorChannelMessage((dynamic callback) {});
-                },
-              ),
           ],
         );
       },
@@ -172,6 +142,11 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
               if (chat.isGroup)
                 context
                     .goNamed(RouteNames.groupSettings, extra: [chat, lastSeen]);
+              if (chat.isChannel) {
+                String userId = '';
+                context.goNamed(RouteNames.channelSettings,
+                    extra: [chat, lastSeen, userId]);
+              }
             }),
         IconButton(
           key: const Key('search_settings_button'),

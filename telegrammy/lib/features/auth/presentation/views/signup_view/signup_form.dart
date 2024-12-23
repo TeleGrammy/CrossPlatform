@@ -53,8 +53,15 @@ class SignUpForm extends StatelessWidget {
             hintText: 'Phone Number',
             obsecureText: false,
             prefixIcon: Icons.phone,
-            validator: (value) =>
-                value!.isEmpty ? 'Phone number is required' : null,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Phone number is required';
+              }
+              final phoneRegex = RegExp(r"^\+20\d{10}$");
+              return !phoneRegex.hasMatch(value)
+                  ? 'Phone number must be in the format +20XXXXXXXXXX'
+                  : null;
+            },
           ),
           CustomTextField(
             inputFieldKey: Key('passwordField'),

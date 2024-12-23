@@ -16,7 +16,7 @@ class ChannelSocketService {
       }
 
       socket = IO.io(
-        "$socketurl/channel/",
+        "$socketurl/",
         <String, dynamic>{
           "transports": ["websocket"],
           "autoConnect": false,

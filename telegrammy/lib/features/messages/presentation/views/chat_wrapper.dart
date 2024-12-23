@@ -49,6 +49,7 @@ class ChatWrapperState extends State<ChatWrapper> {
           String userRole = 'Admin';
           List<Message> messages = state.chatData['messages'] as List<Message>;
           messages = messages.reversed.toList();
+          widget.chat.deleted = state.chatData['deleted'] ?? false;
           return ChatDetails(
             chatData: ChatData(
               chat: widget.chat,

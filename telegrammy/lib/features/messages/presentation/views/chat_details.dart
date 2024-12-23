@@ -51,6 +51,7 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? SearchedMessage;
   late List<Participant> participants;
   bool isPinned = false;
+  bool isChatDeleted = false;
   final ScrollController _scrollController = ScrollController();
   bool isSocketInitialized = false; // Tracks whether the socket is ready
 
@@ -65,6 +66,12 @@ class ChatDetailsState extends State<ChatDetails> {
     if (widget.chatData.chat.isChannel) {
       getit.get<ChannelSocketService>().connect();
     }
+
+    getit.get<ChannelSocketService>().userRemovedFromChannelMessage((response) {
+      setState(() {
+        isChatDeleted = true;
+      });
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.forwardedMessage != null) {
@@ -378,50 +385,54 @@ class ChatDetailsState extends State<ChatDetails> {
                       onClickUnpin: onClickUnpin,
                       isPinned: isPinned,
                     ),
-              body: Column(
-                children: [
-                  // Show pinned message bar if a message is pinned
+              body: (!widget.chatData.chat.deleted && !isChatDeleted)
+                  ? Column(
+                      children: [
+                        // Show pinned message bar if a message is pinned
 
-                  Expanded(
-                    child: ChatDetailsBody(
-                      key: const Key('chatDetailsBody'),
-                      messages: widget.chatData.messages,
-                      onMessageTap: onMessageTap,
-                      onMessageSwipe: onMessageSwipe,
-                      selectedMessage: selectedMessage,
-                      userId: widget.userId,
-                      searchedMessage: SearchedMessage,
-                      havePin: lastPinnedMessage != null,
-                      lastPinnedMessage: lastPinnedMessage,
-                    ),
-                  ),
-                  if (repliedMessage != null)
-                    Padding(
-                      key: const Key('replyPreview'),
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ReplyPreview(
-                        repliedMessage: repliedMessage!,
-                        onCancel: clearReply,
-                      ),
-                    ),
-                  selectedMessage == null
-                      ? BottomBar(
-                          key: const Key('bottomBar'),
-                          clearReply: clearReply,
-                          editedMessage: editedMessage,
-                          repliedMessage: repliedMessage,
-                          chatId: widget.chatData.chat.id,
-                          isChannel: widget.chatData.chat.isChannel,
-                        )
-                      : SelectedMessageBottomBar(
-                          key: const Key('selectedMessageBottomBar'),
-                          onReply: () {
-                            onReply();
-                          },
-                          selectedMessage: selectedMessage!,
+                        Expanded(
+                          child: ChatDetailsBody(
+                            key: const Key('chatDetailsBody'),
+                            messages: widget.chatData.messages,
+                            onMessageTap: onMessageTap,
+                            onMessageSwipe: onMessageSwipe,
+                            selectedMessage: selectedMessage,
+                            userId: widget.userId,
+                            searchedMessage: SearchedMessage,
+                            havePin: lastPinnedMessage != null,
+                            lastPinnedMessage: lastPinnedMessage,
+                            isChannel: widget.chatData.chat.isChannel,
+                          ),
                         ),
-                ],
-              ),
+                        if (repliedMessage != null)
+                          Padding(
+                            key: const Key('replyPreview'),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: ReplyPreview(
+                              repliedMessage: repliedMessage!,
+                              onCancel: clearReply,
+                            ),
+                          ),
+                        selectedMessage == null
+                            ? BottomBar(
+                                key: const Key('bottomBar'),
+                                clearReply: clearReply,
+                                editedMessage: editedMessage,
+                                repliedMessage: repliedMessage,
+                                chatId: widget.chatData.chat.id,
+                                isChannel: widget.chatData.chat.isChannel,
+                              )
+                            : SelectedMessageBottomBar(
+                                key: const Key('selectedMessageBottomBar'),
+                                onReply: () {
+                                  onReply();
+                                },
+                                selectedMessage: selectedMessage!,
+                              ),
+                      ],
+                    )
+                  : Center(child: Text('This chat was deleted')),
             )
           : const Scaffold(
               body: Center(

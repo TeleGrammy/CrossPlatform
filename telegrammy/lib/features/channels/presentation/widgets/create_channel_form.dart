@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/constants/app_colors.dart';
 import 'package:telegrammy/cores/models/channel_model.dart';
-import 'package:telegrammy/cores/styles/styles.dart';
+import 'package:telegrammy/cores/routes/app_routes.dart';
+import 'package:telegrammy/cores/routes/route_names.dart';
 import 'package:telegrammy/cores/widgets/custom_text_field.dart';
 import 'package:telegrammy/cores/widgets/rounded_button.dart';
 import 'package:telegrammy/features/channels/presentation/view_models/channel_cubit/channel_cubit.dart';
@@ -77,8 +79,7 @@ class _CreateChannelFormState extends State<CreateChannelForm> {
               //if success navigate to the channel screen
               //if loading show spinner
               if (state is ChannelCreateSuccess) {
-                print(
-                    'channel created successfully-------------------------->');
+                context.goNamed(RouteNames.chats);
               }
             },
             child: RoundedButton(
@@ -87,9 +88,9 @@ class _CreateChannelFormState extends State<CreateChannelForm> {
                   var newChannel = Channel(
                     name: widget.channelNameController.text,
                     description: widget.channelDescriptionController.text,
-                    createdAt: DateTime.now(),
+                    createdAt: DateTime.now().toString(),
                     posts: [],
-                    isChannelPublic: true,
+                    privacy: 'public',
                   );
                   widget.onSubmit(newChannel);
                 }

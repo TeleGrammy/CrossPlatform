@@ -32,9 +32,8 @@ class MessageAttachmentWidget extends StatelessWidget {
       case "sticker":
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white, 
-            borderRadius:
-                BorderRadius.circular(10.0), 
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
@@ -44,8 +43,7 @@ class MessageAttachmentWidget extends StatelessWidget {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-                10.0), 
+            borderRadius: BorderRadius.circular(10.0),
             child: Image.network(
               message.mediaUrl!,
               errorBuilder: (context, error, stackTrace) =>
@@ -62,6 +60,8 @@ class MessageAttachmentWidget extends StatelessWidget {
       case "audio":
         return AudioPlayerWidget(audioUrl: message.mediaUrl!);
       case "file":
+        return FileAttachmentWidget(fileUrl: message.mediaUrl!);
+      case "document":
         return FileAttachmentWidget(fileUrl: message.mediaUrl!);
       default:
         return FileAttachmentWidget(fileUrl: message.mediaUrl!);

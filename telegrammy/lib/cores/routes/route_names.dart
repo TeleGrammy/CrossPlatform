@@ -38,4 +38,10 @@ class RouteNames {
   static String addGroupAdmin = 'addGroupAdmin';
   static String addContact = 'addContact';
   static String globalSearch = 'globalSearch';
+  static String channelSettings = 'channelSettings';
+  static String addChannelAdmin = 'addChannelAdmin';
+  static String viewChannelSubscribers = 'channelSubscribers';
+  static String editChannelSettings = 'editChannelSettings';
+  static String addChannelSubscribers = 'addChannelSubscribers';
+  static String removeChannelSubscribers = 'removeChannelSubscribers';
 }

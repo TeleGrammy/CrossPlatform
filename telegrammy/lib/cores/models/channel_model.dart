@@ -6,10 +6,10 @@ class Channel {
   final String description;
   final String? inviteLink;
   final List<String>? adminsId;
-  final DateTime createdAt;
-  final bool isChannelPublic;
+  final String createdAt;
+  final String privacy;
   final List<String>? subscribedUsers;
-  final String? imageUrl;
+  final String? image;
   final List<Post> posts;
 
   Channel({
@@ -19,9 +19,20 @@ class Channel {
     this.inviteLink,
     this.adminsId,
     required this.createdAt,
-    required this.isChannelPublic,
+    required this.privacy,
     this.subscribedUsers,
-    this.imageUrl,
-    this.posts = const [],
+    this.image,
+    this.posts = const [], String? channelId,
   });
+
+  factory Channel.fromJson(Map<String, dynamic> json) {
+    return Channel(
+      id: json['channelId'],
+      name: json['channelName'],
+      description: json['channelDescription'] ?? '-',
+      image: json['image'] ?? 'default.jpg',
+      privacy: json['channelPrivacy'] ?? 'public',
+      createdAt: json['channelCreationDate'].toString(),
+    );
+  }
 }
