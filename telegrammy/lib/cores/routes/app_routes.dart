@@ -461,7 +461,7 @@ class AppRoutes {
         path: '/channel-settings',
         builder: (context, state) {
           final List<dynamic> extras = state.extra as List<dynamic>;
-          Chat chat = extras[0];
+          ChatView chat = extras[0];
           String lastSeen = extras[1];
           String userId = extras[2];
           return BlocProvider(

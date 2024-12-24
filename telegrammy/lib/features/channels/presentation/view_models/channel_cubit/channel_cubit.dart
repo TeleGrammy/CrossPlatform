@@ -38,7 +38,7 @@ class ChannelCubit extends Cubit<ChannelState> {
   void updateChannelPrivacy(String newPrivacy) {}
 
   Future<void> updateChannelInfo(
-      Chat channel, String name, String description, String privacy) async {
+      ChatView channel, String name, String description, String privacy) async {
     emit(ChannelLoading());
     final result = await repoImplementaion.updateChannelInfo(
         channel.channelId!, name, description);

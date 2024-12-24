@@ -16,7 +16,7 @@ class EditChannelSettingsView extends StatefulWidget {
       required this.lastSeen,
       required this.userId});
   final String channelId;
-  final Chat chat;
+  final ChatView chat;
   final String lastSeen;
   final String userId;
 

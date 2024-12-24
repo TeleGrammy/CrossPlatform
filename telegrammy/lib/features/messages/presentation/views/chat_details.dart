@@ -404,45 +404,20 @@ class ChatDetailsState extends State<ChatDetails> {
                       children: [
                         // Show pinned message bar if a message is pinned
 
-                  Expanded(
-                    child: ChatDetailsBody(
-                      key: const Key('chatDetailsBody'),
-                      messages: widget.chatData.messages,
-                      onMessageTap: onMessageTap,
-                      onMessageSwipe: onMessageSwipe,
-                      selectedMessage: selectedMessage,
-                      userId: widget.userId,
-                      participants: widget.participants,
-                      searchedMessage: SearchedMessage,
-                      havePin: lastPinnedMessage != null,
-                      lastPinnedMessage: lastPinnedMessage,
-                      isChannel:widget.chatData.chat.isChannel,
-                    ),
-                  ),
-                  if (repliedMessage != null)
-                    Padding(
-                      key: const Key('replyPreview'),
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ReplyPreview(
-                        repliedMessage: repliedMessage!,
-                        onCancel: clearReply,
-                      ),
-                    ),
-                  selectedMessage == null
-                      ? BottomBar(
-                          key: const Key('bottomBar'),
-                          clearReply: clearReply,
-                          editedMessage: editedMessage,
-                          repliedMessage: repliedMessage,
-                          chatId: widget.chatData.chat.id,
-                          isChannel: widget.chatData.chat.isChannel,
-                        )
-                      : SelectedMessageBottomBar(
-                          key: const Key('selectedMessageBottomBar'),
-                          onReply: () {
-                            onReply();
-                          },
-                          selectedMessage: selectedMessage!,
+                        Expanded(
+                          child: ChatDetailsBody(
+                            key: const Key('chatDetailsBody'),
+                            messages: widget.chatData.messages,
+                            onMessageTap: onMessageTap,
+                            onMessageSwipe: onMessageSwipe,
+                            selectedMessage: selectedMessage,
+                            userId: widget.userId,
+                            participants: widget.participants,
+                            searchedMessage: SearchedMessage,
+                            havePin: lastPinnedMessage != null,
+                            lastPinnedMessage: lastPinnedMessage,
+                            isChannel: widget.chatData.chat.isChannel,
+                          ),
                         ),
                         if (repliedMessage != null)
                           Padding(
@@ -470,6 +445,16 @@ class ChatDetailsState extends State<ChatDetails> {
                                 },
                                 selectedMessage: selectedMessage!,
                               ),
+                        if (repliedMessage != null)
+                          Padding(
+                            key: const Key('replyPreview'),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: ReplyPreview(
+                              repliedMessage: repliedMessage!,
+                              onCancel: clearReply,
+                            ),
+                          ),
                       ],
                     )
                   : Center(child: Text('This chat was deleted')),

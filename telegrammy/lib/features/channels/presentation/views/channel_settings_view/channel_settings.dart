@@ -21,7 +21,7 @@ class ChannelSettingsView extends StatefulWidget {
       required this.userId}) {
     channelId = chat.channelId!;
   }
-  final Chat chat;
+  final ChatView chat;
   final String lastSeen;
   late String channelId;
   final String userId;
