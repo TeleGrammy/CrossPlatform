@@ -7,27 +7,18 @@ import 'package:telegrammy/features/messages/data/models/chat_data.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 
 class ContactPreview extends StatelessWidget {
-  // final String name;
-  // final String photo;
-  // final String lastMessage;
-  // final String id;
-  // final String lastMessageTime;
-  final String lastSeen;
+  final String lastMessageTime;
   final Message? forwardMessage;
-  // final bool isChannel;
-  final Chat chat;
-
+  final String? draftMessage;
+  final String userId;
+  final ChatView chat;
   const ContactPreview({
-    required this.chat,
     Key? key,
-    // required this.id,
-    // required this.name,
-    // required this.photo,
-    // required this.lastMessage,
-    // required this.lastMessageTime,
-    required this.lastSeen,
+    required this.lastMessageTime,
     this.forwardMessage,
-    // required this.isChannel}
+    this.draftMessage,
+    required this.userId,
+    required this.chat,
   }) : super(key: key);
 
   @override
@@ -46,7 +37,11 @@ class ContactPreview extends StatelessWidget {
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
-        chat.lastMessage != null ? chat.lastMessage!.content : '',
+        draftMessage != null
+            ? "draft:$draftMessage"
+            :chat.lastMessage!=null && chat.lastMessage!.content.isNotEmpty
+                ? chat.lastMessage!.content
+                : '',
         style: const TextStyle(fontSize: 14, color: Colors.grey),
       ),
       onTap: () {
@@ -62,7 +57,7 @@ class ContactPreview extends StatelessWidget {
         }
         context.goNamed(
           RouteNames.chatWrapper,
-          extra: [chat, lastSeen],
+          extra: [chat, userId],
         );
       },
     );

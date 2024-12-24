@@ -16,7 +16,7 @@ class MessagesRepoImplementaion extends MessagesRepo {
   MessagingApiService apiService = MessagingApiService();
 
   @override
-  Future<List<Chat>> getChats({int page = 1}) async {
+  Future<Map<String,dynamic>> getChats({int page = 1}) async {
     return await getit.get<ApiService>().fetchChats();
   }
 

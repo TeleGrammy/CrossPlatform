@@ -8,7 +8,7 @@ class ContactsInitial extends ContactsState {}
 class ContactsLoading extends ContactsState {}
 
 class ContactsSuccess extends ContactsState {
-  List<Chat> chats;
+  Map<String,dynamic> chats;
 
   ContactsSuccess({required this.chats});
 }

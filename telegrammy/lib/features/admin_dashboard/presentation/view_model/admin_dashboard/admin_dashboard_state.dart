@@ -21,6 +21,14 @@ final class RegisteredUsersUpdated extends RegisteredUsersState {
 
   RegisteredUsersUpdated({required this.isEnabled});
 }
+final class RegisteredGroupsUpdating extends RegisteredUsersState {}
+
+final class RegisteredGroupsUpdated extends RegisteredUsersState {
+  final bool isEnabledGroups;
+
+  RegisteredGroupsUpdated({required this.isEnabledGroups});
+}
+
 
 final class RegisteredUsersError extends RegisteredUsersState {
   final String message;

@@ -8,19 +8,21 @@ import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import '../../../../cores/routes/route_names.dart';
 
 class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final Chat chat;
+  final ChatView chat;
   final String lastSeen;
   final String userRole;
   final Function() onSearch;
   final String name;
   final String photo;
   final String id;
+  final String userId;
 
   const ChatAppbar(
       {super.key,
       required this.name,
       required this.photo,
       required this.lastSeen,
+      required this.userId,
       required this.chat,
       required this.userRole,
       required this.onSearch,
@@ -87,7 +89,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         key: const Key('back_button'),
         icon: Icon(Icons.arrow_back),
         onPressed: () {
-          getit.get<SocketService>().disconnect();
+          // getit.get<SocketService>().disconnect();
           context.goNamed(RouteNames.chats);
         },
       ),
@@ -96,8 +98,7 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           CircleAvatar(
             key: const Key('profile_picture'),
-            backgroundImage:
-                (chat.photo != null) ? AssetImage(chat.photo!) : null,
+            backgroundImage: NetworkImage(photo) as ImageProvider,
             radius: 20,
           ),
           const SizedBox(width: 10),
@@ -124,9 +125,8 @@ class ChatAppbar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.call),
           onPressed: () {
             context.goNamed(RouteNames.onGoingCall, extra: {
-              'name': name,
-              'photo': photo,
-              'id': id,
+              'chat':chat,
+              'userId': userId,
             });
           },
         ),

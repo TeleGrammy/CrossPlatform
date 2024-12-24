@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:telegrammy/cores/services/draft_storage_service.dart';
 import 'package:telegrammy/features/messages/data/models/contacts.dart';
 import 'package:telegrammy/features/notifications/data/handle_notifications.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,6 +13,7 @@ import 'package:telegrammy/cores/services/token_storage_service.dart';
 class ApiService {
   ApiService({required this.dio});
   final Dio dio;
+  String? deviceToken; 
 
   Future<Either<String, void>> signInWithGoogle() async {
     try {
@@ -164,15 +166,27 @@ class ApiService {
   Future<Either<String, void>> login(userLoginData) async {
     try {
       print(userLoginData);
-      final tokenn=await HandleNotifications().getToken();
-      print(tokenn);
-      print('$baseUrl/auth/login');
+    //   deviceToken=await HandleNotifications().getToken();
+    //   print('tokenmmmmmmm$deviceToken');
+    //      if (deviceToken != null && deviceToken!.isNotEmpty) {
+    //   userLoginData['token'] = deviceToken;
+    // }
+
       final response = await getit
           .get<Dio>()
-          .post('$baseUrl/auth/login', data: userLoginData);
-      print(response);
+          .post('$baseUrl2/auth/login', data: userLoginData);
+      // print(response);
       setTokenInLocalStorage(response);
-      print(response);
+      final SecureDraftStorageService _storageService = SecureDraftStorageService();
+
+     if (response.data != null ) {
+  final isAdmin = response.data['data']['updatedUser']['isAdmin'];
+  // print('isAdmin: $isAdmin');
+  await _storageService.saveDraft(isAdmin); // Save isAdmin in storage
+
+} else {
+  print('Error: Invalid response format');
+}
       // print(userLoginData);
 
       return const Right(null);
@@ -218,7 +232,7 @@ class ApiService {
     }
   }
 
-  Future<List<Chat>> fetchChats() async {
+  Future<Map<String,dynamic>> fetchChats() async {
     try {
       String? token = await getit.get<TokenStorageService>().getToken();
       final response = await getit.get<Dio>().get(
@@ -232,8 +246,13 @@ class ApiService {
       if (response.statusCode == 200) {
         List<dynamic> chats = response.data['chats'];
         print(chats);
-        // final String userId = response.data['userId'];
-        return chats.map((chat) => Chat.fromJson(chat)).toList();
+        final String userId = response.data['userId'];
+        List<ChatView> chatsobjects = chats.map((chat) => ChatView.fromJson(chat)).toList();
+        return {
+          "chats": chatsobjects,
+          "userId": userId,
+        };
+        // return chats.map((chat) => Chat.fromJson(chat)).toList();
       } else {
         throw Exception('Failed to fetch contacts');
       }
@@ -243,10 +262,19 @@ class ApiService {
     }
   }
 
-  void logout() async {
-    await getit.get<FlutterSecureStorage>().delete(key: 'accessToken');
-    await getit.get<Dio>().get(
-          '$baseUrl/api/v1/auth/logout',
-        );
+void logout() async {
+  await getit.get<FlutterSecureStorage>().delete(key: 'accessToken');
+  
+  if (deviceToken != null) {
+    await getit.get<Dio>().post(
+      '$baseUrl/api/v1/auth/logout',
+      data: {"token": deviceToken},
+    );
+  }else{
+    await getit.get<Dio>().post(
+      '$baseUrl/api/v1/auth/logout',
+      
+    );
   }
+}
 }

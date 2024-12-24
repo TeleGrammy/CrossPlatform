@@ -16,18 +16,25 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
     setupServiceLocator();
-    // await HandleNotifications().getToken();
-    //  FirebaseMessaging.onBackgroundMessage(HandleNotifications().firebaseMessagingBackgroundHandler);
+    //  final tokenn=await HandleNotifications().getToken();
+    //   print('tokenmmmmmmm$tokenn');
+        //  FirebaseMessaging.onBackgroundMessage(HandleNotifications().firebaseMessagingBackgroundHandler);
     runApp(const MyApp());
   } catch (e, stack) {
     print('Error during initialization: $e\n$stack');
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(

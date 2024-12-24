@@ -31,6 +31,10 @@ class SocketService {
     });
   }
 
+  void removeCallListener(String event) {
+    socket?.off(event);
+  }
+
   void sendMessage(String event, dynamic data) {
     print(data);
     socket?.emitWithAck(event, [data], ack: (Response) {

@@ -16,7 +16,7 @@ class EditGroupSettingsView extends StatefulWidget {
       required this.chat,
       required this.lastSeen});
   final String groupId;
-  final Chat chat;
+  final ChatView chat;
   final String lastSeen;
 
   @override
@@ -40,7 +40,9 @@ class _EditGroupSettingsViewState extends State<EditGroupSettingsView> {
   @override
   void initState() {
     super.initState();
-    context.read<GroupCubit>().getGroupInfo(widget.groupId);
+    context
+        .read<GroupCubit>()
+        .getGroupInfo(widget.groupId, widget.chat, widget.lastSeen);
   }
 
   @override

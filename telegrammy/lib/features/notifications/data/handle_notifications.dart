@@ -7,10 +7,10 @@ class HandleNotifications {
   Future<String?> getToken() async {
     try {
       // Request permission for notifications
+      print('inside');
       NotificationSettings settings = await firebaseMessaging.requestPermission();
 
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        print('Notification permission granted.');
+     
 
         // Get the token
         String? token = await firebaseMessaging.getToken();
@@ -21,13 +21,7 @@ class HandleNotifications {
           print('FCM Token is null.');
           return null;
         }
-      } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
-        print('Notification permission denied.');
-        return null;
-      } else {
-        print('Notification permission status: ${settings.authorizationStatus}');
-        return null;
-      }
+      
     } catch (e) {
       print('Error retrieving token: $e');
       return null; // Return null in case of an error

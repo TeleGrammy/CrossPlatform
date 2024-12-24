@@ -16,11 +16,12 @@ import 'package:telegrammy/features/messages/presentation/widgets/selected_messa
 import 'package:telegrammy/features/messages/presentation/widgets/selected_message_bottom_bar.dart';
 
 class ChatDetails extends StatefulWidget {
-  final String lastSeen;
   final Message? forwardedMessage;
   final String userId;
+  // final List<Participant> participants;
   final String userRole;
   final ChatData chatData;
+  final List<Participant> participants;
   // final List<Message> messages;
   // final String name;
   // final String id;
@@ -28,15 +29,16 @@ class ChatDetails extends StatefulWidget {
 
   const ChatDetails({
     Key? key,
+    required this.participants,
     // required this.name,
     // required this.id,
     // required this.photo,
-    required this.lastSeen,
+    // required this.lastSeen,
     // required this.messages,
     this.forwardedMessage,
+    required this.userId,
     required this.chatData,
     required this.userRole,
-    required this.userId,
   }) : super(key: key);
 
   @override
@@ -49,7 +51,7 @@ class ChatDetailsState extends State<ChatDetails> {
   Message? editedMessage;
   Message? lastPinnedMessage;
   Message? SearchedMessage;
-  late List<Participant> participants;
+  // late List<Participant> participants;
   bool isPinned = false;
   bool isChatDeleted = false;
   final ScrollController _scrollController = ScrollController();
@@ -59,6 +61,13 @@ class ChatDetailsState extends State<ChatDetails> {
   void initState() {
     super.initState();
     _initializeSocketConnection();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    getit.get<SocketService>().removeCallListener('call:incomingCall');
+    // getit.get<SocketService>().disconnect();
   }
 
   Future<void> _initializeSocketConnection() async {
@@ -86,12 +95,16 @@ class ChatDetailsState extends State<ChatDetails> {
       }
 
       getit.get<SocketService>().recieveCall('call:incomingCall', (response) {
-        context.goNamed(RouteNames.incomingCall, extra: {
-          'name': 'mmmomo',
-          'photo': 'default.png',
-          'callId': response['_id'],
-          'remoteOffer': response['callObj']['offer'],
-        });
+        if (mounted) {
+          context.goNamed(RouteNames.incomingCall, extra: {
+            'name': 'mmmomo',
+            'photo': 'default.png',
+            'callId': response['_id'],
+            'remoteOffer': response['callObj']['offer'],
+            'chat': widget.chatData.chat,
+            'userId': widget.userId,
+          });
+        }
       });
       setState(() {
         isSocketInitialized = true; // Mark socket as initialized
@@ -366,8 +379,9 @@ class ChatDetailsState extends State<ChatDetails> {
               appBar: selectedMessage == null
                   ? ChatAppbar(
                       key: const Key('chatAppBar'),
-                      lastSeen: widget.lastSeen,
+                      lastSeen: widget.chatData.chat.lastSeen!,
                       userRole: widget.userRole,
+                      userId: widget.userId,
                       chat: widget.chatData.chat,
                       onSearch: onSearch,
                       name: widget.chatData.chat.name,
@@ -390,19 +404,45 @@ class ChatDetailsState extends State<ChatDetails> {
                       children: [
                         // Show pinned message bar if a message is pinned
 
-                        Expanded(
-                          child: ChatDetailsBody(
-                            key: const Key('chatDetailsBody'),
-                            messages: widget.chatData.messages,
-                            onMessageTap: onMessageTap,
-                            onMessageSwipe: onMessageSwipe,
-                            selectedMessage: selectedMessage,
-                            userId: widget.userId,
-                            searchedMessage: SearchedMessage,
-                            havePin: lastPinnedMessage != null,
-                            lastPinnedMessage: lastPinnedMessage,
-                            isChannel: widget.chatData.chat.isChannel,
-                          ),
+                  Expanded(
+                    child: ChatDetailsBody(
+                      key: const Key('chatDetailsBody'),
+                      messages: widget.chatData.messages,
+                      onMessageTap: onMessageTap,
+                      onMessageSwipe: onMessageSwipe,
+                      selectedMessage: selectedMessage,
+                      userId: widget.userId,
+                      participants: widget.participants,
+                      searchedMessage: SearchedMessage,
+                      havePin: lastPinnedMessage != null,
+                      lastPinnedMessage: lastPinnedMessage,
+                      isChannel:widget.chatData.chat.isChannel,
+                    ),
+                  ),
+                  if (repliedMessage != null)
+                    Padding(
+                      key: const Key('replyPreview'),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ReplyPreview(
+                        repliedMessage: repliedMessage!,
+                        onCancel: clearReply,
+                      ),
+                    ),
+                  selectedMessage == null
+                      ? BottomBar(
+                          key: const Key('bottomBar'),
+                          clearReply: clearReply,
+                          editedMessage: editedMessage,
+                          repliedMessage: repliedMessage,
+                          chatId: widget.chatData.chat.id,
+                          isChannel: widget.chatData.chat.isChannel,
+                        )
+                      : SelectedMessageBottomBar(
+                          key: const Key('selectedMessageBottomBar'),
+                          onReply: () {
+                            onReply();
+                          },
+                          selectedMessage: selectedMessage!,
                         ),
                         if (repliedMessage != null)
                           Padding(

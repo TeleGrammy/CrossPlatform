@@ -7,9 +7,10 @@ import 'package:telegrammy/cores/styles/styles.dart';
 class AdminboardAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titleBar;
   final ValueKey<String> key;
+  final String signn;
   // final String nextRoutename;
 
-  AdminboardAppBar({required this.titleBar, required this.key});
+  AdminboardAppBar({required this.titleBar, required this.key,required this.signn});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +21,12 @@ class AdminboardAppBar extends StatelessWidget implements PreferredSizeWidget {
           print(titleBar);
           // if (titleBar != 'Stories' && titleBar != 'Profile Photo' && titleBar != 'Last Seen & Online') {
           // print('previous');
-          if(titleBar!='Registered Users')
+          if(signn=='1')
            context.goNamed(RouteNames.adminDashboardPage);
+ else if  (signn=='2')
+  context.goNamed(RouteNames.adminDashboardPageFilterMedia);
  else
-  // print('go');
-  context.goNamed(RouteNames.profilePrivacyPage);
+  context.goNamed(RouteNames.chats);
 
         },
         icon: Icon(Icons.arrow_back, color: Colors.white)

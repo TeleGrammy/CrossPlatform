@@ -110,7 +110,6 @@ class GroupApiService {
         }),
         data: {'groupType': privacyOption},
       );
-      print(response.data);
       return response.data['status'];
     } on DioException catch (dioError) {
       throw Exception('Error updating group privacy: ${dioError.message}');

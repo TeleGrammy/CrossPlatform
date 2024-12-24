@@ -13,12 +13,13 @@ final class GroupLoaded extends GroupState {
   List<MemberData>? admins;
   List<ContactData>? contactsExcludingMembers;
   List<MemberData>? nonAdminMembers;
-  GroupLoaded(
-      {required this.groupData,
-      this.members,
-      this.admins,
-      this.contactsExcludingMembers,
-      this.nonAdminMembers});
+  GroupLoaded({
+    required this.groupData,
+    this.members,
+    this.admins,
+    this.contactsExcludingMembers,
+    this.nonAdminMembers,
+  });
 }
 
 final class GroupError extends GroupState {

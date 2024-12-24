@@ -3,7 +3,12 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:telegrammy/cores/helpers/routes_helper.dart';
 import 'package:telegrammy/features/Home/presentation/views/home_view.dart';
+import 'package:telegrammy/features/admin_dashboard/data/models/groups_dashboard_model.dart';
 import 'package:telegrammy/features/admin_dashboard/data/models/registered_users_model.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/view_model/admin_dashboard/admin_dashboard_cubit.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/view_model/admin_dashboard/groups_dashboard_cubit.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_group_view.dart';
+import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_groups_view.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_user_view.dart';
 import 'package:telegrammy/features/admin_dashboard/presentation/views/registered_users_view.dart';
 import 'package:telegrammy/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
@@ -108,6 +113,16 @@ class AppRoutes {
           return UserDetailView(user: user); // Pass the user to the view
         },
       ),
+       GoRoute(
+        name: RouteNames.singleRegeisterGroupPage,
+        path: '/singleRegeisterGroupPage',
+        builder: (context, state) {
+          // Retrieve the user from the 'extra' parameter
+          final GroupData group = state.extra as GroupData;
+
+          return GroupDetailView(group:group); // Pass the user to the view
+        },
+      ),
       // GoRoute(
       //   name: RouteNames.chats,
       //   path: '/chats',
@@ -134,39 +149,35 @@ class AppRoutes {
         },
       ),
       GoRoute(
-        name: RouteNames.chatWrapper,
-        path: '/chatWrapper',
-        builder: (context, state) {
-          final List<dynamic> extras = state.extra as List<dynamic>;
-          // String name = extras[0];
-          // String id = extras[1];
-          // String photo = extras[2];
-          // bool isChannel = extras[4];
-          Chat chat = extras[0];
-          String lastSeen = extras[1];
-          Message? forwardMessage;
-          if (extras.length == 3) forwardMessage = extras[5];
+          name: RouteNames.chatWrapper,
+          path: '/chatWrapper',
+          builder: (context, state) {
+            final List<dynamic> extras = state.extra as List<dynamic>;
+            // String name = extras[0];
+            // String id = extras[1];
+            // String photo = extras[2];
+            // bool isChannel = extras[4];
+            ChatView chat = extras[0];
+            String userId = extras[1];
+            Message? forwardMessage;
+            if (extras.length == 3) forwardMessage = extras[2];
 
-          return BlocProvider(
-            create: (context) => MessagesCubit(),
-            child: ChatWrapper(
-              chat: chat,
-              lastSeen: lastSeen,
-              forwardedMessage: forwardMessage,
-            ),
-          );
-        },
-      ),
+            return BlocProvider(
+                create: (context) => MessagesCubit(),
+                child: ChatWrapper(
+                  chat: chat,
+                  forwardedMessage: forwardMessage,
+                  userId: userId,
+                ));
+          }),
+
       GoRoute(
-        name: RouteNames.emailVerification,
-        path: '/email-verification',
-        builder: (context, state) {
-          return BlocProvider(
-            create: (context) => SignUpCubit(),
-            child: AccountVerificationView(),
-          );
-        },
-      ),
+          name: RouteNames.emailVerification,
+          path: '/email-verification',
+          builder: (context, state) => BlocProvider(
+                create: (context) => SignUpCubit(),
+                child: AccountVerificationView(),
+              )),
       GoRoute(
         name: RouteNames.login,
         path: '/',
@@ -384,15 +395,30 @@ class AppRoutes {
           child: CreateGroupView(),
         ),
       ),
+            GoRoute(
+        name: RouteNames.adminDashboardPage,
+        path: '/adminDashboardPage',
+        builder: (context, state) => BlocProvider(
+          create: (context) => RegisteredUsersCubit(),
+          child: RegisteredUsersView(),
+        )),
+          GoRoute(
+        name: RouteNames.adminDashboardPageFilterMedia,
+        path: '/adminDashboardPageFilterMedia',
+        builder: (context, state) => BlocProvider(
+          create: (context) => RegisteredGroupsCubit(),
+          child: GroupsView(),
+        )),
+      
       GoRoute(
           name: RouteNames.onGoingCall,
           path: '/onGoingCall',
           builder: (context, state) {
             Map<String, dynamic>? params = state.extra as Map<String, dynamic>?;
             return OutgoingCallScreen(
-                name: params!['name'],
-                photoUrl: params['photo'],
-                chatId: params['id']);
+              chat: params!['chat'],
+              userId: params['userId'],
+            );
           }),
       GoRoute(
           name: RouteNames.incomingCall,
@@ -410,6 +436,8 @@ class AppRoutes {
                 params['remoteOffer']
                     ['type'], // Type string from the JSON (e.g., "offer")
               ),
+              chat: params['chat'],
+              userId: params['userId'],
             );
           }),
       GoRoute(
@@ -417,7 +445,7 @@ class AppRoutes {
         path: '/group-settings',
         builder: (context, state) {
           final List<dynamic> extras = state.extra as List<dynamic>;
-          Chat chat = extras[0];
+          ChatView chat = extras[0];
           String lastSeen = extras[1];
           return BlocProvider(
             create: (context) => GroupCubit(),
@@ -481,6 +509,8 @@ class AppRoutes {
           return AddGroupMembersView(
             groupId: extras[0],
             contactsToAddFrom: extras[1],
+            chat: extras[2],
+            lastSeen: extras[3],
           );
         },
       ),
@@ -492,6 +522,8 @@ class AppRoutes {
           return GroupMembersView(
             groupId: extras[0],
             members: extras[1],
+            chat: extras[2],
+            lastSeen: extras[3],
           );
         },
       ),
@@ -503,6 +535,8 @@ class AppRoutes {
           return RemoveGroupMembersView(
             groupId: extras[0],
             membersToRemoveFrom: extras[1],
+            chat: extras[2],
+            lastSeen: extras[3],
           );
         },
       ),
@@ -516,6 +550,8 @@ class AppRoutes {
               child: AddGroupAdminView(
                 groupId: extras[0],
                 usersToMakeAdmins: extras[1],
+                chat: extras[2],
+                lastSeen: extras[3],
               ));
         },
       ),

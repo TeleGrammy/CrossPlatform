@@ -32,6 +32,8 @@ class RouteNames {
   static String editGroupSettings = 'editGroupSettings';
   static String addGroupMembers = 'addGroupMembers';
   static String adminDashboardPage = 'adminDashboardPage';
+  static String adminDashboardPageFilterMedia = 'adminDashboardPageFilterMedia';
+  static String singleRegeisterGroupPage = 'singleRegeisterGroupPage';
   static String singleRegeisterUserPage = 'singleRegeisterUserPage';
   static String viewGroupMembers = 'viewGroupMembers';
   static String removeGroupMembers = 'removeGroupMembers';
